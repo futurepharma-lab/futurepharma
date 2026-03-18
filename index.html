@@ -1,260 +1,667 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.6">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Arial; color: #1a1a1a; -webkit-text-stroke: #1a1a1a; background-color: #ffffff}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Arial; color: #103cc0; -webkit-text-stroke: #103cc0; background-color: #ffffff}
-    p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.0px Arial; color: #1a1a1a; -webkit-text-stroke: #1a1a1a; background-color: #ffffff; min-height: 11.0px}
-    span.s1 {font-kerning: none}
-    span.s2 {text-decoration: underline ; font-kerning: none; color: #103cc0; -webkit-text-stroke: 0px #103cc0}
-    span.s3 {font-kerning: none; color: #1a1a1a; -webkit-text-stroke: 0px #1a1a1a}
-  </style>
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <script type="text/javascript">
-     (function(){
-        emailjs.init("HaAWzow0N9BMuVhJM");
-     })();
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future Pharma | The Future of Peptide Research</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        beige: {
+                            50: '#FAF9F6',
+                            100: '#F5F5DC',
+                            200: '#E8E8C8',
+                            800: '#4A4A3F',
+                            950: '#1C1C16'
+                        }
+                    },
+                    keyframes: {
+                        capLift: {
+                            '0%': { transform: 'translateY(0) rotate(0deg)' },
+                            '100%': { transform: 'translateY(-4px) rotate(-20deg)' },
+                        },
+                        flicker: {
+                            '0%': { opacity: '0.97' },
+                            '100%': { opacity: '1' },
+                        }
+                    },
+                    animation: {
+                        capLift: 'capLift 0.25s ease-out forwards',
+                        flicker: 'flicker 0.1s infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700;800&family=VT323&display=swap');
+       
+        * {
+            cursor: cell !important;
+        }
+
+        input, textarea, [contenteditable="true"] {
+            cursor: text !important;
+        }
+
+        button, a, select, [onclick], .cursor-pointer {
+            cursor: pointer !important;
+        }
+
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%,
+                rgba(0, 0, 0, 0.08) 50%
+            ), linear-gradient(
+                90deg,
+                rgba(255, 0, 0, 0.02),
+                rgba(0, 255, 0, 0.01),
+                rgba(0, 255, 0, 0.02)
+            );
+            background-size: 100% 4px, 3px 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .dark .scanlines {
+            background: linear-gradient(
+                rgba(245, 245, 220, 0) 50%,
+                rgba(245, 245, 220, 0.03) 50%
+            );
+            background-size: 100% 4px;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #F5F5DC;
+            color: #1C1C16;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .dark body { background-color: #0F0F0F; color: #F5F5DC; }
+        .dark nav { background-color: #0F0F0F; border-color: rgba(245, 245, 220, 0.2); }
+        .dark .bg-white { background-color: #1A1A1A; color: #F5F5DC; border-color: #F5F5DC; }
+       
+        .dark .product-card:hover {
+            background-color: #252525;
+            box-shadow: 10px 10px 0px 0px rgba(245, 245, 220, 0.2);
+        }
+
+        .dark .text-beige-800 { color: #D1D1D1; }
+        .dark .nav-link::after { background: #F5F5DC; }
+        .dark .bg-beige-950 { background-color: #F5F5DC; color: #0F0F0F; }
+        .dark .bg-beige-100 { background-color: #1A1A1A; border-color: #F5F5DC; }
+        .dark footer { border-color: rgba(245, 245, 220, 0.2); }
+        .dark #cart-sidebar { background-color: #0F0F0F; border-left-color: #F5F5DC; }
+
+        .pixel-font { font-family: 'VT323', monospace; }
+
+        .page-section { display: none; }
+        .page-section.active { display: block; animation: fadeIn 0.4s ease-out; }
+       
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+       
+        .nav-link { position: relative; font-weight: 700; letter-spacing: 0.1em; }
+        .nav-link::after {
+            content: ''; position: absolute; bottom: -2px; left: 0; width: 0%; height: 2px;
+            background: #1C1C16; transition: width 0.3s;
+        }
+        .nav-link:hover::after { width: 100%; }
+
+        svg { image-rendering: pixelated; shape-rendering: crispEdges; }
+
+        .email-suggestion-box {
+            display: none;
+            position: absolute;
+            z-index: 110;
+            width: 100%;
+            background: #fff;
+            border: 2px solid #1C1C16;
+            margin-top: -1px;
+        }
+        .dark .email-suggestion-box {
+            background: #1A1A1A;
+            border-color: #F5F5DC;
+        }
+        .suggestion-item {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+        .suggestion-item:hover {
+            background: #F5F5DC;
+            color: #1C1C16;
+        }
+       
+        .crypto-option:checked + label {
+            background-color: #1C1C16;
+            color: #F5F5DC;
+        }
+        .dark .crypto-option:checked + label {
+            background-color: #F5F5DC;
+            color: #1C1C16;
+        }
+    </style>
 </head>
-<body>
-<p class="p1"><span class="s1">&lt;!DOCTYPE html&gt;</span></p>
-<p class="p1"><span class="s1">&lt;html lang="en"&gt;</span></p>
-<p class="p1"><span class="s1">&lt;head&gt;</span></p>
-<p class="p1"><span class="s1">    &lt;meta charset="UTF-8"&gt;</span></p>
-<p class="p1"><span class="s1">    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</span></p>
-<p class="p1"><span class="s1">    &lt;title&gt;Future Pharma | The Future of Peptide Research&lt;/title&gt;</span></p>
-<p class="p1"><span class="s1">    &lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</span></p>
-<p class="p2"><span class="s3">    &lt;script src="https://unpkg.com/lucide@latest"&gt;&lt;/script&gt;</span></p>
-<p class="p1"><span class="s1">    &lt;script&gt;</span></p>
-<p class="p1"><span class="s1">        tailwind.config = {</span></p>
-<p class="p1"><span class="s1">            darkMode: 'class',</span></p>
-<p class="p1"><span class="s1">            theme: {</span></p>
-<p class="p1"><span class="s1">                extend: {</span></p>
-<p class="p1"><span class="s1">                    colors: {</span></p>
-<p class="p1"><span class="s1">                        beige: {</span></p>
-<p class="p1"><span class="s1">                            50: '#FAF9F6',</span></p>
-<p class="p1"><span class="s1">                            100: '#F5F5DC',</span></p>
-<p class="p1"><span class="s1">                            200: '#E8E8C8',</span></p>
-<p class="p1"><span class="s1">                            800: '#4A4A3F',</span></p>
-<p class="p1"><span class="s1">                            950: '#1C1C16'</span></p>
-<p class="p1"><span class="s1">                        }</span></p>
-<p class="p1"><span class="s1">                    },</span></p>
-<p class="p1"><span class="s1">                    keyframes: {</span></p>
-<p class="p1"><span class="s1">                        capLift: {</span></p>
-<p class="p1"><span class="s1">                            '0%': { transform: 'translateY(0) rotate(0deg)' },</span></p>
-<p class="p1"><span class="s1">                            '100%': { transform: 'translateY(-4px) rotate(-20deg)' },</span></p>
-<p class="p1"><span class="s1">                        },</span></p>
-<p class="p1"><span class="s1">                        flicker: {</span></p>
-<p class="p1"><span class="s1">                            '0%': { opacity: '0.97' },</span></p>
-<p class="p1"><span class="s1">                            '100%': { opacity: '1' },</span></p>
-<p class="p1"><span class="s1">                        }</span></p>
-<p class="p1"><span class="s1">                    },</span></p>
-<p class="p1"><span class="s1">                    animation: {</span></p>
-<p class="p1"><span class="s1">                        capLift: 'capLift 0.25s ease-out forwards',</span></p>
-<p class="p1"><span class="s1">                        flicker: 'flicker 0.1s infinite',</span></p>
-<p class="p1"><span class="s1">                    }</span></p>
-<p class="p1"><span class="s1">                }</span></p>
-<p class="p1"><span class="s1">            }</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1">    &lt;/script&gt;</span></p>
-<p class="p1"><span class="s1">    &lt;style&gt;</span></p>
-<p class="p2"><span class="s3">        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700;800&amp;family=VT323&amp;display=swap');</span></p>
-<p class="p1"><span class="s1">       </span></p>
-<p class="p1"><span class="s1">        * {</span></p>
-<p class="p1"><span class="s1">            cursor: cell !important;</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p3"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">        input, textarea, [contenteditable="true"] {</span></p>
-<p class="p1"><span class="s1">            cursor: text !important;</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p3"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">        button, a, select, [onclick], .cursor-pointer {</span></p>
-<p class="p1"><span class="s1">            cursor: pointer !important;</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p3"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">        .scanlines {</span></p>
-<p class="p1"><span class="s1">            position: fixed;</span></p>
-<p class="p1"><span class="s1">            top: 0;</span></p>
-<p class="p1"><span class="s1">            left: 0;</span></p>
-<p class="p1"><span class="s1">            width: 100%;</span></p>
-<p class="p1"><span class="s1">            height: 100%;</span></p>
-<p class="p1"><span class="s1">            background: linear-gradient(</span></p>
-<p class="p1"><span class="s1">                rgba(18, 16, 16, 0) 50%,</span></p>
-<p class="p1"><span class="s1">                rgba(0, 0, 0, 0.08) 50%</span></p>
-<p class="p1"><span class="s1">            ), linear-gradient(</span></p>
-<p class="p1"><span class="s1">                90deg,</span></p>
-<p class="p1"><span class="s1">                rgba(255, 0, 0, 0.02),</span></p>
-<p class="p1"><span class="s1">                rgba(0, 255, 0, 0.01),</span></p>
-<p class="p1"><span class="s1">                rgba(0, 255, 0, 0.02)</span></p>
-<p class="p1"><span class="s1">            );</span></p>
-<p class="p1"><span class="s1">            background-size: 100% 4px, 3px 100%;</span></p>
-<p class="p1"><span class="s1">            pointer-events: none;</span></p>
-<p class="p1"><span class="s1">            z-index: 100;</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p3"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">        .dark .scanlines {</span></p>
-<p class="p1"><span class="s1">            background: linear-gradient(</span></p>
-<p class="p1"><span class="s1">                rgba(245, 245, 220, 0) 50%,</span></p>
-<p class="p1"><span class="s1">                rgba(245, 245, 220, 0.03) 50%</span></p>
-<p class="p1"><span class="s1">            );</span></p>
-<p class="p1"><span class="s1">            background-size: 100% 4px;</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p3"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">        body {</span></p>
-<p class="p1"><span class="s1">            font-family: 'Space Grotesk', sans-serif;</span></p>
-<p class="p1"><span class="s1">            background-color: #F5F5DC;</span></p>
-<p class="p1"><span class="s1">            color: #1C1C16;</span></p>
-<p class="p1"><span class="s1">            transition: background-color 0.3s, color 0.3s;</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p3"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">        .dark body { background-color: #0F0F0F; color: #F5F5DC; }</span></p>
-<p class="p1"><span class="s1">        .dark nav { background-color: #0F0F0F; border-color: rgba(245, 245, 220, 0.2); }</span></p>
-<p class="p1"><span class="s1">        .dark .bg-white { background-color: #1A1A1A; color: #F5F5DC; border-color: #F5F5DC; }</span></p>
-<p class="p1"><span class="s1">       </span></p>
-<p class="p1"><span class="s1">        .dark .product-card:hover {</span></p>
-<p class="p1"><span class="s1">            background-color: #252525;</span></p>
-<p class="p1"><span class="s1">            box-shadow: 10px 10px 0px 0px rgba(245, 245, 220, 0.2);</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p3"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">        .dark .text-beige-800 { color: #D1D1D1; }</span></p>
-<p class="p1"><span class="s1">        .dark .nav-link::after { background: #F5F5DC; }</span></p>
-<p class="p1"><span class="s1">        .dark .bg-beige-950 { background-color: #F5F5DC; color: #0F0F0F; }</span></p>
-<p class="p1"><span class="s1">        .dark .bg-beige-100 { background-color: #1A1A1A; border-color: #F5F5DC; }</span></p>
-<p class="p1"><span class="s1">        .dark footer { border-color: rgba(245, 245, 220, 0.2); }</span></p>
-<p class="p1"><span class="s1">        .dark #cart-sidebar { background-color: #0F0F0F; border-left-color: #F5F5DC; }</span></p>
-<p class="p3"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">        .pixel-font { font-family: 'VT323', monospace; }</span></p>
-<p class="p3"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">        .page-section { display: none; }</span></p>
-<p class="p1"><span class="s1">        .page-section.active { display: block; animation: fadeIn 0.4s ease-out; }</span></p>
-<p class="p1"><span class="s1">       </span></p>
-<p class="p1"><span class="s1">        @keyframes fadeIn {</span></p>
-<p class="p1"><span class="s1">            from { opacity: 0; transform: translateY(10px); }</span></p>
-<p class="p1"><span class="s1">            to { opacity: 1; transform: translateY(0); }</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1">       </span></p>
-<p class="p1"><span class="s1">        .nav-link { position: relative; font-weight: 700; letter-spacing: 0.1em; }</span></p>
-<p class="p1"><span class="s1">        .nav-link::after {</span></p>
-<p class="p1"><span class="s1">            content: ''; position: absolute; bottom: -2px; left: 0; width: 0%; height: 2px;</span></p>
-<p class="p1"><span class="s1">            background: #1C1C16; transition: width 0.3s;</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1">        .nav-link:hover::after { width: 100%; }</span></p>
-<p class="p3"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">        svg { image-rendering: pixelated; shape-rendering: crispEdges; }</span></p>
-<p class="p3"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">        .email-suggestion-box {</span></p>
-<p class="p1"><span class="s1">            display: none;</span></p>
-<p class="p1"><span class="s1">            position: absolute;</span></p>
-<p class="p1"><span class="s1">            z-index: 110;</span></p>
-<p class="p1"><span class="s1">            width: 100%;</span></p>
-<p class="p1"><span class="s1">            background: #fff;</span></p>
-<p class="p1"><span class="s1">            border: 2px solid #1C1C16;</span></p>
-<p class="p1"><span class="s1">            margin-top: -1px;</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1">        .dark .email-suggestion-box {</span></p>
-<p class="p1"><span class="s1">            background: #1A1A1A;</span></p>
-<p class="p1"><span class="s1">            border-color: #F5F5DC;</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1">        .suggestion-item {</span></p>
-<p class="p1"><span class="s1">            padding: 8px 12px;</span></p>
-<p class="p1"><span class="s1">            cursor: pointer;</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1">        .suggestion-item:hover {</span></p>
-<p class="p1"><span class="s1">            background: #F5F5DC;</span></p>
-<p class="p1"><span class="s1">            color: #1C1C16;</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1">       </span></p>
-<p class="p1"><span class="s1">        .crypto-option:checked + label {</span></p>
-<p class="p1"><span class="s1">            background-color: #1C1C16;</span></p>
-<p class="p1"><span class="s1">            color: #F5F5DC;</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1">        .dark .crypto-option:checked + label {</span></p>
-<p class="p1"><span class="s1">            background-color: #F5F5DC;</span></p>
-<p class="p1"><span class="s1">            color: #1C1C16;</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1">    &lt;/style&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/head&gt;</span></p>
-<p class="p1"><span class="s1">&lt;body class="min-h-screen flex flex-col"&gt;</span></p>
-<p class="p3"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">    &lt;div class="scanlines animate-flicker"&gt;&lt;/div&gt;</span></p>
-<p class="p3"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">    &lt;nav class="fixed w-full z-50 bg-[#F5F5DC]/90 backdrop-blur-md border-b border-beige-950/10"&gt;</span></p>
-<p class="p1"><span class="s1">        &lt;div class="max-w-7xl mx-auto px-6 lg:px-8"&gt;</span></p>
-<p class="p1"><span class="s1">            &lt;div class="flex justify-between h-24 items-center"&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;div class="flex items-center gap-3 cursor-pointer group" onclick="showPage('home')"&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;div class="relative overflow-visible"&gt;</span></p>
-<p class="p1"><span class="s1">                        &lt;svg viewBox="0 0 16 20" class="w-10 h-10" xmlns="http://www.w3.org/2000/svg"&gt;</span></p>
-<p class="p1"><span class="s1">                            &lt;rect x="6" y="4" width="4" height="2" fill="#DDD" stroke="#1C1C16" stroke-width="0.3"/&gt;</span></p>
-<p class="p1"><span class="s1">                            &lt;rect x="4" y="6" width="8" height="11" fill="#FFF" stroke="#1C1C16" stroke-width="0.3" class="dark:fill-beige-950" /&gt;</span></p>
-<p class="p1"><span class="s1">                            &lt;rect x="6" y="13" width="4" height="3" fill="#5DADE2" /&gt;</span></p>
-<p class="p1"><span class="s1">                            &lt;rect x="5" y="1" width="6" height="3" fill="#1C1C16" stroke="#1C1C16" stroke-width="0.3" class="dark:fill-beige-100 group-hover:animate-capLift origin-bottom-left" /&gt;</span></p>
-<p class="p1"><span class="s1">                        &lt;/svg&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;span class="text-5xl font-extrabold tracking-tighter uppercase pixel-font"&gt;FuturePharma&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">               </span></p>
-<p class="p1"><span class="s1">                &lt;div class="hidden lg:flex space-x-8 items-center text-[18px] font-bold tracking-[0.15em] pixel-font"&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;button onclick="showPage('home')" class="nav-link"&gt;HOME&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;button onclick="showPage('peptides')" class="nav-link"&gt;PEPTIDES&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;button onclick="showPage('lab-testing')" class="nav-link"&gt;LAB TESTING&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;button onclick="showPage('bespoke')" class="nav-link"&gt;BESPOKE&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;button onclick="showPage('contact')" class="nav-link"&gt;CONTACT&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;button onclick="showPage('order-page')" class="bg-beige-950 text-beige-100 px-6 py-2 rounded-sm hover:invert transition-all"&gt;ORDER NOW&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;/div&gt;</span></p>
-<p class="p3"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">                &lt;div class="flex items-center gap-6"&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;div class="flex items-center gap-2"&gt;</span></p>
-<p class="p1"><span class="s1">                        &lt;i data-lucide="sun" class="w-4 h-4"&gt;&lt;/i&gt;</span></p>
-<p class="p1"><span class="s1">                        &lt;label class="relative inline-flex items-center cursor-pointer"&gt;</span></p>
-<p class="p1"><span class="s1">                            &lt;input type="checkbox" id="theme-toggle" class="sr-only peer" onclick="toggleTheme()"&gt;</span></p>
-<p class="p1"><span class="s1">                            &lt;div class="w-11 h-6 bg-beige-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-beige-950 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gray-600"&gt;&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                        &lt;/label&gt;</span></p>
-<p class="p1"><span class="s1">                        &lt;i data-lucide="moon" class="w-4 h-4"&gt;&lt;/i&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;/div&gt;</span></p>
-<p class="p3"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">                    &lt;button onclick="toggleCart()" class="relative p-2 hover:bg-beige-200 transition-colors"&gt;</span></p>
-<p class="p1"><span class="s1">                        &lt;i data-lucide="shopping-cart" class="w-5 h-5"&gt;&lt;/i&gt;</span></p>
-<p class="p1"><span class="s1">                        &lt;span id="cart-count" class="absolute -top-1 -right-1 bg-beige-950 text-beige-100 text-[12px] rounded-full h-4 w-4 flex items-center justify-center pixel-font"&gt;0&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;/button&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">            &div&gt;</span></p>
-<p class="p1"><span class="s1">        &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">    &lt;/nav&gt;</span></p>
-<p class="p3"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">    &lt;div class="flex-grow"&gt;</span></p>
-<p class="p1"><span class="s1">        &lt;main id="home" class="page-section active pt-48 pb-20"&gt;</span></p>
-<p class="p1"><span class="s1">            &lt;div class="max-w-7xl mx-auto px-6 text-center"&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;h1 class="text-6xl md:text-8xl font-extrabold mb-8 tracking-tighter leading-none"&gt;The Future of &lt;br&gt;&lt;span&gt;Peptide Research&lt;/span&gt;&lt;/h1&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;p class="text-xl text-beige-800 max-w-2xl mx-auto mb-12 pixel-font"&gt;Precision substances for international laboratories. HPLC-verified 99%+ purity in every vial.&lt;/p&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;div class="flex flex-col sm:flex-row justify-center gap-6"&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;button onclick="showPage('peptides')" class="bg-beige-950 text-beige-100 text-xl font-bold px-12 py-5 rounded-sm hover:invert transition-all tracking-widest uppercase"&gt;EXPLORE CATALOG&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;button onclick="showPage('lab-testing')" class="border-2 border-beige-950 text-xl font-bold px-12 py-5 rounded-sm hover:bg-beige-950 hover:text-beige-100 transition-all tracking-widest uppercase"&gt;LAB REPORTS&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">            &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">        &lt;/main&gt;</span></p>
-<p class="p1"><span class="s1">    &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">    </span></p>
-<p class="p1"><span class="s1">    &lt;script type="text/javascript"&gt;</span></p>
-<p class="p1"><span class="s1">        window.onload = function() {</span></p>
-<p class="p1"><span class="s1">            const form = document.getElementById('contact-form');</span></p>
-<p class="p1"><span class="s1">            if (form) {</span></p>
-<p class="p1"><span class="s1">                form.addEventListener('submit', function(event) {</span></p>
-<p class="p1"><span class="s1">                    event.preventDefault();</span></p>
-<p class="p1"><span class="s1">                    emailjs.sendForm('service_4an5k14', 'template_5yeds9o', this)</span></p>
-<p class="p1"><span class="s1">                        .then(function() {</span></p>
-<p class="p1"><span class="s1">                            alert('SUBMISSION SUCCESSFUL');</span></p>
-<p class="p1"><span class="s1">                            form.reset();</span></p>
-<p class="p1"><span class="s1">                        }, function(error) {</span></p>
-<p class="p1"><span class="s1">                            alert('SUBMISSION FAILED: ' + JSON.stringify(error));</span></p>
-<p class="p1"><span class="s1">                        });</span></p>
-<p class="p1"><span class="s1">                });</span></p>
-<p class="p1"><span class="s1">            }</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1">    &lt;/script&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/body&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/html&gt;</span></p>
+<body class="min-h-screen flex flex-col">
+
+    <div class="scanlines animate-flicker"></div>
+
+    <nav class="fixed w-full z-50 bg-[#F5F5DC]/90 backdrop-blur-md border-b border-beige-950/10">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex justify-between h-24 items-center">
+                <div class="flex items-center gap-3 cursor-pointer group" onclick="showPage('home')">
+                    <div class="relative overflow-visible">
+                        <svg viewBox="0 0 16 20" class="w-10 h-10" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="6" y="4" width="4" height="2" fill="#DDD" stroke="#1C1C16" stroke-width="0.3"/>
+                            <rect x="4" y="6" width="8" height="11" fill="#FFF" stroke="#1C1C16" stroke-width="0.3" class="dark:fill-beige-950" />
+                            <rect x="6" y="13" width="4" height="3" fill="#5DADE2" />
+                            <rect x="5" y="1" width="6" height="3" fill="#1C1C16" stroke="#1C1C16" stroke-width="0.3" class="dark:fill-beige-100 group-hover:animate-capLift origin-bottom-left" />
+                        </svg>
+                    </div>
+                    <span class="text-5xl font-extrabold tracking-tighter uppercase pixel-font">FuturePharma</span>
+                </div>
+               
+                <div class="hidden lg:flex space-x-8 items-center text-[18px] font-bold tracking-[0.15em] pixel-font">
+                    <button onclick="showPage('home')" class="nav-link">HOME</button>
+                    <button onclick="showPage('peptides')" class="nav-link">PEPTIDES</button>
+                    <button onclick="showPage('lab-testing')" class="nav-link">LAB TESTING</button>
+                    <button onclick="showPage('bespoke')" class="nav-link">BESPOKE</button>
+                    <button onclick="showPage('contact')" class="nav-link">CONTACT</button>
+                    <button onclick="showPage('order-page')" class="bg-beige-950 text-beige-100 px-6 py-2 rounded-sm hover:invert transition-all">ORDER NOW</button>
+                </div>
+
+                <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="sun" class="w-4 h-4"></i>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="theme-toggle" class="sr-only peer" onclick="toggleTheme()">
+                            <div class="w-11 h-6 bg-beige-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-beige-950 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gray-600"></div>
+                        </label>
+                        <i data-lucide="moon" class="w-4 h-4"></i>
+                    </div>
+
+                    <button onclick="toggleCart()" class="relative p-2 hover:bg-beige-200 transition-colors">
+                        <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                        <span id="cart-count" class="absolute -top-1 -right-1 bg-beige-950 text-beige-100 text-[12px] rounded-full h-4 w-4 flex items-center justify-center pixel-font">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex-grow">
+        <main id="home" class="page-section active pt-48 pb-20">
+            <div class="max-w-7xl mx-auto px-6 text-center">
+                <h1 class="text-6xl md:text-8xl font-extrabold mb-8 tracking-tighter leading-none">The Future of <br><span>Peptide Research</span></h1>
+                <p class="text-xl text-beige-800 max-w-2xl mx-auto mb-12 pixel-font">Precision substances for international laboratories. HPLC-verified 99%+ purity in every vial.</p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <button onclick="showPage('peptides')" class="bg-beige-950 text-beige-50 px-10 py-4 font-bold uppercase tracking-widest hover:scale-105 transition pixel-font text-xl">Browse catalog</button>
+                    <button onclick="showPage('bespoke')" class="bg-white border-2 border-beige-950 px-10 py-4 font-bold uppercase tracking-widest hover:bg-beige-100 transition pixel-font text-xl">Bespoke Synthesis</button>
+                </div>
+            </div>
+        </main>
+
+        <main id="peptides" class="page-section pt-32 pb-20">
+            <div class="max-w-7xl mx-auto px-6 text-center mb-12">
+                <h2 class="text-6xl font-black mb-4 tracking-tighter uppercase">Research Catalog</h2>
+                <p class="pixel-font text-xl uppercase opacity-60 mb-8">Global Shipping Fixed Rate: $30.00</p>
+                <div class="max-w-md mx-auto relative mb-12">
+                    <input type="text" id="catalog-search" oninput="filterProducts()" placeholder="SEARCH VIALS..." class="w-full bg-white dark:bg-zinc-900 border-4 border-beige-950 dark:border-beige-100 p-4 outline-none pixel-font text-2xl uppercase shadow-[4px_4px_0px_0px_rgba(28,28,22,1)] focus:shadow-none transition-all">
+                    <i data-lucide="search" class="absolute right-4 top-1/2 -translate-y-1/2 opacity-40"></i>
+                </div>
+            </div>
+            <div id="product-grid" class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8"></div>
+        </main>
+
+        <main id="product-detail" class="page-section pt-32 pb-20">
+            <div class="max-w-7xl mx-auto px-6">
+                <button onclick="showPage('peptides')" class="mb-8 flex items-center gap-2 pixel-font text-xl uppercase font-bold hover:underline">
+                    <i data-lucide="arrow-left" class="w-5 h-5"></i> Back to Catalog
+                </button>
+                <div id="detail-content" class="grid md:grid-cols-2 gap-16 items-center"></div>
+            </div>
+        </main>
+
+        <main id="lab-testing" class="page-section pt-32 pb-20">
+            <div class="max-w-4xl mx-auto px-6">
+                <h2 class="text-6xl font-black mb-6 uppercase tracking-tighter text-center">Laboratory Verification</h2>
+                <div class="space-y-4 mt-12">
+                    <div class="p-8 bg-white border-2 border-beige-950 flex justify-between items-center shadow-[8px_8px_0px_0px_rgba(28,28,22,1)]">
+                        <div><h4 class="font-bold text-xl uppercase">Retatrutide 10mg</h4><p class="pixel-font text-lg opacity-50">Batch #RET-0326</p></div>
+                        <span class="pixel-font font-bold text-2xl text-green-700">99.91% PURITY</span>
+                    </div>
+                    <div class="p-8 bg-white border-2 border-beige-950 flex justify-between items-center shadow-[8px_8px_0px_0px_rgba(28,28,22,1)]">
+                        <div><h4 class="font-bold text-xl uppercase">Tirzepatide 15mg</h4><p class="pixel-font text-lg opacity-50">Batch #TIR-0226</p></div>
+                        <span class="pixel-font font-bold text-2xl text-green-700">99.82% PURITY</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <main id="bespoke" class="page-section pt-32 pb-20">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="grid lg:grid-cols-2 gap-16 items-center">
+                    <div>
+                        <h2 class="text-6xl font-extrabold mb-6 uppercase tracking-tighter">Bespoke Solutions</h2>
+                        <p class="text-beige-800 mb-8 leading-relaxed text-lg">Ground-breaking research requires unique sequences. Custom synthesis for peptides not in our catalog.</p>
+                        <ul class="space-y-4 pixel-font text-xl uppercase">
+                            <li class="flex gap-3"><i data-lucide="check-circle" class="w-5 h-5"></i> Custom sequence design</li>
+                            <li class="flex gap-3"><i data-lucide="check-circle" class="w-5 h-5"></i> Full synthesis verification reports</li>
+                            <li class="flex gap-3"><i data-lucide="check-circle" class="w-5 h-5"></i> Gram-scale bulk discounts</li>
+                        </ul>
+                    </div>
+                    <div class="bg-beige-950 text-beige-50 p-10 shadow-2xl">
+                        <form onsubmit="event.preventDefault(); alert('Bespoke request sent!');" class="space-y-6">
+                            <input type="text" placeholder="Desired Peptide / Sequence" required class="w-full bg-transparent border-b-2 border-beige-100/30 dark:border-beige-100 p-4 outline-none pixel-font text-xl transition-colors">
+                            <input type="number" min="1" placeholder="Required Quantity" required class="w-full bg-transparent border-b-2 border-beige-100/30 dark:border-beige-100 p-4 outline-none pixel-font text-xl transition-colors">
+                            <div class="relative">
+                                <input type="email" id="bespoke-email" placeholder="Email Address" required class="w-full bg-transparent border-b-2 border-beige-100/30 dark:border-beige-100 p-4 outline-none pixel-font text-xl transition-colors">
+                                <div id="bespoke-email-suggestions" class="email-suggestion-box pixel-font text-lg shadow-xl"></div>
+                            </div>
+                            <button class="w-full bg-beige-100 text-beige-950 dark:bg-beige-950 dark:text-beige-100 dark:border-2 dark:border-beige-100 py-5 font-bold uppercase pixel-font text-xl">Submit Request</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <main id="contact" class="page-section pt-32 pb-20">
+            <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-20">
+                <div>
+                    <h2 class="text-6xl font-extrabold mb-8 tracking-tighter uppercase">Contact Us</h2>
+                    <div class="space-y-8">
+                        <div>
+                            <h4 class="pixel-font font-bold text-xl mb-2 underline">Operation Times</h4>
+                            <p class="text-beige-800">Mon-Fri: 09:00 - 17:00 GMT<br>support@futurepharma.com</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-10 border-4 border-beige-950 shadow-[10px_10px_0px_0px_rgba(28,28,22,1)]">
+                    <form onsubmit="event.preventDefault(); alert('Message sent!');" class="space-y-6">
+                        <input type="text" placeholder="Name" class="w-full p-4 border-b-2 border-beige-950 dark:border-beige-100 bg-transparent outline-none pixel-font text-xl">
+                        <div class="relative">
+                            <input type="email" id="contact-email" placeholder="Email Address" required class="w-full p-4 border-b-2 border-beige-950 dark:border-beige-100 bg-transparent outline-none pixel-font text-xl">
+                            <div id="contact-email-suggestions" class="email-suggestion-box pixel-font text-lg shadow-xl"></div>
+                        </div>
+                        <textarea placeholder="Message" rows="4" class="w-full p-4 border-b-2 border-beige-950 dark:border-beige-100 bg-transparent outline-none pixel-font text-xl"></textarea>
+                        <button type="submit" class="w-full bg-beige-950 text-beige-100 dark:bg-beige-100 dark:text-beige-950 py-4 font-bold uppercase pixel-font text-xl">Send Inquiry</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <main id="order-page" class="page-section pt-32 pb-20">
+            <div class="max-w-6xl mx-auto px-6">
+                <h2 class="text-6xl font-black mb-10 text-center uppercase tracking-tighter">Step 1: Order Details</h2>
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <form onsubmit="event.preventDefault(); showPage('crypto-checkout');" class="bg-white p-8 border-2 border-beige-950 space-y-6 shadow-lg">
+                        <div class="space-y-4">
+                            <input type="text" placeholder="Recipient Name" required class="w-full p-4 border-b border-beige-950 dark:border-beige-100 bg-transparent outline-none pixel-font text-xl">
+                            <div class="relative">
+                                <input type="email" id="checkout-email" placeholder="Email Address" required class="w-full p-4 border-b border-beige-950 dark:border-beige-100 bg-transparent outline-none pixel-font text-xl">
+                                <div id="checkout-email-suggestions" class="email-suggestion-box pixel-font text-lg shadow-xl"></div>
+                            </div>
+                        </div>
+                        <textarea placeholder="Delivery Address" required class="w-full p-4 border-b border-beige-950 dark:border-beige-100 bg-transparent outline-none pixel-font text-xl h-32"></textarea>
+                        <button type="submit" class="w-full bg-beige-950 text-white py-5 font-black uppercase pixel-font text-2xl hover:invert transition-all">CONTINUE TO CHECKOUT</button>
+                    </form>
+                    <div class="bg-white p-8 border-2 border-beige-950 shadow-[10px_10px_0px_0px_rgba(28,28,22,1)]">
+                        <div class="flex justify-between items-center mb-6 border-b-2 border-beige-950 pb-2">
+                            <h4 class="pixel-font text-xl font-bold underline uppercase">Manifest</h4>
+                            <button onclick="clearCart()" class="pixel-font text-sm bg-red-600 text-white px-3 py-1 hover:bg-red-800 transition-colors uppercase font-bold">Clear All</button>
+                        </div>
+                        <div id="order-summary-list" class="space-y-4 mb-6 pixel-font text-xl">No items selected.</div>
+                        <div class="border-t-2 border-beige-950 dark:border-beige-100 pt-6">
+                            <div class="flex justify-between font-black text-3xl"><span>Total</span><span class="order-summary-total-val">$0.00</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <main id="crypto-checkout" class="page-section pt-32 pb-20">
+            <div class="max-w-4xl mx-auto px-6">
+                <h2 class="text-6xl font-black mb-10 text-center uppercase tracking-tighter">Finalize Payment</h2>
+                <div class="bg-white p-10 border-4 border-beige-950 shadow-[12px_12px_0px_0px_rgba(28,28,22,1)]">
+                    <div class="mb-8 pb-6 border-b-2 border-dashed border-beige-950">
+                        <p class="pixel-font text-2xl uppercase opacity-60 mb-2">Amount Due</p>
+                        <h3 class="text-6xl font-black order-summary-total-val">$0.00</h3>
+                    </div>
+                   
+                    <h4 class="pixel-font text-2xl font-bold uppercase mb-6 underline">Select Payment Method</h4>
+                    <form onsubmit="event.preventDefault(); alert('Order Placed! Please ensure payment is sent to the provided address.'); clearCart(); showPage('home');">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+                            <div>
+                                <input type="radio" name="crypto" id="btc" class="sr-only crypto-option" onclick="selectCrypto('btc')" required>
+                                <label for="btc" class="flex flex-col items-center justify-center p-4 border-2 border-beige-950 pixel-font text-lg font-bold cursor-pointer hover:bg-beige-100 transition-colors">
+                                    <i data-lucide="bitcoin" class="w-6 h-6 mb-2"></i>
+                                    BTC
+                                </label>
+                            </div>
+                            <div>
+                                <input type="radio" name="crypto" id="eth" class="sr-only crypto-option" onclick="selectCrypto('eth')">
+                                <label for="eth" class="flex flex-col items-center justify-center p-4 border-2 border-beige-950 pixel-font text-lg font-bold cursor-pointer hover:bg-beige-100 transition-colors">
+                                    <i data-lucide="gem" class="w-6 h-6 mb-2"></i>
+                                    ETH
+                                </label>
+                            </div>
+                            <div>
+                                <input type="radio" name="crypto" id="usdt" class="sr-only crypto-option" onclick="selectCrypto('usdt')">
+                                <label for="usdt" class="flex flex-col items-center justify-center p-4 border-2 border-beige-950 pixel-font text-lg font-bold cursor-pointer hover:bg-beige-100 transition-colors">
+                                    <i data-lucide="dollar-sign" class="w-6 h-6 mb-2"></i>
+                                    USDT
+                                </label>
+                            </div>
+                            <div>
+                                <input type="radio" name="crypto" id="ltc" class="sr-only crypto-option" onclick="selectCrypto('ltc')">
+                                <label for="ltc" class="flex flex-col items-center justify-center p-4 border-2 border-beige-950 pixel-font text-lg font-bold cursor-pointer hover:bg-beige-100 transition-colors">
+                                    <i data-lucide="zap" class="w-6 h-6 mb-2"></i>
+                                    LTC
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="payment-display" class="hidden mb-10 animate-fadeIn">
+                            <div class="bg-beige-50 dark:bg-zinc-800 border-2 border-beige-950 p-6 flex flex-col md:flex-row items-center gap-8">
+                                <div class="bg-white p-2 border-2 border-beige-950">
+                                    <div id="qr-placeholder" class="w-32 h-32 bg-beige-950 flex items-center justify-center text-beige-50 p-2 text-center text-[10px] leading-none">
+                                        [QR CODE GENERATING...]
+                                    </div>
+                                </div>
+                                <div class="flex-grow w-full">
+                                    <p class="pixel-font text-lg font-bold mb-2 uppercase opacity-60">Recipient Address:</p>
+                                    <div class="flex items-stretch border-2 border-beige-950 bg-white">
+                                        <input type="text" id="wallet-address" readonly class="flex-grow p-3 pixel-font text-lg outline-none bg-transparent">
+                                        <button type="button" onclick="copyAddress()" class="bg-beige-950 text-beige-100 px-4 hover:invert transition-all">
+                                            <i data-lucide="copy" class="w-5 h-5"></i>
+                                        </button>
+                                    </div>
+                                    <p id="copy-status" class="pixel-font text-sm mt-2 text-green-700 font-bold hidden uppercase">Address Copied!</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-beige-100 p-6 mb-10 border-2 border-beige-950">
+                            <p class="pixel-font text-lg leading-tight uppercase font-bold text-red-600">
+                                Warning: Payments are irreversible. Ensure you send the exact amount calculated at checkout. Order processing begins after 2 blockchain confirmations.
+                            </p>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button type="button" onclick="showPage('order-page')" class="flex-1 border-2 border-beige-950 py-5 pixel-font text-2xl font-bold uppercase hover:bg-beige-100">Go Back</button>
+                            <button type="submit" class="flex-1 bg-beige-950 text-white py-5 pixel-font text-2xl font-black uppercase hover:invert">FINALIZE ORDER</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="w-full py-12 px-6 border-t border-beige-950/10 mt-20">
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="text-sm leading-relaxed opacity-60">
+                <strong>Research Use Disclaimer:</strong> All products sold by FuturePharma are supplied strictly for laboratory research, analytical, or in‑vitro testing purposes only.
+            </p>
+        </div>
+    </footer>
+
+    <div id="cart-sidebar" class="fixed right-0 top-0 h-full w-full sm:w-96 bg-[#F5F5DC] dark:bg-[#0F0F0F] border-l-4 border-beige-950 shadow-2xl transform translate-x-full transition-transform duration-300 z-[60] flex flex-col">
+        <div class="p-8 border-b border-beige-950 flex justify-between items-center"><h3 class="text-2xl font-black uppercase">Cart</h3><button onclick="toggleCart()"><i data-lucide="x"></i></button></div>
+        <div id="cart-items" class="flex-grow p-8 space-y-4 overflow-y-auto pixel-font text-xl"></div>
+        <div class="p-8 bg-beige-200 dark:bg-beige-950 border-t-2 border-beige-950 space-y-4">
+            <div class="flex justify-between font-black text-2xl text-beige-950 dark:text-beige-100">
+                <span>Total</span>
+                <span id="cart-total">$0.00</span>
+            </div>
+            <button onclick="showPage('order-page'); toggleCart();" class="w-full bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 py-4 font-bold uppercase pixel-font text-2xl">Checkout</button>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        function toggleTheme() { document.documentElement.classList.toggle('dark'); }
+
+        const walletAddresses = {
+            btc: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
+            eth: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
+            usdt: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
+            ltc: 'LhyL66Gv94Z1N7GfL5e9qL5C4qN7GfL5e9'
+        };
+
+        function selectCrypto(type) {
+            const display = document.getElementById('payment-display');
+            const addressInput = document.getElementById('wallet-address');
+            const qrBox = document.getElementById('qr-placeholder');
+           
+            display.classList.remove('hidden');
+            addressInput.value = walletAddresses[type];
+            qrBox.innerHTML = `[QR: ${type.toUpperCase()}]`;
+            document.getElementById('copy-status').classList.add('hidden');
+        }
+
+        async function copyAddress() {
+            const address = document.getElementById('wallet-address').value;
+            await navigator.clipboard.writeText(address);
+            const status = document.getElementById('copy-status');
+            status.classList.remove('hidden');
+            setTimeout(() => status.classList.add('hidden'), 2000);
+        }
+
+        const providers = ['gmail.com', 'outlook.com', 'hotmail.com', 'icloud.com', 'protonmail.com'];
+        function initEmailAutocomplete(inputId, suggestionId) {
+            const input = document.getElementById(inputId);
+            const box = document.getElementById(suggestionId);
+            if(!input || !box) return;
+            input.addEventListener('input', (e) => {
+                const val = e.target.value;
+                if (val.includes('@')) {
+                    const [user, domain] = val.split('@');
+                    box.innerHTML = providers
+                        .filter(p => p.startsWith(domain))
+                        .map(p => `<div class="suggestion-item" onclick="selectEmail('${inputId}', '${suggestionId}', '${user}@${p}')">${user}@${p}</div>`)
+                        .join('');
+                    box.style.display = box.innerHTML ? 'block' : 'none';
+                } else { box.style.display = 'none'; }
+            });
+        }
+        function selectEmail(inputId, suggestionId, fullEmail) {
+            document.getElementById(inputId).value = fullEmail;
+            document.getElementById(suggestionId).style.display = 'none';
+        }
+
+        initEmailAutocomplete('contact-email', 'contact-email-suggestions');
+        initEmailAutocomplete('checkout-email', 'checkout-email-suggestions');
+        initEmailAutocomplete('bespoke-email', 'bespoke-email-suggestions');
+
+        const products = [
+            { id: 1, name: "GHK-CU", price: 49.99, mg: "50MG", color: "#5DADE2", abbrev: "GHK" },
+            { id: 2, name: "CJC 1295", price: 149.99, mg: "20MG", color: "#F4D03F", abbrev: "CJC" },
+            { id: 3, name: "MT 2", price: 49.99, mg: "10MG", color: "#EB984E", abbrev: "MT" },
+            { id: 4, name: "IPAMORELIN", price: 149.99, mg: "20MG", color: "#AF7AC5", abbrev: "IPA" },
+            { id: 5, name: "TESAMORELIN", price: 199.99, mg: "20MG", color: "#52BE80", abbrev: "TESA" },
+            { id: 6, name: "RETATRUTIDE", price: 149.99, mg: "10MG", color: "#EC7063", abbrev: "RETA" },
+            { id: 7, name: "BACTERIOSTATIC WATER", price: 19.99, mg: "10ML", color: "#94A3B8", abbrev: "BAC" }
+        ];
+
+        let cart = JSON.parse(localStorage.getItem('futurePharmaCart')) || [];
+        const localCounts = {};
+        const shipping = 30.00;
+
+        function showPage(id) {
+            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+            const target = document.getElementById(id);
+            if(target) target.classList.add('active');
+            window.scrollTo(0,0);
+            updateOrderSummary();
+        }
+
+        function showProductDetail(id) {
+            const p = products.find(x => x.id === id);
+            if (!localCounts[id]) localCounts[id] = 0;
+            const detailContainer = document.getElementById('detail-content');
+            detailContainer.innerHTML = `
+                <div class="flex justify-center bg-white border-4 border-beige-950 p-12 shadow-[12px_12px_0px_0px_rgba(28,28,22,1)]">
+                    <svg viewBox="0 0 16 20" class="w-64 h-64" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="5" y="1" width="6" height="3" fill="#333" stroke="#1C1C16" stroke-width="0.3"/>
+                        <rect x="6" y="4" width="4" height="2" fill="#DDD" stroke="#1C1C16" stroke-width="0.3"/>
+                        <rect x="4" y="6" width="8" height="11" fill="#FFF" stroke="#1C1C16" stroke-width="0.3"/>
+                        <rect x="5" y="7" width="1" height="9" fill="#EEE" />
+                        <rect x="6" y="13" width="4" height="3" fill="${p.color}" />
+                        <rect x="5" y="8" width="6" height="4" fill="#E8E8C8" />
+                        <text x="8" y="11" font-family="VT323, monospace" font-size="2.8" fill="#1C1C16" text-anchor="middle" letter-spacing="-0.3">${p.abbrev}</text>
+                    </svg>
+                </div>
+                <div>
+                    <span class="pixel-font text-2xl bg-beige-950 text-white px-4 py-1 mb-4 inline-block">${p.mg}</span>
+                    <h2 class="text-7xl font-black uppercase tracking-tighter mb-4 leading-none">${p.name}</h2>
+                    <p class="text-5xl font-black mb-8">$${p.price}</p>
+                    <div class="flex items-center gap-4 mb-8">
+                         <button onclick="updateLocalCount(${p.id}, -1)" class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 font-bold text-2xl hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950">-</button>
+                         <span class="pixel-font text-3xl font-bold" id="detail-count-${p.id}">${localCounts[p.id]}</span>
+                         <button onclick="updateLocalCount(${p.id}, 1)" class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 font-bold text-2xl hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950">+</button>
+                    </div>
+                    <button onclick="commitToCart(${p.id})" class="w-full bg-beige-950 text-white dark:bg-beige-100 dark:text-beige-950 py-6 font-bold uppercase tracking-widest hover:invert transition-all pixel-font text-2xl">Add to Request</button>
+                </div>
+            `;
+            showPage('product-detail');
+        }
+
+        function updateLocalCount(id, delta) {
+            if (!localCounts[id]) localCounts[id] = 0;
+            localCounts[id] = Math.max(0, localCounts[id] + delta);
+            const detailEl = document.getElementById(`detail-count-${id}`);
+            if (detailEl) detailEl.innerText = localCounts[id];
+            const gridEl = document.getElementById(`grid-count-${id}`);
+            if (gridEl) gridEl.innerText = localCounts[id];
+        }
+
+        function commitToCart(id) {
+            const count = localCounts[id] || 0;
+            if (count > 0) {
+                const p = products.find(x => x.id === id);
+                for (let i = 0; i < count; i++) {
+                    cart.push({...p, uid: Math.random()});
+                }
+                localCounts[id] = 0;
+                updateLocalCount(id, 0);
+                updateCartUI();
+            }
+        }
+
+        function renderProductGrid(productsToRender) {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = '';
+            productsToRender.forEach(p => {
+                if (!(p.id in localCounts)) localCounts[p.id] = 0;
+                grid.innerHTML += `<div onclick="showProductDetail(${p.id})" class="product-card bg-white p-6 border-2 border-beige-950 flex flex-col items-center hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] transition-all cursor-pointer">
+                        <div class="mb-4">
+                             <svg viewBox="0 0 16 20" class="w-32 h-32" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="5" y="1" width="6" height="3" fill="#333" stroke="#1C1C16" stroke-width="0.3"/>
+                                <rect x="6" y="4" width="4" height="2" fill="#DDD" stroke="#1C1C16" stroke-width="0.3"/>
+                                <rect x="4" y="6" width="8" height="11" fill="#FFF" stroke="#1C1C16" stroke-width="0.3"/>
+                                <rect x="5" y="7" width="1" height="9" fill="#EEE" />
+                                <rect x="6" y="13" width="4" height="3" fill="${p.color}" />
+                                <rect x="5" y="8" width="6" height="4" fill="#E8E8C8" />
+                                <text x="8" y="11" font-family="VT323, monospace" font-size="2.8" fill="#1C1C16" text-anchor="middle" letter-spacing="-0.3">${p.abbrev}</text>
+                            </svg>
+                        </div>
+                        <div class="w-full flex justify-between mb-4"><h3 class="font-extrabold text-2xl uppercase">${p.name}</h3><span class="pixel-font text-xl bg-beige-950 text-white px-2">${p.mg}</span></div>
+                        <p class="w-full text-2xl font-black mb-6">$${p.price}</p>
+                        <div class="flex w-full items-center justify-between gap-2 mb-4" onclick="event.stopPropagation()">
+                             <div class="flex items-center gap-3">
+                                <button onclick="updateLocalCount(${p.id}, -1)" class="w-8 h-8 border border-beige-950 dark:border-beige-100 flex items-center justify-center font-bold hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950">-</button>
+                                <span class="pixel-font text-xl font-bold" id="grid-count-${p.id}">${localCounts[p.id]}</span>
+                                <button onclick="updateLocalCount(${p.id}, 1)" class="w-8 h-8 border border-beige-950 dark:border-beige-100 flex items-center justify-center font-bold hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950">+</button>
+                             </div>
+                             <button onclick="commitToCart(${p.id})" class="flex-grow border-2 border-beige-950 dark:border-beige-100 py-2 font-bold uppercase tracking-widest hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950 transition pixel-font text-lg">Add</button>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function filterProducts() {
+            const term = document.getElementById('catalog-search').value.toLowerCase();
+            const filtered = products.filter(p => p.name.toLowerCase().includes(term) || p.abbrev.toLowerCase().includes(term));
+            renderProductGrid(filtered);
+        }
+
+        function updateCartUI() {
+            localStorage.setItem('futurePharmaCart', JSON.stringify(cart));
+            document.getElementById('cart-count').innerText = cart.length;
+            const sub = cart.reduce((s, i) => s + i.price, 0);
+            const total = sub > 0 ? sub + shipping : 0;
+            document.getElementById('cart-total').innerText = `$${total.toFixed(2)}`;
+            const grouped = cart.reduce((acc, curr) => {
+                if (!acc[curr.id]) acc[curr.id] = { ...curr, count: 0 };
+                acc[curr.id].count += 1;
+                return acc;
+            }, {});
+            const cont = document.getElementById('cart-items');
+            cont.innerHTML = Object.values(grouped).map(i => `<div class="flex justify-between items-center p-4 border border-beige-950 bg-white dark:bg-zinc-900">
+                    <div>
+                        <p class="font-extrabold text-lg uppercase">${i.name}</p>
+                        <p class="text-xs opacity-60">Qty: ${i.count}</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="removeFromCart(${i.id})" class="w-6 h-6 border border-beige-950 hover:bg-beige-950 hover:text-white">x</button>
+                    </div>
+                </div>`).join('');
+            lucide.createIcons();
+            updateOrderSummary();
+        }
+
+        function removeFromCart(id) {
+            const index = cart.findLastIndex(item => item.id === id);
+            if (index !== -1) { cart.splice(index, 1); }
+            updateCartUI();
+        }
+
+        function clearCart() { cart = []; updateCartUI(); }
+        function toggleCart() { document.getElementById('cart-sidebar').classList.toggle('translate-x-full'); }
+       
+        function updateOrderSummary() {
+            const list = document.getElementById('order-summary-list');
+            const sub = cart.reduce((s, i) => s + i.price, 0);
+            const totalText = sub > 0 ? `$${(sub + shipping).toFixed(2)}` : "$0.00";
+            document.querySelectorAll('.order-summary-total-val').forEach(el => el.innerText = totalText);
+
+            if (cart.length === 0) {
+                list.innerHTML = "No items selected.";
+                return;
+            }
+            const grouped = cart.reduce((acc, curr) => {
+                if (!acc[curr.id]) acc[curr.id] = { ...curr, count: 0 };
+                acc[curr.id].count += 1;
+                return acc;
+            }, {});
+            let summaryHTML = Object.values(grouped).map(i => `
+                <div class="flex justify-between items-center group">
+                    <div class="flex items-center gap-3">
+                        <button onclick="removeFromCart(${i.id})" class="text-[10px] border border-beige-950 px-2 py-0.5 hover:bg-beige-950 hover:text-white transition-colors">REMOVE ONE</button>
+                        <span class="font-extrabold uppercase">${i.name} (x${i.count})</span>
+                    </div>
+                    <span>$${(i.price * i.count).toFixed(2)}</span>
+                </div>`).join('');
+            summaryHTML += `<div class="flex justify-between mt-4 border-t border-beige-950/20 pt-2 font-bold text-gray-600"><span>GLOBAL SHIPPING</span><span>$${shipping.toFixed(2)}</span></div>`;
+            list.innerHTML = summaryHTML;
+        }
+
+        renderProductGrid(products);
+        updateCartUI();
+    </script>
+</body>
+</html>
