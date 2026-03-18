@@ -663,5 +663,121 @@
         renderProductGrid(products);
         updateCartUI();
     </script>
+
+<section id="contact">
+    <form onsubmit="sendContactEmail(event)">
+        <input type="text" placeholder="Name" required>
+        <input id="contact-email" type="email" placeholder="Email" required>
+        <textarea placeholder="Message" required></textarea>
+        <button type="submit">Send</button>
+    </form>
+</section>
+
+<section id="bespoke">
+    <form onsubmit="sendBespokeEmail(event)">
+        <input type="text" placeholder="Peptide Name" required>
+        <input type="number" placeholder="Quantity" required>
+        <input id="bespoke-email" type="email" placeholder="Email" required>
+        <button type="submit">Request</button>
+    </form>
+</section>
+
+<!-- Checkout Button -->
+<button onclick="sendOrderEmail()">Place Order</button>
+
+<script>
+/* =========================
+   EMAILJS INIT
+========================= */
+(function(){
+    emailjs.init("HaAWzow0N9BMuVhJM");
+})();
+
+/* =========================
+   SAMPLE CART (uses yours if already defined)
+========================= */
+let cart = window.cart || [];
+
+/* =========================
+   CONTACT EMAIL
+========================= */
+function sendContactEmail(e){
+    e.preventDefault();
+
+    const name = document.querySelector('#contact input[type=\"text\"]').value;
+    const email = document.getElementById('contact-email').value;
+    const message = document.querySelector('#contact textarea').value;
+
+    emailjs.send(\"service_4an5k14\",\"template_5yeds9o\",{
+        name: name,
+        email: email,
+        message: message,
+        time: new Date().toLocaleString()
+    })
+    .then(()=> alert(\"Message sent successfully!\"))
+    .catch(err => {
+        console.error(err);
+        alert(\"Failed to send message\");
+    });
+}
+
+/* =========================
+   BESPOKE EMAIL
+========================= */
+function sendBespokeEmail(e){
+    e.preventDefault();
+
+    const inputs = document.querySelectorAll('#bespoke input');
+
+    const peptide = inputs[0].value;
+    const quantity = inputs[1].value;
+    const email = document.getElementById('bespoke-email').value;
+
+    emailjs.send(\"service_4an5k14\",\"template_5yeds9o\",{
+        name: \"Bespoke Request\",
+        email: email,
+        message: `Peptide: ${peptide} | Quantity: ${quantity}`,
+        time: new Date().toLocaleString()
+    })
+    .then(()=> alert(\"Request sent successfully!\"))
+    .catch(err => console.error(err));
+}
+
+/* =========================
+   ORDER EMAIL
+========================= */
+function sendOrderEmail(){
+    if(cart.length === 0){
+        alert(\"Cart is empty\");
+        return;
+    }
+
+    const grouped = cart.reduce((acc, item) => {
+        if (!acc[item.id]) acc[item.id] = { ...item, count: 0 };
+        acc[item.id].count++;
+        return acc;
+    }, {});
+
+    const summary = Object.values(grouped)
+        .map(i => `${i.name} x${i.count}`)
+        .join(\", \");
+
+    const total = cart.reduce((sum, i) => sum + i.price, 0);
+
+    emailjs.send(\"service_4an5k14\",\"template_5yeds9o\",{
+        name: \"New Order\",
+        message: `Items: ${summary} | Total: $${total.toFixed(2)}`,
+        time: new Date().toLocaleString()
+    })
+    .then(()=>{
+        alert(\"Order sent! Complete payment.\");
+        cart = [];
+    })
+    .catch(err => console.error(err));
+}
+</script>
+
 </body>
 </html>
+
+
