@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Future Pharma</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body class="bg-[#F5F5DC] text-black">
+
+<div class="p-6 text-center">
+    <h1 class="text-4xl font-bold mb-6">Future Pharma</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="products"></div>
+
+    <div class="mt-10">
+        <h2 class="text-2xl font-bold">Cart</h2>
+        <div id="cart"></div>
+        <p class="mt-4 font-bold">Total: <span id="total">$0.00</span></p>
+    </div>
+
+    <div class="mt-10">
+        <h2 class="text-2xl font-bold">Checkout</h2>
+        <select id="crypto" class="border p-2 mt-2">
+            <option value="">Select Crypto</option>
+            <option value="btc">BTC</option>
+            <option value="eth">ETH</option>
+        </select>
+        <div id="qr" class="mt-4"></div>
+        <input id="wallet" class="border p-2 w-full mt-2" readonly>
+    </div>
+</div>
+
+<script>
+lucide.createIcons();
+
+const products = [
+    { id: 1, name: "GHK-CU", price: 49.99 },
+    { id: 2, name: "CJC 1295", price: 149.99 },
+    { id: 3, name: "IPAMORELIN", price: 149.99 }
+];
+
+const walletAddresses = {
+    btc: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
+    eth: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F'
+};
+
+let cart = [];
+
+function renderProducts() {
+    let html = '';
+    products.forEach(p => {
+        html += `
+        <div class="border p-4">
+            <h3 class="font-bold">${p.name}</h3>
+            <p>$${p.price}</p>
+            <button onclick="addToCart(${p.id})" class="mt-2 bg-black text-white px-4 py-2">Add</button>
+        </div>`;
+    });
+    document.getElementById('products').innerHTML = html;
+}
+
+function addToCart(id) {
+    const product = products.find(p => p.id === id);
+    cart.push(product);
+    updateCart();
+}
+
+function removeFromCart(index) {
+    cart.splice(index, 1);
+    updateCart();
+}
+
+function updateCart() {
+    let html = '';
+    let total = 0;
+
+    cart.forEach((item, index) => {
+        total += item.price;
+        html += `
+        <div class="flex justify-between">
+            <span>${item.name}</span>
+            <button onclick="removeFromCart(${index})">X</button>
+        </div>`;
+    });
+
+    document.getElementById('cart').innerHTML = html;
+    document.getElementById('total').innerText = `$${total.toFixed(2)}`;
+}
+
+function generateQR(address) {
+    const qrContainer = document.getElementById('qr');
+    qrContainer.innerHTML = '';
+    new QRCode(qrContainer, {
+        text: address,
+        width: 128,
+        height: 128
+    });
+}
+
+document.getElementById('crypto').addEventListener('change', function() {
+    const type = this.value;
+    const address = walletAddresses[type];
+    document.getElementById('wallet').value = address || '';
+    if (address) generateQR(address);
+});
+
+renderProducts();
+</script>
+
+</body>
+</html>
