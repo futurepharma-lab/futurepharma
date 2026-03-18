@@ -6,6 +6,7 @@
     <title>Future Pharma | The Future of Peptide Research</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -329,13 +330,13 @@
                 <div class="grid lg:grid-cols-2 gap-8">
                     <form onsubmit="event.preventDefault(); showPage('crypto-checkout');" class="bg-white p-8 border-2 border-beige-950 space-y-6 shadow-lg">
                         <div class="space-y-4">
-                            <input type="text" placeholder="Recipient Name" required class="w-full p-4 border-b border-beige-950 dark:border-beige-100 bg-transparent outline-none pixel-font text-xl">
+                            <input type="text" id="checkout-name" placeholder="Recipient Name" required class="w-full p-4 border-b border-beige-950 dark:border-beige-100 bg-transparent outline-none pixel-font text-xl">
                             <div class="relative">
                                 <input type="email" id="checkout-email" placeholder="Email Address" required class="w-full p-4 border-b border-beige-950 dark:border-beige-100 bg-transparent outline-none pixel-font text-xl">
                                 <div id="checkout-email-suggestions" class="email-suggestion-box pixel-font text-lg shadow-xl"></div>
                             </div>
                         </div>
-                        <textarea placeholder="Delivery Address" required class="w-full p-4 border-b border-beige-950 dark:border-beige-100 bg-transparent outline-none pixel-font text-xl h-32"></textarea>
+                        <textarea id="checkout-address" placeholder="Delivery Address" required class="w-full p-4 border-b border-beige-950 dark:border-beige-100 bg-transparent outline-none pixel-font text-xl h-32"></textarea>
                         <button type="submit" class="w-full bg-beige-950 text-white py-5 font-black uppercase pixel-font text-2xl hover:invert transition-all">CONTINUE TO CHECKOUT</button>
                     </form>
                     <div class="bg-white p-8 border-2 border-beige-950 shadow-[10px_10px_0px_0px_rgba(28,28,22,1)]">
@@ -362,7 +363,7 @@
                     </div>
                    
                     <h4 class="pixel-font text-2xl font-bold uppercase mb-6 underline">Select Payment Method</h4>
-                    <form onsubmit="event.preventDefault(); alert('Order Placed! Please ensure payment is sent to the provided address.'); clearCart(); showPage('home');">
+                    <form onsubmit="event.preventDefault(); submitOrderToDatabase();">
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
                             <div>
                                 <input type="radio" name="crypto" id="btc" class="sr-only crypto-option" onclick="selectCrypto('btc')" required>
@@ -418,7 +419,7 @@
                             <h4 class="pixel-font text-2xl font-bold uppercase mb-4 underline">Proof of Payment</h4>
                             <p class="pixel-font text-lg mb-4 opacity-70">Attach a screenshot of your transaction confirmation.</p>
                             <div class="relative group">
-                                <input type="file" id="payment-proof" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                <input type="file" id="payment-proof" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" required>
                                 <div class="border-4 border-dashed border-beige-950 dark:border-beige-100 p-8 flex flex-col items-center justify-center gap-3 bg-beige-50 dark:bg-zinc-800 group-hover:bg-beige-100 transition-colors">
                                     <i data-lucide="upload-cloud" class="w-8 h-8"></i>
                                     <span class="pixel-font text-xl font-bold uppercase" id="file-name-display">Select Image File</span>
@@ -434,7 +435,7 @@
 
                         <div class="flex flex-col sm:flex-row gap-4">
                             <button type="button" onclick="showPage('order-page')" class="flex-1 border-2 border-beige-950 py-5 pixel-font text-2xl font-bold uppercase hover:bg-beige-100">Go Back</button>
-                            <button type="submit" class="flex-1 bg-beige-950 text-white py-5 pixel-font text-2xl font-black uppercase hover:invert">FINALIZE ORDER</button>
+                            <button type="submit" id="submit-order-btn" class="flex-1 bg-beige-950 text-white py-5 pixel-font text-2xl font-black uppercase hover:invert transition-all">FINALIZE ORDER</button>
                         </div>
                     </form>
                 </div>
@@ -464,6 +465,11 @@
 
     <script>
         lucide.createIcons();
+
+        // --- Supabase Config ---
+        const supabaseUrl = 'https://kuawyjitkfuwmbduchla.supabase.co';
+        const supabaseKey = 'sb_publishable_s9j31y9-fEnFv7Tbz2WGZA__M3FbFVd';
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
         function toggleTheme() { document.documentElement.classList.toggle('dark'); }
 
@@ -497,6 +503,62 @@
             const fileName = e.target.files[0]?.name || "Select Image File";
             document.getElementById('file-name-display').innerText = fileName;
         });
+
+        async function submitOrderToDatabase() {
+            const btn = document.getElementById('submit-order-btn');
+            const originalText = btn.innerText;
+            btn.innerText = "PROCESSING...";
+            btn.disabled = true;
+
+            const name = document.getElementById('checkout-name').value;
+            const email = document.getElementById('checkout-email').value;
+            const address = document.getElementById('checkout-address').value;
+            const paymentProof = document.getElementById('payment-proof').files[0];
+            const cryptoType = document.querySelector('input[name="crypto"]:checked')?.id;
+            
+            let proofUrl = "";
+
+            try {
+                // Handle file upload if proof exists
+                if (paymentProof) {
+                    const fileName = `${Date.now()}_${paymentProof.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+                    const { data, error } = await supabaseClient.storage
+                        .from('payment-proofs')
+                        .upload(fileName, paymentProof);
+                    
+                    if (error) throw error;
+                    if (data) {
+                        proofUrl = supabaseClient.storage.from('payment-proofs').getPublicUrl(fileName).data.publicUrl;
+                    }
+                }
+
+                // Insert data into orders table
+                const { error: dbError } = await supabaseClient
+                    .from('orders')
+                    .insert([{
+                        customer_name: name,
+                        customer_email: email,
+                        shipping_address: address,
+                        order_manifest: cart,
+                        total_price: cart.reduce((s, i) => s + i.price, 0) + 30,
+                        payment_method: cryptoType,
+                        proof_url: proofUrl
+                    }]);
+
+                if (dbError) throw dbError;
+
+                alert('Order Placed Successfully! We will process your research materials once payment is confirmed.');
+                clearCart();
+                showPage('home');
+
+            } catch (err) {
+                console.error(err);
+                alert('Submission Error: ' + err.message);
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        }
 
         const providers = ['gmail.com', 'outlook.com', 'hotmail.com', 'icloud.com', 'protonmail.com'];
         function initEmailAutocomplete(inputId, suggestionId) {
@@ -702,3 +764,4 @@
     </script>
 </body>
 </html>
+
