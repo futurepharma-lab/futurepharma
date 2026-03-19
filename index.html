@@ -684,7 +684,8 @@ function selectCrypto(type) {
             { id: 4, name: "IPAMORELIN", price: 149.99, mg: "20MG", color: "#AF7AC5", abbrev: "IPA" },
             { id: 5, name: "TESAMORELIN", price: 199.99, mg: "20MG", color: "#52BE80", abbrev: "TESA" },
             { id: 6, name: "RETATRUTIDE", price: 149.99, mg: "10MG", color: "#EC7063", abbrev: "RETA" },
-            { id: 7, name: "BACTERIOSTATIC WATER", price: 19.99, mg: "10ML", color: "#94A3B8", abbrev: "BAC" }
+            { id: 7, name: "BACTERIOSTATIC WATER", price: 19.99, mg: "10ML", color: "#94A3B8", abbrev: "BAC" },
+{ id: 8, name: "BPC-157", price: 149.99, mg: "10MG", color: "#2ECC71", abbrev: "BPC" }
         ];
 
         let cart = JSON.parse(localStorage.getItem('futurePharmaCart')) || [];
@@ -766,7 +767,7 @@ function selectCrypto(type) {
                                 <rect x="5" y="7" width="1" height="9" fill="#EEE" />
                                 <rect x="6" y="13" width="4" height="3" fill="${p.color}" />
                                 <rect x="5" y="8" width="6" height="4" fill="#E8E8C8" />
-                                <text x="8" y="11" font-family="VT323, monospace" font-size="2.8" fill="#1C1C16" text-anchor="middle" letter-spacing="-0.3">${p.abbrev}</text>
+                                <text x="8" y="11" font-family="VT323, monospace" font-size="2.8" fill="#1C1C16" text-anchor="middle" letter-spacing="0.0">${p.abbrev}</text>
                             </svg>
                         </div>
                         <div class="w-full flex justify-between mb-4"><h3 class="font-extrabold text-2xl uppercase">${p.name}</h3><span class="pixel-font text-xl bg-beige-950 text-white px-2">${p.mg}</span></div>
@@ -855,6 +856,8 @@ function selectCrypto(type) {
     </script>
 </body>
 </html>
+
+
 
 
 
