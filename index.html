@@ -886,6 +886,28 @@
         renderProductGrid(products);
         updateCartUI();
     </script>
+
+<!-- Image Modal -->
+<div id="image-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-[200]" onclick="closeImage()">
+    <img id="modal-img" class="max-w-[90%] max-h-[90%] border-4 border-white shadow-2xl">
+</div>
+
+<script>
+function openImage(src) {
+    const modal = document.getElementById('image-modal');
+    const img = document.getElementById('modal-img');
+    img.src = src;
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+function closeImage() {
+    const modal = document.getElementById('image-modal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
+</script>
+
 </body>
 </html>
 
