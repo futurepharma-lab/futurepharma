@@ -561,16 +561,27 @@ async function submitContactToDatabase() {
             ltc: 'ltc1q5fy3qdshprh8s9d4p95qgccc8z63eex48kp7a4'
         };
 
-        function selectCrypto(type) {
-            const display = document.getElementById('payment-display');
-            const addressInput = document.getElementById('wallet-address');
-            const qrBox = document.getElementById('qr-placeholder');
-           
-            display.classList.remove('hidden');
-            addressInput.value = walletAddresses[type];
-            qrBox.innerHTML = `[QR: ${type.toUpperCase()}]`;
-            document.getElementById('copy-status').classList.add('hidden');
-        }
+function selectCrypto(type) {
+    const display = document.getElementById('payment-display');
+    const addressInput = document.getElementById('wallet-address');
+    const qrImage = document.getElementById('qr-image');
+
+    display.classList.remove('hidden');
+    addressInput.value = walletAddresses[type];
+
+    // Set QR image based on crypto
+    const qrMap = {
+        btc: 'btc.JPG',
+        eth: 'eth.JPG',
+        usdt: 'usdt.JPG',
+        ltc: 'ltc.JPG'
+    };
+
+    qrImage.src = qrMap[type];
+
+    document.getElementById('copy-status').classList.add('hidden');
+}
+
 
         async function copyAddress() {
             const address = document.getElementById('wallet-address').value;
@@ -845,4 +856,6 @@ async function submitContactToDatabase() {
     </script>
 </body>
 </html>
+
+
 
