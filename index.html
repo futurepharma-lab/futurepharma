@@ -1277,16 +1277,21 @@
                 var row = productToDbRow(p);
                 var result;
                 if (p.id) {
+                    // Existing product — upsert by id
                     result = await supabaseClient.from('products').upsert(row, { onConflict: 'id' });
+                    if (result.error) throw result.error;
                 } else {
+                    // New product — insert without id, let Supabase auto-generate
                     delete row.id;
-                    result = await supabaseClient.from('products').insert([row]).select().single();
-                    if (!result.error && result.data) p.id = result.data.id;
+                    result = await supabaseClient.from('products').insert([row]).select('*').single();
+                    if (result.error) throw result.error;
+                    if (result.data && result.data.id) {
+                        p.id = result.data.id;
+                    }
                 }
-                if (result.error) throw result.error;
                 return true;
             } catch (err) {
-                console.error('Failed to save product:', err.message);
+                console.error('Failed to save product:', err.message, err);
                 return false;
             }
         }
@@ -2209,9 +2214,12 @@
             (async function() {
                 var btn = document.getElementById('admin-add-btn');
                 if (btn) { btn.disabled = true; btn.innerText = '⟳ Creating...'; }
-                var ok = await saveProductToSupabase(newProduct);
+                var row = productToDbRow(newProduct);
+                delete row.id;
+                var result = await supabaseClient.from('products').insert([row]).select('*').single();
                 if (btn) { btn.disabled = false; btn.innerHTML = '<i data-lucide="plus" class="w-4 h-4"></i> Add Product'; lucide.createIcons(); }
-                if (ok) {
+                if (!result.error && result.data) {
+                    newProduct.id = result.data.id;
                     showAdminToast('Product created — fill in details and save');
                     renderProductGrid(products);
                     renderAdminProductList();
@@ -2219,9 +2227,10 @@
                     var container = document.getElementById('admin-product-list');
                     setTimeout(function() { container.lastElementChild && container.lastElementChild.scrollIntoView({ behavior: 'smooth' }); }, 100);
                 } else {
-                    // Remove from local array if save failed
+                    var errMsg = result.error ? result.error.message : 'Unknown error';
+                    console.error('Create product failed:', result.error);
                     products.splice(idx, 1);
-                    showAdminToast('Failed to create product — check connection', true);
+                    showAdminToast('Failed: ' + errMsg, true);
                     renderAdminProductList();
                 }
             })();
