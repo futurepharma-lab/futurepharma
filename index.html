@@ -118,6 +118,198 @@
             color: #fff;
             letter-spacing: 0.05em;
         }
+
+        /* ============================================================
+           MOBILE STYLES — only apply below lg breakpoint (< 1024px)
+           Desktop is completely unchanged.
+        ============================================================ */
+        @media (max-width: 1023px) {
+
+            /* Nav: compact, logo only + cart icon */
+            nav { height: 56px !important; }
+            nav .max-w-7xl { padding-left: 16px !important; padding-right: 16px !important; }
+            nav .flex.justify-between { height: 56px !important; }
+
+            /* Hide theme toggle on mobile — accessible via menu */
+            nav .flex.items-center.gap-6 > div:first-child { display: none !important; }
+
+            /* Smaller logo text */
+            nav span.pixel-font { font-size: 1.6rem !important; }
+            nav svg.w-10 { width: 28px !important; height: 28px !important; }
+
+            /* All page sections: reduce top padding to account for smaller nav */
+            .page-section { padding-top: 72px !important; padding-bottom: 80px !important; }
+
+            /* HOME */
+            #home h1 { font-size: 2.8rem !important; line-height: 1 !important; margin-bottom: 1rem !important; }
+            #home p.text-xl { font-size: 1rem !important; margin-bottom: 1.5rem !important; }
+            #home .mb-24 { margin-bottom: 2rem !important; }
+            #home .mt-20 { margin-top: 1.5rem !important; }
+            #home .gap-12 { gap: 1rem !important; }
+            #home .p-8 { padding: 1.25rem !important; }
+            #home h3.text-2xl { font-size: 1.1rem !important; }
+            #home .text-lg { font-size: 0.95rem !important; }
+
+            /* PEPTIDES catalog */
+            #peptides h2 { font-size: 2.2rem !important; margin-bottom: 0.5rem !important; }
+            #peptides .flex.flex-col { gap: 0.25rem !important; font-size: 0.85rem !important; }
+            #peptides .mb-12 { margin-bottom: 1rem !important; }
+            #peptides input { font-size: 1.1rem !important; padding: 0.75rem !important; }
+            #product-grid { grid-template-columns: 1fr 1fr !important; gap: 0.75rem !important; padding-left: 12px !important; padding-right: 12px !important; }
+
+            /* Product grid cards: compact */
+            .product-card { padding: 0.75rem !important; }
+            .product-card svg.w-32 { width: 64px !important; height: 64px !important; }
+            .product-card .mb-4 { margin-bottom: 0.5rem !important; }
+            .product-card h3 { font-size: 0.85rem !important; }
+            .product-card .text-2xl { font-size: 1rem !important; }
+            .product-card .text-xl { font-size: 0.9rem !important; }
+            .product-card .mb-6 { margin-bottom: 0.5rem !important; }
+            .product-card .mb-3 { margin-bottom: 0.4rem !important; }
+            .product-card .mb-1 { margin-bottom: 0.25rem !important; }
+            .product-card .mb-2 { margin-bottom: 0.3rem !important; }
+            .product-card .text-sm { font-size: 0.7rem !important; }
+            .product-card .text-xs { font-size: 0.65rem !important; }
+            .product-card .w-8 { width: 28px !important; height: 28px !important; }
+            .product-card .text-lg { font-size: 0.8rem !important; }
+
+            /* PRODUCT DETAIL */
+            #product-detail .grid { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
+            #product-detail .p-12 { padding: 1.5rem !important; }
+            #product-detail svg.w-64 { width: 140px !important; height: 140px !important; }
+            #product-detail h2 { font-size: 2.2rem !important; line-height: 1 !important; }
+            #product-detail .text-5xl { font-size: 2rem !important; }
+            #product-detail .text-7xl { font-size: 2.5rem !important; }
+            #product-detail .w-12 { width: 44px !important; height: 44px !important; }
+            #product-detail .py-6 { padding-top: 1rem !important; padding-bottom: 1rem !important; }
+            #product-detail .mb-8 { margin-bottom: 1rem !important; }
+
+            /* LAB TESTING */
+            #lab-testing h2 { font-size: 1.8rem !important; }
+            #lab-testing .grid { grid-template-columns: 1fr !important; gap: 1rem !important; }
+            #lab-testing .h-64 { height: 180px !important; }
+            #lab-testing .mb-16 { margin-bottom: 1rem !important; }
+
+            /* BESPOKE */
+            #bespoke h2 { font-size: 2rem !important; }
+            #bespoke .grid { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
+            #bespoke .p-10 { padding: 1.25rem !important; }
+            #bespoke .gap-16 { gap: 1.5rem !important; }
+
+            /* CONTACT */
+            #contact h2 { font-size: 2rem !important; }
+            #contact .grid { grid-template-columns: 1fr !important; gap: 1rem !important; }
+            #contact .gap-20 { gap: 1rem !important; }
+            #contact .p-10 { padding: 1.25rem !important; }
+
+            /* ORDER PAGE */
+            #order-page h2 { font-size: 1.8rem !important; margin-bottom: 1rem !important; }
+            #order-page .grid { grid-template-columns: 1fr !important; gap: 1rem !important; }
+            #order-page .p-8 { padding: 1rem !important; }
+            #order-page .text-3xl { font-size: 1.4rem !important; }
+            #order-page .text-2xl { font-size: 1.1rem !important; }
+            #order-page .pixel-font.text-xl { font-size: 1rem !important; }
+            #order-page .h-32 { height: 80px !important; }
+            #order-page .py-5 { padding-top: 0.875rem !important; padding-bottom: 0.875rem !important; }
+            #order-page .text-3xl { font-size: 1.5rem !important; }
+            .shipping-label { padding: 10px 12px !important; }
+            .shipping-label .text-3xl { font-size: 1.4rem !important; }
+            .shipping-label .text-lg { font-size: 0.85rem !important; }
+
+            /* CRYPTO CHECKOUT */
+            #crypto-checkout h2 { font-size: 1.8rem !important; margin-bottom: 1rem !important; }
+            #crypto-checkout .p-10 { padding: 1rem !important; }
+            #crypto-checkout .text-6xl { font-size: 2.2rem !important; }
+            #crypto-checkout .grid.grid-cols-2 { grid-template-columns: 1fr 1fr !important; gap: 0.5rem !important; }
+            #crypto-checkout .mb-10 { margin-bottom: 1.25rem !important; }
+            #crypto-checkout .p-8 { padding: 1rem !important; }
+            #crypto-checkout #wallet-address { font-size: 0.7rem !important; }
+            #crypto-checkout .text-2xl { font-size: 1.1rem !important; }
+
+            /* CART SIDEBAR: full width on mobile */
+            #cart-sidebar { width: 100% !important; }
+            #cart-sidebar .p-8 { padding: 1rem !important; }
+            #cart-sidebar .text-2xl { font-size: 1.2rem !important; }
+            #cart-sidebar .text-xl { font-size: 1rem !important; }
+            #cart-sidebar .py-4 { padding-top: 0.75rem !important; padding-bottom: 0.75rem !important; }
+
+            /* FOOTER */
+            footer { padding-top: 1rem !important; padding-bottom: 1rem !important; margin-top: 0 !important; }
+
+            /* Age gate */
+            #age-gate h1 { font-size: 2.5rem !important; }
+            #age-gate p { font-size: 0.95rem !important; }
+
+            /* Bottom nav safe area */
+            .flex-grow { padding-bottom: 0 !important; }
+        }
+
+        /* Mobile bottom navigation bar */
+        #mobile-nav {
+            display: none;
+        }
+        @media (max-width: 1023px) {
+            #mobile-nav {
+                display: flex;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: 55;
+                background: #F5F5DC;
+                border-top: 2px solid #1C1C16;
+                height: 60px;
+                align-items: stretch;
+            }
+            .dark #mobile-nav {
+                background: #0F0F0F;
+                border-top-color: #F5F5DC;
+            }
+            #mobile-nav button {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 2px;
+                font-family: 'VT323', monospace;
+                font-size: 10px;
+                letter-spacing: 0.05em;
+                text-transform: uppercase;
+                color: #1C1C16;
+                border: none;
+                background: transparent;
+                border-right: 1px solid rgba(28,28,22,0.15);
+                cursor: pointer !important;
+                padding: 0;
+                transition: background 0.15s;
+            }
+            .dark #mobile-nav button { color: #F5F5DC; border-right-color: rgba(245,245,220,0.15); }
+            #mobile-nav button:last-child { border-right: none; }
+            #mobile-nav button:active { background: rgba(28,28,22,0.08); }
+            .dark #mobile-nav button:active { background: rgba(245,245,220,0.08); }
+            #mobile-nav button.active-nav { background: #1C1C16; color: #F5F5DC; }
+            .dark #mobile-nav button.active-nav { background: #F5F5DC; color: #1C1C16; }
+            #mobile-nav button svg { width: 18px; height: 18px; }
+
+            /* Push page content above bottom nav */
+            .flex-grow, footer { margin-bottom: 60px; }
+        }
+
+        /* Mobile menu overlay */
+        #mobile-menu {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: #F5F5DC;
+            flex-direction: column;
+            padding: 0;
+        }
+        .dark #mobile-menu { background: #0F0F0F; }
+        @media (max-width: 1023px) {
+            #mobile-menu.open { display: flex; }
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -846,6 +1038,7 @@
                 expressEligible: row.express_eligible,
                 graphic: row.graphic || 'vial',
                 variants: row.variants || null,
+                scaledPricing: row.scaled_pricing || null,
                 sort_order: row.sort_order || 0
             };
         }
@@ -862,6 +1055,7 @@
                 express_eligible: p.expressEligible,
                 graphic: p.graphic || 'vial',
                 variants: p.variants || null,
+                scaled_pricing: p.scaledPricing || null,
                 sort_order: p.sort_order || 0
             };
         }
@@ -1006,8 +1200,9 @@
                     + '<h2 class="text-7xl font-black uppercase tracking-tighter mb-2 leading-none">' + p.name + '</h2>'
                     + '<div class="mb-4">' + expressHTML + '</div>'
                     + '<p class="pixel-font text-xl uppercase font-bold mb-3 underline">Select Version</p>'
-                    + '<div class="flex gap-3 mb-6">' + variantButtons + '</div>'
-                    + '<p class="text-5xl font-black mb-8" id="cjc-price">$' + activeVariant.price.toFixed(2) + '</p>'
+                    + '<div class="flex gap-3 mb-3">' + variantButtons + '</div>'
+                    + (p.scaledPricing && p.scaledPricing.length ? buildPricingTableHTML(p) : '')
+                    + '<p class="text-5xl font-black mt-4 mb-8" id="cjc-price">$' + activeVariant.price.toFixed(2) + '</p>'
                     + '<div class="flex items-center gap-4 mb-8">'
                     + '<button onclick="updateLocalCount(' + id + ', -1)" class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 font-bold text-2xl hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950">-</button>'
                     + '<span class="pixel-font text-3xl font-bold" id="detail-count-' + id + '">' + localCounts[id] + '</span>'
@@ -1020,8 +1215,9 @@
                     + '<span class="pixel-font text-2xl bg-beige-950 text-white px-4 py-1 mb-4 inline-block">' + p.mg + '</span>'
                     + '<h2 class="text-7xl font-black uppercase tracking-tighter mb-2 leading-none">' + p.name + '</h2>'
                     + '<div class="mb-4">' + expressHTML + '</div>'
-                    + '<p class="text-5xl font-black mb-8">$' + p.price + '</p>'
-                    + '<div class="flex items-center gap-4 mb-8">'
+                    + '<p class="text-5xl font-black mb-2">$' + p.price + '</p>'
+                    + (p.scaledPricing && p.scaledPricing.length ? buildPricingTableHTML(p) : '')
+                    + '<div class="flex items-center gap-4 mt-6 mb-8">'
                     + '<button onclick="updateLocalCount(' + id + ', -1)" class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 font-bold text-2xl hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950">-</button>'
                     + '<span class="pixel-font text-3xl font-bold" id="detail-count-' + id + '">' + localCounts[id] + '</span>'
                     + '<button onclick="updateLocalCount(' + id + ', 1)" class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 font-bold text-2xl hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950">+</button>'
@@ -1034,21 +1230,87 @@
             showPage('product-detail');
         }
 
-        // Commits CJC with the currently selected variant
+        // Returns the per-unit price for a product given a quantity, respecting scaled pricing tiers.
+        // scaledPricing format: [ { minQty: 1, price: 49.99 }, { minQty: 3, price: 39.99 }, { minQty: 5, price: 29.99 } ]
+        function getUnitPrice(p, qty, variantPrice) {
+            var basePrice = variantPrice !== undefined ? variantPrice : p.price;
+            if (!p.scaledPricing || p.scaledPricing.length === 0) return basePrice;
+            var tiers = p.scaledPricing.slice().sort(function(a, b) { return b.minQty - a.minQty; });
+            for (var i = 0; i < tiers.length; i++) {
+                if (qty >= tiers[i].minQty) return tiers[i].price;
+            }
+            return basePrice;
+        }
+
+        // Build a pricing table HTML snippet for display to customers
+        function buildPricingTableHTML(p, variantPrice) {
+            if (!p.scaledPricing || p.scaledPricing.length === 0) return '';
+            var tiers = p.scaledPricing.slice().sort(function(a, b) { return a.minQty - b.minQty; });
+
+            var rows = tiers.map(function(tier, i) {
+                var nextTier = tiers[i + 1];
+                var isLast = i === tiers.length - 1;
+                // Clean label: single number if minQty === nextTier.minQty - 1 (single-unit tier),
+                // range if span > 1, or "X+" for last tier
+                var label;
+                if (isLast) {
+                    label = tier.minQty + '+';
+                } else {
+                    var span = nextTier.minQty - tier.minQty;
+                    label = span === 1 ? String(tier.minQty) : tier.minQty + '–' + (nextTier.minQty - 1);
+                }
+
+                // Savings badge: show % off vs first tier price
+                var firstPrice = tiers[0].price;
+                var savingsPct = firstPrice > 0 && i > 0 ? Math.round((1 - tier.price / firstPrice) * 100) : 0;
+
+                return '<div class="flex items-center justify-between px-4 py-2.5 ' + (isLast ? 'bg-beige-950 dark:bg-beige-100 text-beige-50 dark:text-beige-950' : 'border-b border-beige-950/10 dark:border-beige-100/10') + '">'
+                    + '<div class="flex items-center gap-3">'
+                    + '<span class="pixel-font text-2xl font-black w-16 shrink-0">' + label + '</span>'
+                    + (savingsPct > 0 ? '<span class="pixel-font text-xs font-black px-1.5 py-0.5 ' + (isLast ? 'bg-beige-50/20' : 'bg-beige-950/10 dark:bg-beige-100/10') + ' uppercase">–' + savingsPct + '%</span>' : '')
+                    + '</div>'
+                    + '<span class="pixel-font text-xl font-black">$' + tier.price.toFixed(2) + '<span class="text-sm font-normal opacity-60"> /unit</span></span>'
+                    + '</div>';
+            }).join('');
+
+            return '<div class="w-full mt-3 mb-2 border-2 border-beige-950 dark:border-beige-100 overflow-hidden">'
+                + '<div class="flex items-center justify-between bg-beige-950 dark:bg-beige-100 px-4 py-1.5">'
+                + '<span class="pixel-font text-sm font-black uppercase tracking-widest text-beige-50 dark:text-beige-950">Volume Pricing</span>'
+                + '<span class="pixel-font text-xs opacity-60 text-beige-50 dark:text-beige-950 uppercase">units &nbsp;·&nbsp; price each</span>'
+                + '</div>'
+                + rows
+                + '</div>';
+        }
+
+        // Commits CJC with the currently selected variant, applying scaled pricing to ALL units
         function commitToCartWithVariant(id) {
             var count = localCounts[id] || 0;
             if (count < 1) return;
             var p = products.find(function(x) { return x.id === id; });
             var variant = p.variants.find(function(v) { return v.key === cjcSelectedVariant; });
+
+            // Add new units first
             for (var i = 0; i < count; i++) {
                 cart.push(Object.assign({}, p, {
                     uid: Math.random(),
                     price: variant.price,
                     variantKey: variant.key,
                     variantLabel: variant.label,
-                    name: p.name + ' ' + variant.label  // e.g. "CJC 1295 W DAC"
+                    name: p.name + ' ' + variant.label
                 }));
             }
+
+            // Now recalculate: total qty of this product+variant in cart
+            var totalQty = cart.filter(function(item) { return item.id === id && item.variantKey === variant.key; }).length;
+            var unitPrice = getUnitPrice(p, totalQty, variant.price);
+
+            // Apply that price to every unit of this product+variant in the cart
+            cart.forEach(function(item) {
+                if (item.id === id && item.variantKey === variant.key) {
+                    item.price = unitPrice;
+                }
+            });
+
             localCounts[id] = 0;
             updateLocalCount(id, 0);
             updateCartUI();
@@ -1067,7 +1329,23 @@
             var count = localCounts[id] || 0;
             if (count > 0) {
                 var p = products.find(function(x) { return x.id === id; });
-                for (var i = 0; i < count; i++) cart.push(Object.assign({}, p, { uid: Math.random() }));
+
+                // Add new units
+                for (var i = 0; i < count; i++) {
+                    cart.push(Object.assign({}, p, { uid: Math.random() }));
+                }
+
+                // Recalculate total qty of this product in cart
+                var totalQty = cart.filter(function(item) { return item.id === id; }).length;
+                var unitPrice = getUnitPrice(p, totalQty);
+
+                // Apply that price to every unit of this product in the cart
+                cart.forEach(function(item) {
+                    if (item.id === id) {
+                        item.price = unitPrice;
+                    }
+                });
+
                 localCounts[id] = 0;
                 updateLocalCount(id, 0);
                 updateCartUI();
@@ -1135,8 +1413,27 @@
                     '<div onclick="showProductDetail(' + p.id + ')" class="product-card bg-white p-6 border-2 border-beige-950 flex flex-col items-center hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] transition-all cursor-pointer">'
                     + '<div class="mb-4">' + getProductSVG(p, 'sm') + '</div>'
                     + '<div class="w-full flex justify-between mb-1"><h3 class="font-extrabold text-2xl uppercase">' + p.name + '</h3><span class="pixel-font text-xl bg-beige-950 text-white px-2">' + p.mg + '</span></div>'
-                    + '<div class="w-full mb-3">' + expressTag + '</div>'
-                    + '<p class="w-full text-2xl font-black mb-6">' + (p.variants ? '$' + p.variants[p.variants.length-1].price.toFixed(2) + ' — $' + p.variants[0].price.toFixed(2) : '$' + p.price) + '</p>'
+                    + '<div class="w-full mb-2">' + expressTag + '</div>'
+                    + '<p class="w-full text-2xl font-black mb-1">' + (p.variants ? '$' + p.variants[p.variants.length-1].price.toFixed(2) + ' — $' + p.variants[0].price.toFixed(2) : (p.scaledPricing && p.scaledPricing.length ? 'From $' + Math.min.apply(null, p.scaledPricing.map(function(t){return t.price;})).toFixed(2) : '$' + p.price)) + '</p>'
+                    + (p.scaledPricing && p.scaledPricing.length
+                        ? (function() {
+                              var sorted = p.scaledPricing.slice().sort(function(a,b){return a.minQty-b.minQty;});
+                              var visible = sorted.slice(0, 4);
+                              var hasMore = sorted.length > 4;
+                              var chips = visible.map(function(t, i) {
+                                  var isLast = i === sorted.length - 1;
+                                  return '<span class="pixel-font text-xs font-bold whitespace-nowrap border border-beige-950/20 dark:border-beige-100/20 px-1.5 py-0.5">'
+                                      + (isLast ? t.minQty + '+' : t.minQty)
+                                      + ' <span class="opacity-60">$' + t.price.toFixed(2) + '</span></span>';
+                              }).join('');
+                              return '<div class="w-full mb-3 flex flex-wrap items-center gap-1">'
+                                  + '<span class="pixel-font text-xs font-black uppercase tracking-widest opacity-40 mr-1">Vol.</span>'
+                                  + chips
+                                  + (hasMore ? '<span class="pixel-font text-xs opacity-40 font-bold">+' + (sorted.length - 4) + ' more</span>' : '')
+                                  + '</div>';
+                          })()
+                        : '<div class="mb-3"></div>'
+                      )
                     + '<div class="flex w-full items-center justify-between gap-2 mb-4" onclick="event.stopPropagation()">'
                     + '<div class="flex items-center gap-3">'
                     + '<button onclick="updateLocalCount(' + p.id + ', -1)" class="w-8 h-8 border border-beige-950 dark:border-beige-100 flex items-center justify-center font-bold hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950">-</button>'
@@ -1216,6 +1513,33 @@
         function removeFromCart(id) {
             var index = cart.findLastIndex(function(item) { return item.id === id; });
             if (index !== -1) cart.splice(index, 1);
+
+            // Reprice remaining units of this product at the new total qty tier
+            var remaining = cart.filter(function(item) { return item.id === id; });
+            if (remaining.length > 0) {
+                var p = products.find(function(x) { return x.id === id; });
+                if (p) {
+                    // Check if it's a variant product — reprice per variant group
+                    if (p.variants) {
+                        p.variants.forEach(function(v) {
+                            var variantQty = cart.filter(function(i) { return i.id === id && i.variantKey === v.key; }).length;
+                            if (variantQty > 0) {
+                                var unitPrice = getUnitPrice(p, variantQty, v.price);
+                                cart.forEach(function(item) {
+                                    if (item.id === id && item.variantKey === v.key) item.price = unitPrice;
+                                });
+                            }
+                        });
+                    } else {
+                        var totalQty = remaining.length;
+                        var unitPrice = getUnitPrice(p, totalQty);
+                        cart.forEach(function(item) {
+                            if (item.id === id) item.price = unitPrice;
+                        });
+                    }
+                }
+            }
+
             updateCartUI();
         }
 
@@ -1346,6 +1670,38 @@
                 var inputCls = 'w-full p-3 border-2 border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-800 text-beige-950 dark:text-beige-100 outline-none pixel-font text-lg';
                 var labelCls = 'pixel-font text-sm uppercase opacity-60 block mb-1 text-beige-950 dark:text-beige-100';
 
+                // Build scaled pricing editor
+                var tiers = p.scaledPricing && p.scaledPricing.length
+                    ? p.scaledPricing.slice().sort(function(a,b){return a.minQty-b.minQty;})
+                    : [];
+                var tierRows = tiers.map(function(tier, ti) {
+                    var isLast = ti === tiers.length - 1;
+                    var qtyLabel = isLast ? tier.minQty + '+' : tier.minQty + '';
+                    return '<div class="flex gap-3 items-center mb-2">'
+                        + '<div class="flex items-center gap-2 flex-1">'
+                        + '<span class="pixel-font text-base opacity-50 uppercase w-14 shrink-0">' + (ti === 0 ? 'Qty' : '') + '</span>'
+                        + '<input type="number" value="' + tier.minQty + '" min="1" onchange="adminUpdateTier(' + idx + ',' + ti + ',\'minQty\',parseInt(this.value))" class="w-20 p-2 border border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-800 text-beige-950 dark:text-beige-100 outline-none pixel-font text-lg" title="Min quantity for this tier">'
+                        + '<span class="pixel-font opacity-40 text-sm">' + (isLast ? '+ units' : '+ units') + '</span>'
+                        + '</div>'
+                        + '<div class="flex items-center gap-2 flex-1">'
+                        + '<span class="pixel-font text-base opacity-50 uppercase w-8 shrink-0">' + (ti === 0 ? '$' : '$') + '</span>'
+                        + '<input type="number" value="' + tier.price.toFixed(2) + '" step="0.01" min="0" onchange="adminUpdateTier(' + idx + ',' + ti + ',\'price\',parseFloat(this.value))" class="w-28 p-2 border border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-800 text-beige-950 dark:text-beige-100 outline-none pixel-font text-lg" placeholder="Per unit price">'
+                        + '<span class="pixel-font text-xs opacity-40">/unit</span>'
+                        + '</div>'
+                        + '<button onclick="adminRemoveTier(' + idx + ',' + ti + ')" class="p-2 bg-red-600 text-white hover:bg-red-800 transition-colors shrink-0"><i data-lucide="trash-2" class="w-4 h-4"></i></button>'
+                        + '</div>';
+                }).join('');
+
+                var scaledSection = '<div class="mt-3 pt-3 border-t border-beige-950/20 dark:border-beige-100/20">'
+                    + '<div class="flex justify-between items-center mb-2">'
+                    + '<p class="pixel-font text-base uppercase font-bold opacity-60">Volume Pricing Tiers</p>'
+                    + '<button onclick="adminAddTier(' + idx + ')" class="pixel-font text-sm uppercase font-bold border border-beige-950 dark:border-beige-100 text-beige-950 dark:text-beige-100 px-3 py-1 hover:bg-beige-200 dark:hover:bg-zinc-700 transition-colors flex items-center gap-1 disabled:opacity-30"><i data-lucide="plus" class="w-3 h-3"></i> Add Tier</button>'
+                    + '</div>'
+                    + (tiers.length === 0
+                        ? '<p class="pixel-font text-sm opacity-40 uppercase mb-2">No tiers set — standard price always used.</p>'
+                        : '<div class="flex gap-3 mb-1 px-0"><span class="pixel-font text-xs opacity-40 uppercase w-[calc(50%-6px)]">Min Qty</span><span class="pixel-font text-xs opacity-40 uppercase w-[calc(50%-6px)]">Price / Unit</span></div>'
+                          + tierRows)
+                    + '</div>';
                 container.innerHTML +=
                     '<div class="bg-white dark:bg-zinc-900 border-2 border-beige-950 dark:border-beige-100 p-6 shadow-[6px_6px_0px_0px_rgba(28,28,22,0.15)]">'
                     + '<div class="flex justify-between items-start mb-4">'
@@ -1362,7 +1718,7 @@
                     + '<input type="text" value="' + p.abbrev + '" onchange="adminUpdate(' + idx + ',\'abbrev\',this.value)" class="' + inputCls + '"></div>'
                     + '<div><label class="' + labelCls + '">Size / Unit</label>'
                     + '<input type="text" value="' + p.mg + '" onchange="adminUpdate(' + idx + ',\'mg\',this.value)" class="' + inputCls + '"></div>'
-                    + (!p.variants ? '<div><label class="' + labelCls + '">Price ($)</label>'
+                    + (!p.variants ? '<div><label class="' + labelCls + '">Base Price ($)</label>'
                     + '<input type="number" value="' + p.price.toFixed(2) + '" step="0.01" min="0" onchange="adminUpdate(' + idx + ',\'price\',parseFloat(this.value))" class="' + inputCls + '"></div>' : '')
                     + '<div><label class="' + labelCls + '">Color (hex)</label>'
                     + '<div class="flex gap-2 items-center">'
@@ -1377,6 +1733,7 @@
                     + '</select></div>'
                     + '</div>'
                     + variantSection
+                    + scaledSection
                     + '</div>';
             });
             lucide.createIcons();
@@ -1447,11 +1804,139 @@
             setTimeout(function() { container.lastElementChild && container.lastElementChild.scrollIntoView({ behavior: 'smooth' }); }, 100);
             lucide.createIcons();
         }
+
+        function adminAddTier(idx) {
+            if (!products[idx].scaledPricing) products[idx].scaledPricing = [];
+            var existingQtys = products[idx].scaledPricing.map(function(t) { return t.minQty; });
+            var nextQty = existingQtys.length === 0 ? 1 : Math.max.apply(null, existingQtys) + 1;
+            products[idx].scaledPricing.push({ minQty: nextQty, price: products[idx].price });
+            saveProductToSupabase(products[idx]).then(function() { showAdminToast('Tier added'); });
+            renderProductGrid(products);
+            renderAdminProductList();
+            lucide.createIcons();
+        }
+
+        function adminUpdateTier(idx, ti, field, value) {
+            var tiers = products[idx].scaledPricing.slice().sort(function(a,b){return a.minQty-b.minQty;});
+            tiers[ti][field] = value;
+            products[idx].scaledPricing = tiers;
+            saveProductToSupabase(products[idx]).then(function() { showAdminToast('Saved'); });
+            renderProductGrid(products);
+            renderAdminProductList();
+            lucide.createIcons();
+        }
+
+        function adminRemoveTier(idx, ti) {
+            var tiers = products[idx].scaledPricing.slice().sort(function(a,b){return a.minQty-b.minQty;});
+            tiers.splice(ti, 1);
+            products[idx].scaledPricing = tiers.length ? tiers : null;
+            saveProductToSupabase(products[idx]).then(function() { showAdminToast('Tier removed'); });
+            renderProductGrid(products);
+            renderAdminProductList();
+            lucide.createIcons();
+        }
         // ============================================================
 
         // Load products from Supabase, then init the rest of the UI
         loadProducts();
         // updateCartUI is called inside loadProducts after products are ready
+    </script>
+
+    <!-- Mobile Bottom Nav -->
+    <nav id="mobile-nav" aria-label="Mobile navigation">
+        <button onclick="mobileNav('home')" id="mnav-home">
+            <i data-lucide="home" style="width:18px;height:18px;"></i>
+            HOME
+        </button>
+        <button onclick="mobileNav('peptides')" id="mnav-peptides">
+            <i data-lucide="flask-conical" style="width:18px;height:18px;"></i>
+            CATALOG
+        </button>
+        <button onclick="mobileNav('order-page')" id="mnav-order" style="position:relative;">
+            <span id="mobile-cart-badge" style="display:none;position:absolute;top:6px;right:calc(50% - 20px);background:#1C1C16;color:#F5F5DC;font-family:'VT323',monospace;font-size:10px;border-radius:50%;width:16px;height:16px;align-items:center;justify-content:center;line-height:1;">0</span>
+            <i data-lucide="shopping-bag" style="width:18px;height:18px;"></i>
+            ORDER
+        </button>
+        <button onclick="mobileNav('lab-testing')" id="mnav-lab">
+            <i data-lucide="microscope" style="width:18px;height:18px;"></i>
+            LAB
+        </button>
+        <button onclick="openMobileMenu()" id="mnav-menu">
+            <i data-lucide="menu" style="width:18px;height:18px;"></i>
+            MORE
+        </button>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem 1.25rem;border-bottom:2px solid #1C1C16;" class="dark-border">
+            <span class="pixel-font" style="font-size:1.8rem;font-weight:900;color:inherit;">MENU</span>
+            <button onclick="closeMobileMenu()" style="background:none;border:none;padding:4px;cursor:pointer!important;">
+                <i data-lucide="x" style="width:24px;height:24px;"></i>
+            </button>
+        </div>
+        <div style="flex:1;overflow-y:auto;padding:0.5rem 0;display:flex;flex-direction:column;">
+            <button onclick="mobileMenuNav('home')" class="pixel-font" style="text-align:left;background:none;border:none;border-bottom:1px solid rgba(28,28,22,0.1);padding:1rem 1.25rem;font-size:1.8rem;font-weight:900;text-transform:uppercase;cursor:pointer!important;width:100%;color:inherit;">Home</button>
+            <button onclick="mobileMenuNav('peptides')" class="pixel-font" style="text-align:left;background:none;border:none;border-bottom:1px solid rgba(28,28,22,0.1);padding:1rem 1.25rem;font-size:1.8rem;font-weight:900;text-transform:uppercase;cursor:pointer!important;width:100%;color:inherit;">Catalog</button>
+            <button onclick="mobileMenuNav('lab-testing')" class="pixel-font" style="text-align:left;background:none;border:none;border-bottom:1px solid rgba(28,28,22,0.1);padding:1rem 1.25rem;font-size:1.8rem;font-weight:900;text-transform:uppercase;cursor:pointer!important;width:100%;color:inherit;">Lab Testing</button>
+            <button onclick="mobileMenuNav('bespoke')" class="pixel-font" style="text-align:left;background:none;border:none;border-bottom:1px solid rgba(28,28,22,0.1);padding:1rem 1.25rem;font-size:1.8rem;font-weight:900;text-transform:uppercase;cursor:pointer!important;width:100%;color:inherit;">Bespoke</button>
+            <button onclick="mobileMenuNav('contact')" class="pixel-font" style="text-align:left;background:none;border:none;border-bottom:1px solid rgba(28,28,22,0.1);padding:1rem 1.25rem;font-size:1.8rem;font-weight:900;text-transform:uppercase;cursor:pointer!important;width:100%;color:inherit;">Contact</button>
+            <button onclick="mobileMenuNav('order-page')" class="pixel-font" style="text-align:left;background:none;border:none;border-bottom:1px solid rgba(28,28,22,0.1);padding:1rem 1.25rem;font-size:1.8rem;font-weight:900;text-transform:uppercase;cursor:pointer!important;width:100%;color:inherit;">Order Now</button>
+        </div>
+        <div style="padding:1rem 1.25rem;border-top:2px solid rgba(28,28,22,0.15);display:flex;gap:0.75rem;align-items:center;">
+            <div style="display:flex;align-items:center;gap:0.5rem;flex:1;">
+                <i data-lucide="sun" style="width:16px;height:16px;"></i>
+                <label style="position:relative;display:inline-flex;align-items:center;cursor:pointer;">
+                    <input type="checkbox" id="mobile-theme-toggle" class="sr-only peer" onclick="toggleTheme(); document.getElementById('theme-toggle').checked = this.checked;">
+                    <div style="width:44px;height:24px;background:#E8E8C8;border-radius:12px;position:relative;transition:background 0.2s;">
+                        <div id="mobile-theme-knob" style="position:absolute;top:2px;left:2px;width:20px;height:20px;background:#1C1C16;border-radius:50%;transition:transform 0.2s;"></div>
+                    </div>
+                </label>
+                <i data-lucide="moon" style="width:16px;height:16px;"></i>
+            </div>
+            <button onclick="closeMobileMenu(); toggleCart();" class="pixel-font" style="background:#1C1C16;color:#F5F5DC;border:none;padding:0.6rem 1.2rem;font-size:1.1rem;text-transform:uppercase;cursor:pointer!important;display:flex;align-items:center;gap:0.4rem;">
+                <i data-lucide="shopping-cart" style="width:16px;height:16px;"></i>
+                Cart
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function openMobileMenu() {
+            document.getElementById('mobile-menu').classList.add('open');
+            lucide.createIcons();
+        }
+        function closeMobileMenu() {
+            document.getElementById('mobile-menu').classList.remove('open');
+        }
+        function mobileMenuNav(page) {
+            closeMobileMenu();
+            showPage(page);
+            updateMobileNav(page);
+        }
+        function mobileNav(page) {
+            showPage(page);
+            updateMobileNav(page);
+        }
+        function updateMobileNav(activePageId) {
+            var idMap = { home: 'mnav-home', peptides: 'mnav-peptides', 'order-page': 'mnav-order', 'lab-testing': 'mnav-lab' };
+            document.querySelectorAll('#mobile-nav button').forEach(function(b) { b.classList.remove('active-nav'); });
+            if (idMap[activePageId]) document.getElementById(idMap[activePageId]).classList.add('active-nav');
+            // Cart badge
+            var badge = document.getElementById('mobile-cart-badge');
+            if (badge) {
+                var count = (typeof cart !== 'undefined') ? cart.length : 0;
+                badge.innerText = count;
+                badge.style.display = count > 0 ? 'flex' : 'none';
+            }
+        }
+        // Patch showPage to keep mobile nav in sync
+        var _origShowPage = showPage;
+        showPage = function(id) {
+            _origShowPage(id);
+            updateMobileNav(id);
+        };
+        updateMobileNav('home');
     </script>
 </body>
 </html>
