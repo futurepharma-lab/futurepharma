@@ -929,7 +929,7 @@
         <div class="sticky top-0 z-10 bg-[#F5F5DC] dark:bg-[#0F0F0F] border-b-4 border-beige-950 dark:border-beige-100 px-8 py-5 flex justify-between items-center">
             <div>
                 <h1 class="pixel-font text-4xl font-black uppercase tracking-tight text-beige-950 dark:text-beige-100">&#9881; Admin Panel</h1>
-                <p class="pixel-font text-lg opacity-50 uppercase text-beige-950 dark:text-beige-100">FuturePharma Product Manager</p>
+                <p id="admin-status-line" class="pixel-font text-lg opacity-50 uppercase text-beige-950 dark:text-beige-100">FuturePharma Product Manager</p>
             </div>
             <button onclick="closeAdmin()" class="bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 px-6 py-3 pixel-font text-xl font-black uppercase hover:invert transition-all flex items-center gap-2">
                 <i data-lucide="x" class="w-4 h-4"></i> Close
@@ -942,7 +942,7 @@
             <div>
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="pixel-font text-3xl font-black uppercase underline text-beige-950 dark:text-beige-100">Products</h2>
-                    <button onclick="adminAddProduct()" class="bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 px-5 py-3 pixel-font text-lg font-black uppercase hover:invert transition-all flex items-center gap-2">
+                    <button onclick="adminAddProduct()" id="admin-add-btn" class="bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 px-5 py-3 pixel-font text-lg font-black uppercase hover:invert transition-all flex items-center gap-2">
                         <i data-lucide="plus" class="w-4 h-4"></i> Add Product
                     </button>
                 </div>
@@ -1271,15 +1271,23 @@
             }
         }
 
-        // Upsert a single product row to Supabase
+        // Upsert a single product row to Supabase — returns true on success
         async function saveProductToSupabase(p) {
             try {
                 var row = productToDbRow(p);
-                var result = await supabaseClient.from('products').upsert(row, { onConflict: 'id' });
+                var result;
+                if (p.id) {
+                    result = await supabaseClient.from('products').upsert(row, { onConflict: 'id' });
+                } else {
+                    delete row.id;
+                    result = await supabaseClient.from('products').insert([row]).select().single();
+                    if (!result.error && result.data) p.id = result.data.id;
+                }
                 if (result.error) throw result.error;
+                return true;
             } catch (err) {
                 console.error('Failed to save product:', err.message);
-                showAdminToast('Save failed: ' + err.message, true);
+                return false;
             }
         }
 
@@ -1288,22 +1296,94 @@
             try {
                 var result = await supabaseClient.from('products').delete().eq('id', id);
                 if (result.error) throw result.error;
+                return true;
             } catch (err) {
                 console.error('Failed to delete product:', err.message);
-                showAdminToast('Delete failed: ' + err.message, true);
+                return false;
             }
         }
 
-        // Show a brief save toast inside the admin panel
+        // Tracks which product indices have unsaved changes
+        var unsavedProducts = {};
+
+        function markUnsaved(idx) {
+            unsavedProducts[idx] = true;
+            var banner = document.getElementById('unsaved-banner-' + idx);
+            var saveBtn = document.getElementById('save-btn-' + idx);
+            if (banner) banner.style.display = 'flex';
+            if (saveBtn) {
+                saveBtn.disabled = false;
+                saveBtn.style.opacity = '1';
+            }
+            var statusLine = document.getElementById('admin-status-line');
+            if (statusLine) statusLine.innerText = '● Unsaved changes present';
+        }
+
+        function markSaved(idx) {
+            delete unsavedProducts[idx];
+            var banner = document.getElementById('unsaved-banner-' + idx);
+            var saveBtn = document.getElementById('save-btn-' + idx);
+            if (banner) banner.style.display = 'none';
+            if (saveBtn) {
+                saveBtn.innerHTML = '✓ Saved';
+                saveBtn.style.background = '#16a34a';
+                saveBtn.disabled = true;
+                setTimeout(function() {
+                    if (saveBtn) {
+                        saveBtn.innerHTML = 'Save Changes';
+                        saveBtn.style.background = '';
+                        saveBtn.disabled = false;
+                    }
+                }, 2000);
+            }
+            if (Object.keys(unsavedProducts).length === 0) {
+                var statusLine = document.getElementById('admin-status-line');
+                if (statusLine) statusLine.innerText = 'FuturePharma Product Manager';
+            }
+        }
+
+        function setSaveLoading(idx, loading) {
+            var saveBtn = document.getElementById('save-btn-' + idx);
+            if (!saveBtn) return;
+            if (loading) {
+                saveBtn.innerHTML = '⟳ Saving...';
+                saveBtn.disabled = true;
+                saveBtn.style.opacity = '0.7';
+            } else {
+                saveBtn.innerHTML = 'Save Changes';
+                saveBtn.disabled = false;
+                saveBtn.style.opacity = '1';
+            }
+        }
+
+        async function adminSaveProduct(idx) {
+            setSaveLoading(idx, true);
+            var ok = await saveProductToSupabase(products[idx]);
+            setSaveLoading(idx, false);
+            if (ok) {
+                markSaved(idx);
+                renderProductGrid(products);
+            } else {
+                var saveBtn = document.getElementById('save-btn-' + idx);
+                if (saveBtn) {
+                    saveBtn.innerHTML = '⚠ Save Failed — Retry';
+                    saveBtn.style.background = '#dc2626';
+                    saveBtn.disabled = false;
+                    saveBtn.style.opacity = '1';
+                }
+            }
+        }
+
+        // Show a brief toast (for delete confirmations etc.)
         function showAdminToast(msg, isError) {
             var existing = document.getElementById('admin-toast');
             if (existing) existing.remove();
             var toast = document.createElement('div');
             toast.id = 'admin-toast';
-            toast.style.cssText = 'position:fixed;bottom:32px;right:32px;z-index:9999;font-family:"VT323",monospace;font-size:20px;letter-spacing:0.05em;text-transform:uppercase;padding:14px 24px;border:2px solid #1C1C16;background:' + (isError ? '#dc2626' : '#1C1C16') + ';color:#F5F5DC;box-shadow:6px 6px 0 rgba(28,28,22,0.3);transition:opacity 0.4s;';
+            toast.style.cssText = 'position:fixed;bottom:32px;right:32px;z-index:9999;font-family:"VT323",monospace;font-size:20px;letter-spacing:0.05em;text-transform:uppercase;padding:14px 24px;border:2px solid #1C1C16;background:' + (isError ? '#dc2626' : '#16a34a') + ';color:#F5F5DC;box-shadow:6px 6px 0 rgba(28,28,22,0.3);transition:opacity 0.4s;';
             toast.innerText = isError ? '⚠ ' + msg : '✓ ' + msg;
             document.body.appendChild(toast);
-            setTimeout(function() { toast.style.opacity = '0'; setTimeout(function() { toast.remove(); }, 400); }, 2000);
+            setTimeout(function() { toast.style.opacity = '0'; setTimeout(function() { toast.remove(); }, 400); }, 3000);
         }
 
         var cart = JSON.parse(localStorage.getItem('futurePharmaCart')) || [];
@@ -2022,12 +2102,18 @@
 
                 container.innerHTML +=
                     '<div class="bg-white dark:bg-zinc-900 border-2 border-beige-950 dark:border-beige-100 p-6 shadow-[6px_6px_0px_0px_rgba(28,28,22,0.15)]">'
+                    + '<div id="unsaved-banner-' + idx + '" style="display:' + (unsavedProducts[idx] ? 'flex' : 'none') + '" class="items-center gap-3 mb-4 bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-400 px-4 py-2">'
+                    + '<span class="pixel-font text-base font-black uppercase text-yellow-700 dark:text-yellow-400">● Unsaved changes</span>'
+                    + '</div>'
                     + '<div class="flex justify-between items-start mb-4">'
                     + '<div class="flex items-center gap-3">'
                     + '<div class="w-10 h-10 bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 flex items-center justify-center pixel-font text-xl font-black">' + p.id + '</div>'
                     + '<span class="pixel-font text-2xl font-black uppercase text-beige-950 dark:text-beige-100">' + p.name + '</span>'
                     + '</div>'
-                    + '<button onclick="adminRemoveProduct(' + idx + ')" class="flex items-center gap-1 bg-red-600 text-white px-3 py-2 pixel-font text-base uppercase font-bold hover:bg-red-800 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i> Remove</button>'
+                    + '<div class="flex items-center gap-2">'
+                    + '<button id="save-btn-' + idx + '" onclick="adminSaveProduct(' + idx + ')" class="pixel-font text-base font-black uppercase px-4 py-2 bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 hover:invert transition-all">Save Changes</button>'
+                    + '<button onclick="adminRemoveProduct(' + idx + ')" class="flex items-center gap-1 bg-red-600 text-white px-3 py-2 pixel-font text-base uppercase font-bold hover:bg-red-800 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>'
+                    + '</div>'
                     + '</div>'
                     + '<div class="grid grid-cols-2 md:grid-cols-3 gap-4">'
                     + '<div><label class="' + labelCls + '">Name</label>'
@@ -2062,25 +2148,21 @@
 
         function adminUpdate(idx, field, value) {
             products[idx][field] = value;
-            saveProductToSupabase(products[idx]).then(function() { showAdminToast('Saved'); });
+            markUnsaved(idx);
             renderProductGrid(products);
-            renderAdminProductList();
-            lucide.createIcons();
         }
 
         function adminUpdateVariant(idx, vi, field, value) {
             products[idx].variants[vi][field] = value;
             if (field === 'price') products[idx].price = products[idx].variants[0].price;
-            saveProductToSupabase(products[idx]).then(function() { showAdminToast('Saved'); });
+            markUnsaved(idx);
             renderProductGrid(products);
-            renderAdminProductList();
-            lucide.createIcons();
         }
 
         function adminAddVariant(idx) {
             if (!products[idx].variants) products[idx].variants = [];
             products[idx].variants.push({ key: 'variant' + Date.now(), label: 'New Variant', price: 0.00 });
-            saveProductToSupabase(products[idx]).then(function() { showAdminToast('Saved'); });
+            markUnsaved(idx);
             renderAdminProductList();
             lucide.createIcons();
         }
@@ -2088,7 +2170,7 @@
         function adminRemoveVariant(idx, vi) {
             products[idx].variants.splice(vi, 1);
             if (products[idx].variants.length === 0) delete products[idx].variants;
-            saveProductToSupabase(products[idx]).then(function() { showAdminToast('Saved'); });
+            markUnsaved(idx);
             renderProductGrid(products);
             renderAdminProductList();
             lucide.createIcons();
@@ -2098,7 +2180,10 @@
             if (!confirm('Remove "' + products[idx].name + '"? This cannot be undone.')) return;
             var removedId = products[idx].id;
             products.splice(idx, 1);
-            deleteProductFromSupabase(removedId).then(function() { showAdminToast('Product removed'); });
+            delete unsavedProducts[idx];
+            deleteProductFromSupabase(removedId).then(function(ok) {
+                showAdminToast(ok ? 'Product removed' : 'Delete failed — check console', !ok);
+            });
             renderProductGrid(products);
             renderAdminProductList();
             lucide.createIcons();
@@ -2116,25 +2201,28 @@
                 sort_order: products.length
             };
 
-            // Insert without an id — let Supabase auto-generate it
+            // Push locally first so we have an idx
+            var idx = products.length;
+            products.push(newProduct);
+
+            // Immediately save to Supabase to get a real id
             (async function() {
-                try {
-                    var row = productToDbRow(newProduct);
-                    delete row.id; // remove id so Supabase uses serial auto-increment
-                    var result = await supabaseClient.from('products').insert([row]).select().single();
-                    if (result.error) throw result.error;
-                    // Use the real id Supabase assigned
-                    newProduct.id = result.data.id;
-                    products.push(newProduct);
-                    showAdminToast('Product added');
+                var btn = document.getElementById('admin-add-btn');
+                if (btn) { btn.disabled = true; btn.innerText = '⟳ Creating...'; }
+                var ok = await saveProductToSupabase(newProduct);
+                if (btn) { btn.disabled = false; btn.innerHTML = '<i data-lucide="plus" class="w-4 h-4"></i> Add Product'; lucide.createIcons(); }
+                if (ok) {
+                    showAdminToast('Product created — fill in details and save');
                     renderProductGrid(products);
                     renderAdminProductList();
+                    lucide.createIcons();
                     var container = document.getElementById('admin-product-list');
                     setTimeout(function() { container.lastElementChild && container.lastElementChild.scrollIntoView({ behavior: 'smooth' }); }, 100);
-                    lucide.createIcons();
-                } catch (err) {
-                    console.error(err);
-                    showAdminToast('Failed to add: ' + err.message, true);
+                } else {
+                    // Remove from local array if save failed
+                    products.splice(idx, 1);
+                    showAdminToast('Failed to create product — check connection', true);
+                    renderAdminProductList();
                 }
             })();
         }
@@ -2144,8 +2232,7 @@
             var existingQtys = products[idx].scaledPricing.map(function(t) { return t.minQty; });
             var nextQty = existingQtys.length === 0 ? 1 : Math.max.apply(null, existingQtys) + 1;
             products[idx].scaledPricing.push({ minQty: nextQty, price: products[idx].price });
-            saveProductToSupabase(products[idx]).then(function() { showAdminToast('Tier added'); });
-            renderProductGrid(products);
+            markUnsaved(idx);
             renderAdminProductList();
             lucide.createIcons();
         }
@@ -2154,17 +2241,15 @@
             var tiers = products[idx].scaledPricing.slice().sort(function(a,b){return a.minQty-b.minQty;});
             tiers[ti][field] = value;
             products[idx].scaledPricing = tiers;
-            saveProductToSupabase(products[idx]).then(function() { showAdminToast('Saved'); });
+            markUnsaved(idx);
             renderProductGrid(products);
-            renderAdminProductList();
-            lucide.createIcons();
         }
 
         function adminRemoveTier(idx, ti) {
             var tiers = products[idx].scaledPricing.slice().sort(function(a,b){return a.minQty-b.minQty;});
             tiers.splice(ti, 1);
             products[idx].scaledPricing = tiers.length ? tiers : null;
-            saveProductToSupabase(products[idx]).then(function() { showAdminToast('Tier removed'); });
+            markUnsaved(idx);
             renderProductGrid(products);
             renderAdminProductList();
             lucide.createIcons();
@@ -2174,21 +2259,16 @@
         // ---- Size Variant admin functions ----
         function adminAddSV(idx) {
             if (!products[idx].sizeVariants) products[idx].sizeVariants = [];
-            // If this is the first size being added, use the current base price & mg label as the initial variant
             var isFirst = products[idx].sizeVariants.length === 0;
             products[idx].sizeVariants.push({
                 label: isFirst ? (products[idx].mg || 'Original') : 'New Size',
                 price: products[idx].price,
                 scaledPricing: isFirst && products[idx].scaledPricing && products[idx].scaledPricing.length
-                    ? products[idx].scaledPricing.slice()  // migrate existing volume tiers to this size
-                    : []
+                    ? products[idx].scaledPricing.slice() : []
             });
-            // Once sizes take over pricing, clear the root scaledPricing to avoid confusion
-            if (isFirst && products[idx].scaledPricing) {
-                products[idx].scaledPricing = null;
-            }
+            if (isFirst && products[idx].scaledPricing) products[idx].scaledPricing = null;
             syncBasePriceFromSizes(idx);
-            saveProductToSupabase(products[idx]).then(function() { showAdminToast('Size added'); });
+            markUnsaved(idx);
             renderProductGrid(products);
             renderAdminProductList();
             lucide.createIcons();
@@ -2197,23 +2277,20 @@
         function adminUpdateSV(idx, svi, field, value) {
             products[idx].sizeVariants[svi][field] = value;
             syncBasePriceFromSizes(idx);
-            saveProductToSupabase(products[idx]).then(function() { showAdminToast('Saved'); });
+            markUnsaved(idx);
             renderProductGrid(products);
-            renderAdminProductList();
-            lucide.createIcons();
         }
 
         function adminRemoveSV(idx, svi) {
             products[idx].sizeVariants.splice(svi, 1);
             if (products[idx].sizeVariants.length === 0) products[idx].sizeVariants = null;
             syncBasePriceFromSizes(idx);
-            saveProductToSupabase(products[idx]).then(function() { showAdminToast('Size removed'); });
+            markUnsaved(idx);
             renderProductGrid(products);
             renderAdminProductList();
             lucide.createIcons();
         }
 
-        // Keeps p.price in sync with the lowest size variant price (used as the display/fallback price)
         function syncBasePriceFromSizes(idx) {
             var sv = products[idx].sizeVariants;
             if (sv && sv.length > 0) {
@@ -2226,7 +2303,7 @@
             var existing = products[idx].sizeVariants[svi].scaledPricing;
             var nextQty = existing.length === 0 ? 1 : Math.max.apply(null, existing.map(function(t){return t.minQty;})) + 1;
             products[idx].sizeVariants[svi].scaledPricing.push({ minQty: nextQty, price: products[idx].sizeVariants[svi].price });
-            saveProductToSupabase(products[idx]).then(function() { showAdminToast('Tier added'); });
+            markUnsaved(idx);
             renderAdminProductList();
             lucide.createIcons();
         }
@@ -2235,17 +2312,15 @@
             var tiers = products[idx].sizeVariants[svi].scaledPricing.slice().sort(function(a,b){return a.minQty-b.minQty;});
             tiers[ti][field] = value;
             products[idx].sizeVariants[svi].scaledPricing = tiers;
-            saveProductToSupabase(products[idx]).then(function() { showAdminToast('Saved'); });
+            markUnsaved(idx);
             renderProductGrid(products);
-            renderAdminProductList();
-            lucide.createIcons();
         }
 
         function adminRemoveSVTier(idx, svi, ti) {
             var tiers = products[idx].sizeVariants[svi].scaledPricing.slice().sort(function(a,b){return a.minQty-b.minQty;});
             tiers.splice(ti, 1);
             products[idx].sizeVariants[svi].scaledPricing = tiers.length ? tiers : [];
-            saveProductToSupabase(products[idx]).then(function() { showAdminToast('Tier removed'); });
+            markUnsaved(idx);
             renderProductGrid(products);
             renderAdminProductList();
             lucide.createIcons();
