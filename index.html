@@ -2181,12 +2181,33 @@
             renderProductGrid(products);
         }
 
+        // Re-renders just the body of one card without collapsing it
+        function renderAdminCardBody(idx) {
+            var body = document.getElementById('admin-card-body-' + idx);
+            if (!body) return;
+            var p = products[idx];
+            var inputCls = 'w-full p-3 border-2 border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-800 text-beige-950 dark:text-beige-100 outline-none pixel-font text-lg';
+            var labelCls = 'pixel-font text-sm uppercase opacity-60 block mb-1 text-beige-950 dark:text-beige-100';
+            var graphicOptions = ['vial', 'pill'].map(function(g) {
+                return '<option value="' + g + '"' + (p.graphic === g ? ' selected' : '') + '>' + g.charAt(0).toUpperCase() + g.slice(1) + '</option>';
+            }).join('');
+
+            // Rebuild the same inner HTML as renderAdminProductList does, but inject into existing body
+            // This is a simplified re-render — just replace the inner div content
+            renderAdminProductList();
+            // After re-render, re-open this card
+            var newBody = document.getElementById('admin-card-body-' + idx);
+            var chevron = document.getElementById('card-chevron-' + idx);
+            if (newBody) newBody.style.display = 'block';
+            if (chevron) chevron.innerText = '▾';
+            lucide.createIcons();
+        }
+
         function adminAddVariant(idx) {
             if (!products[idx].variants) products[idx].variants = [];
             products[idx].variants.push({ key: 'variant' + Date.now(), label: 'New Variant', price: 0.00 });
             markUnsaved(idx);
-            renderAdminProductList();
-            lucide.createIcons();
+            renderAdminCardBody(idx);
         }
 
         function adminRemoveVariant(idx, vi) {
@@ -2194,8 +2215,7 @@
             if (products[idx].variants.length === 0) delete products[idx].variants;
             markUnsaved(idx);
             renderProductGrid(products);
-            renderAdminProductList();
-            lucide.createIcons();
+            renderAdminCardBody(idx);
         }
 
         function adminRemoveProduct(idx) {
@@ -2211,7 +2231,102 @@
             lucide.createIcons();
         }
 
-        function adminAddProduct() {
+        function adminAddTier(idx) {
+            if (!products[idx].scaledPricing) products[idx].scaledPricing = [];
+            var existingQtys = products[idx].scaledPricing.map(function(t) { return t.minQty; });
+            var nextQty = existingQtys.length === 0 ? 1 : Math.max.apply(null, existingQtys) + 1;
+            products[idx].scaledPricing.push({ minQty: nextQty, price: products[idx].price });
+            markUnsaved(idx);
+            renderAdminCardBody(idx);
+        }
+
+        function adminUpdateTier(idx, ti, field, value) {
+            var tiers = products[idx].scaledPricing.slice().sort(function(a,b){return a.minQty-b.minQty;});
+            tiers[ti][field] = value;
+            products[idx].scaledPricing = tiers;
+            markUnsaved(idx);
+            renderProductGrid(products);
+        }
+
+        function adminRemoveTier(idx, ti) {
+            var tiers = products[idx].scaledPricing.slice().sort(function(a,b){return a.minQty-b.minQty;});
+            tiers.splice(ti, 1);
+            products[idx].scaledPricing = tiers.length ? tiers : null;
+            markUnsaved(idx);
+            renderProductGrid(products);
+            renderAdminCardBody(idx);
+        }
+        // ============================================================
+
+        // ---- Size Variant admin functions ----
+        function adminAddSV(idx) {
+            if (!products[idx].sizeVariants) products[idx].sizeVariants = [];
+            var isFirst = products[idx].sizeVariants.length === 0;
+            products[idx].sizeVariants.push({
+                label: isFirst ? (products[idx].mg || 'Original') : 'New Size',
+                price: products[idx].price,
+                scaledPricing: isFirst && products[idx].scaledPricing && products[idx].scaledPricing.length
+                    ? products[idx].scaledPricing.slice() : []
+            });
+            if (isFirst && products[idx].scaledPricing) products[idx].scaledPricing = null;
+            syncBasePriceFromSizes(idx);
+            markUnsaved(idx);
+            renderProductGrid(products);
+            renderAdminCardBody(idx);
+        }
+
+        function adminUpdateSV(idx, svi, field, value) {
+            products[idx].sizeVariants[svi][field] = value;
+            syncBasePriceFromSizes(idx);
+            markUnsaved(idx);
+            renderProductGrid(products);
+        }
+
+        function adminRemoveSV(idx, svi) {
+            products[idx].sizeVariants.splice(svi, 1);
+            if (products[idx].sizeVariants.length === 0) products[idx].sizeVariants = null;
+            syncBasePriceFromSizes(idx);
+            markUnsaved(idx);
+            renderProductGrid(products);
+            renderAdminCardBody(idx);
+        }
+
+        function syncBasePriceFromSizes(idx) {
+            var sv = products[idx].sizeVariants;
+            if (sv && sv.length > 0) {
+                products[idx].price = Math.min.apply(null, sv.map(function(s) { return s.price; }));
+            }
+        }
+
+        function adminAddSVTier(idx, svi) {
+            if (!products[idx].sizeVariants[svi].scaledPricing) products[idx].sizeVariants[svi].scaledPricing = [];
+            var existing = products[idx].sizeVariants[svi].scaledPricing;
+            var nextQty = existing.length === 0 ? 1 : Math.max.apply(null, existing.map(function(t){return t.minQty;})) + 1;
+            products[idx].sizeVariants[svi].scaledPricing.push({ minQty: nextQty, price: products[idx].sizeVariants[svi].price });
+            markUnsaved(idx);
+            renderAdminCardBody(idx);
+        }
+
+        function adminUpdateSVTier(idx, svi, ti, field, value) {
+            var tiers = products[idx].sizeVariants[svi].scaledPricing.slice().sort(function(a,b){return a.minQty-b.minQty;});
+            tiers[ti][field] = value;
+            products[idx].sizeVariants[svi].scaledPricing = tiers;
+            markUnsaved(idx);
+            renderProductGrid(products);
+        }
+
+        function adminRemoveSVTier(idx, svi, ti) {
+            var tiers = products[idx].sizeVariants[svi].scaledPricing.slice().sort(function(a,b){return a.minQty-b.minQty;});
+            tiers.splice(ti, 1);
+            products[idx].sizeVariants[svi].scaledPricing = tiers.length ? tiers : [];
+            markUnsaved(idx);
+            renderProductGrid(products);
+            renderAdminCardBody(idx);
+        }
+
+        // Load products from Supabase, then init the rest of the UI
+        loadProducts();
+        // updateCartUI is called inside loadProducts after products are ready
             var newProduct = {
                 name: 'New Product',
                 price: 0.00,
@@ -2251,105 +2366,6 @@
                     renderAdminProductList();
                 }
             })();
-        }
-
-        function adminAddTier(idx) {
-            if (!products[idx].scaledPricing) products[idx].scaledPricing = [];
-            var existingQtys = products[idx].scaledPricing.map(function(t) { return t.minQty; });
-            var nextQty = existingQtys.length === 0 ? 1 : Math.max.apply(null, existingQtys) + 1;
-            products[idx].scaledPricing.push({ minQty: nextQty, price: products[idx].price });
-            markUnsaved(idx);
-            renderAdminProductList();
-            lucide.createIcons();
-        }
-
-        function adminUpdateTier(idx, ti, field, value) {
-            var tiers = products[idx].scaledPricing.slice().sort(function(a,b){return a.minQty-b.minQty;});
-            tiers[ti][field] = value;
-            products[idx].scaledPricing = tiers;
-            markUnsaved(idx);
-            renderProductGrid(products);
-        }
-
-        function adminRemoveTier(idx, ti) {
-            var tiers = products[idx].scaledPricing.slice().sort(function(a,b){return a.minQty-b.minQty;});
-            tiers.splice(ti, 1);
-            products[idx].scaledPricing = tiers.length ? tiers : null;
-            markUnsaved(idx);
-            renderProductGrid(products);
-            renderAdminProductList();
-            lucide.createIcons();
-        }
-        // ============================================================
-
-        // ---- Size Variant admin functions ----
-        function adminAddSV(idx) {
-            if (!products[idx].sizeVariants) products[idx].sizeVariants = [];
-            var isFirst = products[idx].sizeVariants.length === 0;
-            products[idx].sizeVariants.push({
-                label: isFirst ? (products[idx].mg || 'Original') : 'New Size',
-                price: products[idx].price,
-                scaledPricing: isFirst && products[idx].scaledPricing && products[idx].scaledPricing.length
-                    ? products[idx].scaledPricing.slice() : []
-            });
-            if (isFirst && products[idx].scaledPricing) products[idx].scaledPricing = null;
-            syncBasePriceFromSizes(idx);
-            markUnsaved(idx);
-            renderProductGrid(products);
-            renderAdminProductList();
-            lucide.createIcons();
-        }
-
-        function adminUpdateSV(idx, svi, field, value) {
-            products[idx].sizeVariants[svi][field] = value;
-            syncBasePriceFromSizes(idx);
-            markUnsaved(idx);
-            renderProductGrid(products);
-        }
-
-        function adminRemoveSV(idx, svi) {
-            products[idx].sizeVariants.splice(svi, 1);
-            if (products[idx].sizeVariants.length === 0) products[idx].sizeVariants = null;
-            syncBasePriceFromSizes(idx);
-            markUnsaved(idx);
-            renderProductGrid(products);
-            renderAdminProductList();
-            lucide.createIcons();
-        }
-
-        function syncBasePriceFromSizes(idx) {
-            var sv = products[idx].sizeVariants;
-            if (sv && sv.length > 0) {
-                products[idx].price = Math.min.apply(null, sv.map(function(s) { return s.price; }));
-            }
-        }
-
-        function adminAddSVTier(idx, svi) {
-            if (!products[idx].sizeVariants[svi].scaledPricing) products[idx].sizeVariants[svi].scaledPricing = [];
-            var existing = products[idx].sizeVariants[svi].scaledPricing;
-            var nextQty = existing.length === 0 ? 1 : Math.max.apply(null, existing.map(function(t){return t.minQty;})) + 1;
-            products[idx].sizeVariants[svi].scaledPricing.push({ minQty: nextQty, price: products[idx].sizeVariants[svi].price });
-            markUnsaved(idx);
-            renderAdminProductList();
-            lucide.createIcons();
-        }
-
-        function adminUpdateSVTier(idx, svi, ti, field, value) {
-            var tiers = products[idx].sizeVariants[svi].scaledPricing.slice().sort(function(a,b){return a.minQty-b.minQty;});
-            tiers[ti][field] = value;
-            products[idx].sizeVariants[svi].scaledPricing = tiers;
-            markUnsaved(idx);
-            renderProductGrid(products);
-        }
-
-        function adminRemoveSVTier(idx, svi, ti) {
-            var tiers = products[idx].sizeVariants[svi].scaledPricing.slice().sort(function(a,b){return a.minQty-b.minQty;});
-            tiers.splice(ti, 1);
-            products[idx].sizeVariants[svi].scaledPricing = tiers.length ? tiers : [];
-            markUnsaved(idx);
-            renderProductGrid(products);
-            renderAdminProductList();
-            lucide.createIcons();
         }
 
         // Load products from Supabase, then init the rest of the UI
