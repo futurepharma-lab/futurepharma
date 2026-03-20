@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Future Pharma | The Future of Peptide Research</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg viewBox='0 0 16 20' xmlns='http://www.w3.org/2000/svg'><rect x='6' y='4' width='4' height='2' fill='%23DDD' stroke='%231C1C16' stroke-width='0.3'/><rect x='4' y='6' width='8' height='11' fill='%23FFF' stroke='%231C1C16' stroke-width='0.3'/><rect x='6' y='13' width='4' height='3' fill='%235DADE2'/><rect x='5' y='1' width='6' height='3' fill='%231C1C16' stroke='%231C1C16' stroke-width='0.3'/></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -74,6 +75,14 @@
         .page-section { display: none; }
         .page-section.active { display: block; animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes vialFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+        }
+        @keyframes tickerScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
 
         .nav-link { position: relative; font-weight: 700; letter-spacing: 0.1em; }
         .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0%; height: 2px; background: #1C1C16; transition: width 0.3s; }
@@ -387,33 +396,194 @@
 
     <div class="flex-grow">
         <!-- HOME -->
-        <main id="home" class="page-section active pt-48 pb-20">
-            <div class="max-w-7xl mx-auto px-6">
-                <div class="text-center mb-24">
-                    <h1 class="text-6xl md:text-8xl font-extrabold mb-8 tracking-tighter leading-none">The Future of <br><span>Peptide Research</span></h1>
-                    <p class="text-xl text-beige-800 max-w-2xl mx-auto mb-12 pixel-font">Precision substances for international laboratories. HPLC-verified 99%+ purity in every vial.</p>
-                    <div class="flex flex-col sm:flex-row justify-center gap-4">
-                        <button onclick="showPage('peptides')" class="bg-beige-950 text-beige-50 px-10 py-4 font-bold uppercase tracking-widest hover:scale-105 transition pixel-font text-xl">Browse catalog</button>
-                        <button onclick="showPage('bespoke')" class="bg-white border-2 border-beige-950 px-10 py-4 font-bold uppercase tracking-widest hover:bg-beige-100 transition pixel-font text-xl">Bespoke Synthesis</button>
+        <main id="home" class="page-section active pb-20" style="padding-top: 96px;">
+
+            <!-- HERO -->
+            <section class="relative overflow-hidden border-b-4 border-beige-950 dark:border-beige-100">
+                <!-- Animated background grid -->
+                <div class="absolute inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(28,28,22,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(28,28,22,0.04) 1px, transparent 1px); background-size: 40px 40px;"></div>
+
+                <div class="max-w-7xl mx-auto px-6 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center relative z-10">
+                    <div>
+                        <div class="inline-flex items-center gap-2 border-2 border-beige-950 dark:border-beige-100 px-4 py-1 mb-6">
+                            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                            <span class="pixel-font text-base uppercase tracking-widest">In Stock · Ships Globally</span>
+                        </div>
+                        <h1 class="text-6xl md:text-8xl font-extrabold mb-6 tracking-tighter leading-none">The Future<br>of Peptide<br><span style="position:relative;display:inline-block;">Research<span style="position:absolute;bottom:-4px;left:0;right:0;height:4px;background:#1C1C16;" class="dark:bg-beige-100"></span></span></h1>
+                        <p class="text-lg text-beige-800 dark:text-beige-200 max-w-md mb-10 pixel-font leading-relaxed">Precision compounds for international laboratories. HPLC-verified 99%+ purity. Third-party tested. Delivered worldwide.</p>
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <button onclick="showPage('peptides')" class="bg-beige-950 dark:bg-beige-100 text-beige-50 dark:text-beige-950 px-10 py-4 font-bold uppercase tracking-widest hover:invert transition pixel-font text-xl">Browse Catalog</button>
+                            <button onclick="showPage('lab-testing')" class="bg-transparent border-2 border-beige-950 dark:border-beige-100 px-10 py-4 font-bold uppercase tracking-widest hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950 transition pixel-font text-xl">View Lab Reports</button>
+                        </div>
+                    </div>
+
+                    <!-- Animated vial cluster -->
+                    <div class="flex justify-center items-end gap-4 md:gap-6 h-64 md:h-80" id="hero-vials">
+                        <!-- Vials at different heights with different colors -->
+                        <div style="animation: vialFloat 3.2s ease-in-out infinite; animation-delay: 0s;">
+                            <svg viewBox="0 0 16 20" class="w-16 h-16 md:w-20 md:h-20" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="5" y="1" width="6" height="3" fill="#333" stroke="#1C1C16" stroke-width="0.3"/>
+                                <rect x="6" y="4" width="4" height="2" fill="#DDD" stroke="#1C1C16" stroke-width="0.3"/>
+                                <rect x="4" y="6" width="8" height="11" fill="#FFF" stroke="#1C1C16" stroke-width="0.3"/>
+                                <rect x="5" y="7" width="1" height="9" fill="#EEE"/>
+                                <rect x="6" y="13" width="4" height="3" fill="#5DADE2"/>
+                                <rect x="5" y="8" width="6" height="4" fill="#E8E8C8"/>
+                                <text x="8" y="11" font-family="VT323, monospace" font-size="2.8" fill="#1C1C16" text-anchor="middle">GHK</text>
+                            </svg>
+                        </div>
+                        <div style="animation: vialFloat 3.8s ease-in-out infinite; animation-delay: 0.4s; transform: translateY(-20px);">
+                            <svg viewBox="0 0 16 20" class="w-20 h-20 md:w-28 md:h-28" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="5" y="1" width="6" height="3" fill="#333" stroke="#1C1C16" stroke-width="0.3"/>
+                                <rect x="6" y="4" width="4" height="2" fill="#DDD" stroke="#1C1C16" stroke-width="0.3"/>
+                                <rect x="4" y="6" width="8" height="11" fill="#FFF" stroke="#1C1C16" stroke-width="0.3"/>
+                                <rect x="5" y="7" width="1" height="9" fill="#EEE"/>
+                                <rect x="6" y="13" width="4" height="3" fill="#EC7063"/>
+                                <rect x="5" y="8" width="6" height="4" fill="#E8E8C8"/>
+                                <text x="8" y="11" font-family="VT323, monospace" font-size="2.8" fill="#1C1C16" text-anchor="middle">RETA</text>
+                            </svg>
+                        </div>
+                        <div style="animation: vialFloat 2.9s ease-in-out infinite; animation-delay: 0.8s;">
+                            <svg viewBox="0 0 16 20" class="w-24 h-24 md:w-36 md:h-36" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="5" y="1" width="6" height="3" fill="#333" stroke="#1C1C16" stroke-width="0.3"/>
+                                <rect x="6" y="4" width="4" height="2" fill="#DDD" stroke="#1C1C16" stroke-width="0.3"/>
+                                <rect x="4" y="6" width="8" height="11" fill="#FFF" stroke="#1C1C16" stroke-width="0.3"/>
+                                <rect x="5" y="7" width="1" height="9" fill="#EEE"/>
+                                <rect x="6" y="13" width="4" height="3" fill="#52BE80"/>
+                                <rect x="5" y="8" width="6" height="4" fill="#E8E8C8"/>
+                                <text x="8" y="11" font-family="VT323, monospace" font-size="2.8" fill="#1C1C16" text-anchor="middle">TESA</text>
+                            </svg>
+                        </div>
+                        <div style="animation: vialFloat 3.5s ease-in-out infinite; animation-delay: 1.2s; transform: translateY(-10px);">
+                            <svg viewBox="0 0 16 20" class="w-16 h-16 md:w-20 md:h-20" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="5" y="1" width="6" height="3" fill="#333" stroke="#1C1C16" stroke-width="0.3"/>
+                                <rect x="6" y="4" width="4" height="2" fill="#DDD" stroke="#1C1C16" stroke-width="0.3"/>
+                                <rect x="4" y="6" width="8" height="11" fill="#FFF" stroke="#1C1C16" stroke-width="0.3"/>
+                                <rect x="5" y="7" width="1" height="9" fill="#EEE"/>
+                                <rect x="6" y="13" width="4" height="3" fill="#AF7AC5"/>
+                                <rect x="5" y="8" width="6" height="4" fill="#E8E8C8"/>
+                                <text x="8" y="11" font-family="VT323, monospace" font-size="2.8" fill="#1C1C16" text-anchor="middle">IPA</text>
+                            </svg>
+                        </div>
+                        <div style="animation: vialFloat 4.1s ease-in-out infinite; animation-delay: 0.2s; transform: translateY(-30px);">
+                            <svg viewBox="0 0 16 20" class="w-14 h-14 md:w-16 md:h-16" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="5" y="1" width="6" height="3" fill="#333" stroke="#1C1C16" stroke-width="0.3"/>
+                                <rect x="6" y="4" width="4" height="2" fill="#DDD" stroke="#1C1C16" stroke-width="0.3"/>
+                                <rect x="4" y="6" width="8" height="11" fill="#FFF" stroke="#1C1C16" stroke-width="0.3"/>
+                                <rect x="5" y="7" width="1" height="9" fill="#EEE"/>
+                                <rect x="6" y="13" width="4" height="3" fill="#2ECC71"/>
+                                <rect x="5" y="8" width="6" height="4" fill="#E8E8C8"/>
+                                <text x="8" y="11" font-family="VT323, monospace" font-size="2.8" fill="#1C1C16" text-anchor="middle">BPC</text>
+                            </svg>
+                        </div>
                     </div>
                 </div>
-                <div class="grid md:grid-cols-2 gap-12 mt-20">
-                    <div class="bg-white p-8 border-4 border-beige-950 shadow-[8px_8px_0px_0px_rgba(28,28,22,1)]">
-                        <div class="flex items-center gap-4 mb-4">
-                            <i data-lucide="shield-check" class="w-8 h-8"></i>
-                            <h3 class="text-2xl font-black uppercase tracking-tighter">Customs Clearance Guarantee</h3>
-                        </div>
-                        <p class="text-lg leading-relaxed">FuturePharma guarantees that all orders are packaged and shipped using methods designed to ensure successful international delivery. In the event that a shipment is permanently seized or rejected by customs authorities and does not reach the customer, FuturePharma will provide either a replacement shipment or a full refund of the purchase price.</p>
+            </section>
+
+            <!-- STATS TICKER -->
+            <div class="border-b-4 border-beige-950 dark:border-beige-100 overflow-hidden bg-beige-950 dark:bg-beige-100" style="height:44px;">
+                <div class="ticker-track pixel-font text-beige-50 dark:text-beige-950 text-xl uppercase flex items-center h-full gap-12" style="white-space:nowrap;display:flex;animation:tickerScroll 28s linear infinite;width:max-content;">
+                    <span>✦ HPLC Verified 99%+ Purity</span>
+                    <span>✦ Third-Party Lab Tested</span>
+                    <span>✦ Global Shipping Available</span>
+                    <span>✦ Customs Clearance Guarantee</span>
+                    <span>✦ Crypto Payments Only</span>
+                    <span>✦ Express Delivery 5 Days</span>
+                    <span>✦ Research Grade Compounds</span>
+                    <span>✦ HPLC Verified 99%+ Purity</span>
+                    <span>✦ Third-Party Lab Tested</span>
+                    <span>✦ Global Shipping Available</span>
+                    <span>✦ Customs Clearance Guarantee</span>
+                    <span>✦ Crypto Payments Only</span>
+                    <span>✦ Express Delivery 5 Days</span>
+                    <span>✦ Research Grade Compounds</span>
+                </div>
+            </div>
+
+            <!-- STATS ROW -->
+            <div class="border-b-4 border-beige-950 dark:border-beige-100">
+                <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4">
+                    <div class="p-8 border-r-2 border-beige-950 dark:border-beige-100 text-center">
+                        <p class="text-5xl md:text-6xl font-black tracking-tighter pixel-font">99%+</p>
+                        <p class="pixel-font text-sm uppercase opacity-50 mt-1 tracking-widest">Verified Purity</p>
                     </div>
-                    <div class="bg-white p-8 border-4 border-beige-950 shadow-[8px_8px_0px_0px_rgba(28,28,22,1)]">
-                        <div class="flex items-center gap-4 mb-4">
-                            <i data-lucide="wallet" class="w-8 h-8"></i>
-                            <h3 class="text-2xl font-black uppercase tracking-tighter">Payment Policy</h3>
-                        </div>
-                        <p class="text-lg leading-relaxed">FuturePharma currently processes orders using cryptocurrency payments only. This allows us to maintain fast global transactions and support customers internationally without traditional banking restrictions.</p>
+                    <div class="p-8 md:border-r-2 border-beige-950 dark:border-beige-100 text-center">
+                        <p class="text-5xl md:text-6xl font-black tracking-tighter pixel-font">9+</p>
+                        <p class="pixel-font text-sm uppercase opacity-50 mt-1 tracking-widest">Compounds</p>
+                    </div>
+                    <div class="p-8 border-r-2 border-t-2 md:border-t-0 border-beige-950 dark:border-beige-100 text-center">
+                        <p class="text-5xl md:text-6xl font-black tracking-tighter pixel-font">5d</p>
+                        <p class="pixel-font text-sm uppercase opacity-50 mt-1 tracking-widest">Express Delivery</p>
+                    </div>
+                    <div class="p-8 border-t-2 md:border-t-0 border-beige-950 dark:border-beige-100 text-center">
+                        <p class="text-5xl md:text-6xl font-black tracking-tighter pixel-font">∞</p>
+                        <p class="pixel-font text-sm uppercase opacity-50 mt-1 tracking-widest">Custom Synthesis</p>
                     </div>
                 </div>
             </div>
+
+            <!-- TRUST FEATURES -->
+            <div class="max-w-7xl mx-auto px-6 py-16 md:py-20">
+                <p class="pixel-font text-sm uppercase tracking-widest opacity-40 mb-12 text-center">Why Researchers Choose FuturePharma</p>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="border-2 border-beige-950 dark:border-beige-100 p-8 hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(245,245,220,0.3)] transition-all bg-white dark:bg-zinc-900 group">
+                        <div class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 flex items-center justify-center mb-6 group-hover:bg-beige-950 group-hover:text-white dark:group-hover:bg-beige-100 dark:group-hover:text-beige-950 transition-colors">
+                            <i data-lucide="shield-check" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-black uppercase tracking-tighter mb-3">Customs Guarantee</h3>
+                        <p class="text-beige-800 dark:text-beige-200 leading-relaxed text-sm">Every shipment is packaged using methods designed to ensure successful delivery. Seized shipments are reshipped or fully refunded — no questions asked.</p>
+                    </div>
+                    <div class="border-2 border-beige-950 dark:border-beige-100 p-8 hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(245,245,220,0.3)] transition-all bg-white dark:bg-zinc-900 group">
+                        <div class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 flex items-center justify-center mb-6 group-hover:bg-beige-950 group-hover:text-white dark:group-hover:bg-beige-100 dark:group-hover:text-beige-950 transition-colors">
+                            <i data-lucide="microscope" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-black uppercase tracking-tighter mb-3">Third-Party Verified</h3>
+                        <p class="text-beige-800 dark:text-beige-200 leading-relaxed text-sm">All compounds are independently tested by certified laboratories. Full HPLC reports are published for every active batch — fully transparent, fully verified.</p>
+                    </div>
+                    <div class="border-2 border-beige-950 dark:border-beige-100 p-8 hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(245,245,220,0.3)] transition-all bg-white dark:bg-zinc-900 group">
+                        <div class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 flex items-center justify-center mb-6 group-hover:bg-beige-950 group-hover:text-white dark:group-hover:bg-beige-100 dark:group-hover:text-beige-950 transition-colors">
+                            <i data-lucide="zap" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-black uppercase tracking-tighter mb-3">Express Shipping</h3>
+                        <p class="text-beige-800 dark:text-beige-200 leading-relaxed text-sm">Standard global delivery in 3 weeks, or upgrade to express for delivery in as little as 5 days. Choose your timeline at checkout.</p>
+                    </div>
+                    <div class="border-2 border-beige-950 dark:border-beige-100 p-8 hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(245,245,220,0.3)] transition-all bg-white dark:bg-zinc-900 group">
+                        <div class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 flex items-center justify-center mb-6 group-hover:bg-beige-950 group-hover:text-white dark:group-hover:bg-beige-100 dark:group-hover:text-beige-950 transition-colors">
+                            <i data-lucide="flask-conical" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-black uppercase tracking-tighter mb-3">Bespoke Synthesis</h3>
+                        <p class="text-beige-800 dark:text-beige-200 leading-relaxed text-sm">Need a peptide not in our catalog? Submit a custom sequence request. We synthesize to order with full verification reports and bulk pricing available.</p>
+                    </div>
+                    <div class="border-2 border-beige-950 dark:border-beige-100 p-8 hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(245,245,220,0.3)] transition-all bg-white dark:bg-zinc-900 group">
+                        <div class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 flex items-center justify-center mb-6 group-hover:bg-beige-950 group-hover:text-white dark:group-hover:bg-beige-100 dark:group-hover:text-beige-950 transition-colors">
+                            <i data-lucide="wallet" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-black uppercase tracking-tighter mb-3">Crypto Payments</h3>
+                        <p class="text-beige-800 dark:text-beige-200 leading-relaxed text-sm">We accept BTC, ETH, USDT, and LTC. Fast, borderless, and without traditional banking friction. Ideal for international research institutions.</p>
+                    </div>
+                    <div class="border-2 border-beige-950 dark:border-beige-100 p-8 hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(245,245,220,0.3)] transition-all bg-white dark:bg-zinc-900 group">
+                        <div class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 flex items-center justify-center mb-6 group-hover:bg-beige-950 group-hover:text-white dark:group-hover:bg-beige-100 dark:group-hover:text-beige-950 transition-colors">
+                            <i data-lucide="trending-down" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-black uppercase tracking-tighter mb-3">Volume Pricing</h3>
+                        <p class="text-beige-800 dark:text-beige-200 leading-relaxed text-sm">The more you order, the less you pay per unit. Tiered pricing automatically applies at checkout — no codes, no negotiations required.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA BANNER -->
+            <div class="border-t-4 border-beige-950 dark:border-beige-100 bg-beige-950 dark:bg-beige-100">
+                <div class="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div>
+                        <h2 class="text-4xl md:text-5xl font-black tracking-tighter uppercase text-beige-50 dark:text-beige-950 mb-2">Ready to Order?</h2>
+                        <p class="pixel-font text-lg text-beige-100/60 dark:text-beige-950/50 uppercase">Browse our full catalog of research-grade peptides.</p>
+                    </div>
+                    <div class="flex gap-3 shrink-0">
+                        <button onclick="showPage('peptides')" class="bg-beige-50 dark:bg-beige-950 text-beige-950 dark:text-beige-50 px-8 py-4 font-black uppercase tracking-widest pixel-font text-xl hover:invert transition-all">Browse Catalog</button>
+                        <button onclick="showPage('contact')" class="border-2 border-beige-50/40 dark:border-beige-950/40 text-beige-50 dark:text-beige-950 px-8 py-4 font-bold uppercase tracking-widest pixel-font text-xl hover:bg-beige-50/10 dark:hover:bg-beige-950/10 transition-all">Contact Us</button>
+                    </div>
+                </div>
+            </div>
+
         </main>
 
         <!-- PEPTIDES -->
