@@ -507,7 +507,7 @@
                         <p class="pixel-font text-sm uppercase opacity-50 mt-1 tracking-widest">Verified Purity</p>
                     </div>
                     <div class="p-8 md:border-r-2 border-beige-950 dark:border-beige-100 text-center">
-                        <p class="text-5xl md:text-6xl font-black tracking-tighter pixel-font">100+</p>
+                        <p class="text-5xl md:text-6xl font-black tracking-tighter pixel-font">9+</p>
                         <p class="pixel-font text-sm uppercase opacity-50 mt-1 tracking-widest">Compounds</p>
                     </div>
                     <div class="p-8 border-r-2 border-t-2 md:border-t-0 border-beige-950 dark:border-beige-100 text-center">
@@ -1209,6 +1209,7 @@
                 graphic: row.graphic || 'vial',
                 variants: row.variants || null,
                 scaledPricing: row.scaled_pricing || null,
+                sizeVariants: row.size_variants || null,  // [ { label:'5MG', price:49.99, scaledPricing:[...] }, ... ]
                 sort_order: row.sort_order || 0
             };
         }
@@ -1226,6 +1227,7 @@
                 graphic: p.graphic || 'vial',
                 variants: p.variants || null,
                 scaled_pricing: p.scaledPricing || null,
+                size_variants: p.sizeVariants || null,
                 sort_order: p.sort_order || 0
             };
         }
@@ -1351,8 +1353,29 @@
 
             var rightPanel;
 
-            if (p.variants) {
-                // CJC special variant layout
+            if (p.sizeVariants && p.sizeVariants.length > 0) {
+                // SIZE VARIANTS layout
+                if (selectedSizeVariants[id] === undefined) selectedSizeVariants[id] = 0;
+                var activeSV = p.sizeVariants[selectedSizeVariants[id]];
+
+                var sizeButtons = p.sizeVariants.map(function(sv, si) {
+                    var isActive = si === selectedSizeVariants[id];
+                    var cls = isActive
+                        ? 'px-4 py-2 bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 pixel-font text-lg font-black uppercase border-2 border-beige-950 dark:border-beige-100 transition-all'
+                        : 'px-4 py-2 bg-transparent text-beige-950 dark:text-beige-100 pixel-font text-lg font-bold uppercase border-2 border-beige-950 dark:border-beige-100 hover:bg-beige-200 dark:hover:bg-zinc-800 transition-all';
+                    return '<button onclick="selectSizeVariant(' + id + ',' + si + ')" class="' + cls + '">' + sv.label + '</button>';
+                }).join('');
+
+                rightPanel = '<div>'
+                    + '<h2 class="text-7xl font-black uppercase tracking-tighter mb-2 leading-none">' + p.name + '</h2>'
+                    + '<div class="mb-4">' + expressHTML + '</div>'
+                    + '<p class="pixel-font text-xl uppercase font-bold mb-3 underline">Select Size</p>'
+                    + '<div class="flex flex-wrap gap-2 mb-4" id="size-btn-group-' + id + '">' + sizeButtons + '</div>'
+                    + '<div id="size-detail-' + id + '">' + buildSizeDetailHTML(p, selectedSizeVariants[id], id) + '</div>'
+                    + '</div>';
+
+            } else if (p.variants) {
+                // CJC FORMULA VARIANTS layout
                 cjcSelectedVariant = 'wdac';
                 var activeVariant = p.variants[0];
                 var variantButtons = p.variants.map(function(v) {
@@ -1381,6 +1404,7 @@
                     + '<button onclick="commitToCartWithVariant(' + id + ')" class="w-full bg-beige-950 text-white dark:bg-beige-100 dark:text-beige-950 py-6 font-bold uppercase tracking-widest hover:invert transition-all pixel-font text-2xl">Add to Request</button>'
                     + '</div>';
             } else {
+                // PLAIN product layout
                 rightPanel = '<div>'
                     + '<span class="pixel-font text-2xl bg-beige-950 text-white px-4 py-1 mb-4 inline-block">' + p.mg + '</span>'
                     + '<h2 class="text-7xl font-black uppercase tracking-tighter mb-2 leading-none">' + p.name + '</h2>'
@@ -1400,28 +1424,102 @@
             showPage('product-detail');
         }
 
-        // Returns the per-unit price for a product given a quantity, respecting scaled pricing tiers.
-        // scaledPricing format: [ { minQty: 1, price: 49.99 }, { minQty: 3, price: 39.99 }, { minQty: 5, price: 29.99 } ]
-        function getUnitPrice(p, qty, variantPrice) {
-            var basePrice = variantPrice !== undefined ? variantPrice : p.price;
-            if (!p.scaledPricing || p.scaledPricing.length === 0) return basePrice;
-            var tiers = p.scaledPricing.slice().sort(function(a, b) { return b.minQty - a.minQty; });
-            for (var i = 0; i < tiers.length; i++) {
-                if (qty >= tiers[i].minQty) return tiers[i].price;
+        // Builds the price + volume table + qty + add-to-cart section for a selected size variant
+        function buildSizeDetailHTML(p, si, id) {
+            var sv = p.sizeVariants[si];
+            var pricingHTML = (sv.scaledPricing && sv.scaledPricing.length)
+                ? buildPricingTableHTML(p, null, sv.scaledPricing)
+                : '';
+            return '<p class="text-5xl font-black mb-2">$' + sv.price.toFixed(2) + '</p>'
+                + pricingHTML
+                + '<div class="flex items-center gap-4 mt-6 mb-8">'
+                + '<button onclick="updateLocalCount(' + id + ', -1)" class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 font-bold text-2xl hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950">-</button>'
+                + '<span class="pixel-font text-3xl font-bold" id="detail-count-' + id + '">' + (localCounts[id] || 0) + '</span>'
+                + '<button onclick="updateLocalCount(' + id + ', 1)" class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 font-bold text-2xl hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950">+</button>'
+                + '</div>'
+                + '<button onclick="commitToCartSizeVariant(' + id + ')" class="w-full bg-beige-950 text-white dark:bg-beige-100 dark:text-beige-950 py-6 font-bold uppercase tracking-widest hover:invert transition-all pixel-font text-2xl">Add to Request</button>';
+        }
+
+        function selectSizeVariant(id, si) {
+            selectedSizeVariants[id] = si;
+            var p = products.find(function(x) { return x.id === id; });
+            // Update button styles
+            var group = document.getElementById('size-btn-group-' + id);
+            if (group) {
+                var btns = group.querySelectorAll('button');
+                btns.forEach(function(btn, i) {
+                    if (i === si) {
+                        btn.className = 'px-4 py-2 bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 pixel-font text-lg font-black uppercase border-2 border-beige-950 dark:border-beige-100 transition-all';
+                    } else {
+                        btn.className = 'px-4 py-2 bg-transparent text-beige-950 dark:text-beige-100 pixel-font text-lg font-bold uppercase border-2 border-beige-950 dark:border-beige-100 hover:bg-beige-200 dark:hover:bg-zinc-800 transition-all';
+                    }
+                });
+            }
+            // Update price + table + qty section
+            var detail = document.getElementById('size-detail-' + id);
+            if (detail) detail.innerHTML = buildSizeDetailHTML(p, si, id);
+        }
+
+        // Commit size variant to cart with correct pricing
+        function commitToCartSizeVariant(id) {
+            var count = localCounts[id] || 0;
+            if (count < 1) return;
+            var p = products.find(function(x) { return x.id === id; });
+            var si = selectedSizeVariants[id] || 0;
+            var sv = p.sizeVariants[si];
+            var sizeKey = 'size_' + si;
+
+            for (var i = 0; i < count; i++) {
+                cart.push(Object.assign({}, p, {
+                    uid: Math.random(),
+                    price: sv.price,
+                    sizeKey: sizeKey,
+                    sizeLabel: sv.label,
+                    name: p.name + ' ' + sv.label
+                }));
+            }
+
+            // Reprice all of this product+size in cart at the correct tier
+            var totalQty = cart.filter(function(item) { return item.id === id && item.sizeKey === sizeKey; }).length;
+            var unitPrice = getUnitPrice(p, totalQty, null, sv);
+            cart.forEach(function(item) {
+                if (item.id === id && item.sizeKey === sizeKey) item.price = unitPrice;
+            });
+
+            localCounts[id] = 0;
+            updateLocalCount(id, 0);
+            updateCartUI();
+        }
+
+        // Tracks selected size variant per product id: { productId: sizeVariantIndex }
+        var selectedSizeVariants = {};
+
+        // Returns the per-unit price for a product given a quantity.
+        // If sizeVariant is provided (object with price + optional scaledPricing), uses its tiers.
+        // Falls back to product-level scaledPricing, then base price.
+        function getUnitPrice(p, qty, variantPrice, sizeVariant) {
+            var basePrice = sizeVariant ? sizeVariant.price : (variantPrice !== undefined ? variantPrice : p.price);
+            var tiers = sizeVariant && sizeVariant.scaledPricing && sizeVariant.scaledPricing.length
+                ? sizeVariant.scaledPricing
+                : (p.scaledPricing && p.scaledPricing.length ? p.scaledPricing : null);
+            if (!tiers) return basePrice;
+            var sorted = tiers.slice().sort(function(a, b) { return b.minQty - a.minQty; });
+            for (var i = 0; i < sorted.length; i++) {
+                if (qty >= sorted[i].minQty) return sorted[i].price;
             }
             return basePrice;
         }
 
         // Build a pricing table HTML snippet for display to customers
-        function buildPricingTableHTML(p, variantPrice) {
-            if (!p.scaledPricing || p.scaledPricing.length === 0) return '';
-            var tiers = p.scaledPricing.slice().sort(function(a, b) { return a.minQty - b.minQty; });
+        // tiersOverride: optional array to use instead of p.scaledPricing
+        function buildPricingTableHTML(p, variantPrice, tiersOverride) {
+            var tiers = tiersOverride || p.scaledPricing;
+            if (!tiers || tiers.length === 0) return '';
+            var sorted = tiers.slice().sort(function(a, b) { return a.minQty - b.minQty; });
 
-            var rows = tiers.map(function(tier, i) {
-                var nextTier = tiers[i + 1];
-                var isLast = i === tiers.length - 1;
-                // Clean label: single number if minQty === nextTier.minQty - 1 (single-unit tier),
-                // range if span > 1, or "X+" for last tier
+            var rows = sorted.map(function(tier, i) {
+                var nextTier = sorted[i + 1];
+                var isLast = i === sorted.length - 1;
                 var label;
                 if (isLast) {
                     label = tier.minQty + '+';
@@ -1429,9 +1527,7 @@
                     var span = nextTier.minQty - tier.minQty;
                     label = span === 1 ? String(tier.minQty) : tier.minQty + '–' + (nextTier.minQty - 1);
                 }
-
-                // Savings badge: show % off vs first tier price
-                var firstPrice = tiers[0].price;
+                var firstPrice = sorted[0].price;
                 var savingsPct = firstPrice > 0 && i > 0 ? Math.round((1 - tier.price / firstPrice) * 100) : 0;
 
                 return '<div class="flex items-center justify-between px-4 py-2.5 ' + (isLast ? 'bg-beige-950 dark:bg-beige-100 text-beige-50 dark:text-beige-950' : 'border-b border-beige-950/10 dark:border-beige-100/10') + '">'
@@ -1582,27 +1678,35 @@
                 grid.innerHTML +=
                     '<div onclick="showProductDetail(' + p.id + ')" class="product-card bg-white p-6 border-2 border-beige-950 flex flex-col items-center hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] transition-all cursor-pointer">'
                     + '<div class="mb-4">' + getProductSVG(p, 'sm') + '</div>'
-                    + '<div class="w-full flex justify-between mb-1"><h3 class="font-extrabold text-2xl uppercase">' + p.name + '</h3><span class="pixel-font text-xl bg-beige-950 text-white px-2">' + p.mg + '</span></div>'
+                    + '<div class="w-full flex justify-between mb-1"><h3 class="font-extrabold text-2xl uppercase">' + p.name + '</h3><span class="pixel-font text-xl bg-beige-950 text-white px-2">' + (p.sizeVariants && p.sizeVariants.length ? p.sizeVariants.map(function(sv){return sv.label;}).join(' / ') : p.mg) + '</span></div>'
                     + '<div class="w-full mb-2">' + expressTag + '</div>'
-                    + '<p class="w-full text-2xl font-black mb-1">' + (p.variants ? '$' + p.variants[p.variants.length-1].price.toFixed(2) + ' — $' + p.variants[0].price.toFixed(2) : (p.scaledPricing && p.scaledPricing.length ? 'From $' + Math.min.apply(null, p.scaledPricing.map(function(t){return t.price;})).toFixed(2) : '$' + p.price)) + '</p>'
-                    + (p.scaledPricing && p.scaledPricing.length
+                    + '<p class="w-full text-2xl font-black mb-1">' + (p.sizeVariants && p.sizeVariants.length
+                        ? 'From $' + Math.min.apply(null, p.sizeVariants.map(function(sv){return sv.price;})).toFixed(2)
+                        : (p.variants ? '$' + p.variants[p.variants.length-1].price.toFixed(2) + ' — $' + p.variants[0].price.toFixed(2)
+                        : (p.scaledPricing && p.scaledPricing.length ? 'From $' + Math.min.apply(null, p.scaledPricing.map(function(t){return t.price;})).toFixed(2) : '$' + p.price))) + '</p>'
+                    + (p.sizeVariants && p.sizeVariants.length
                         ? (function() {
-                              var sorted = p.scaledPricing.slice().sort(function(a,b){return a.minQty-b.minQty;});
-                              var visible = sorted.slice(0, 4);
-                              var hasMore = sorted.length > 4;
-                              var chips = visible.map(function(t, i) {
-                                  var isLast = i === sorted.length - 1;
-                                  return '<span class="pixel-font text-xs font-bold whitespace-nowrap border border-beige-950/20 dark:border-beige-100/20 px-1.5 py-0.5">'
-                                      + (isLast ? t.minQty + '+' : t.minQty)
-                                      + ' <span class="opacity-60">$' + t.price.toFixed(2) + '</span></span>';
+                              var chips = p.sizeVariants.slice(0, 4).map(function(sv) {
+                                  return '<span class="pixel-font text-xs font-bold whitespace-nowrap border border-beige-950/20 dark:border-beige-100/20 px-1.5 py-0.5">' + sv.label + ' <span class="opacity-60">$' + sv.price.toFixed(2) + '</span></span>';
                               }).join('');
-                              return '<div class="w-full mb-3 flex flex-wrap items-center gap-1">'
-                                  + '<span class="pixel-font text-xs font-black uppercase tracking-widest opacity-40 mr-1">Vol.</span>'
-                                  + chips
-                                  + (hasMore ? '<span class="pixel-font text-xs opacity-40 font-bold">+' + (sorted.length - 4) + ' more</span>' : '')
-                                  + '</div>';
+                              var extra = p.sizeVariants.length > 4 ? '<span class="pixel-font text-xs opacity-40 font-bold">+' + (p.sizeVariants.length - 4) + ' more</span>' : '';
+                              return '<div class="w-full mb-3 flex flex-wrap items-center gap-1"><span class="pixel-font text-xs font-black uppercase tracking-widest opacity-40 mr-1">Sizes</span>' + chips + extra + '</div>';
                           })()
-                        : '<div class="mb-3"></div>'
+                        : (p.scaledPricing && p.scaledPricing.length
+                            ? (function() {
+                                  var sorted = p.scaledPricing.slice().sort(function(a,b){return a.minQty-b.minQty;});
+                                  var visible = sorted.slice(0, 4);
+                                  var hasMore = sorted.length > 4;
+                                  var chips = visible.map(function(t, i) {
+                                      var isLast = i === sorted.length - 1;
+                                      return '<span class="pixel-font text-xs font-bold whitespace-nowrap border border-beige-950/20 dark:border-beige-100/20 px-1.5 py-0.5">'
+                                          + (isLast ? t.minQty + '+' : t.minQty)
+                                          + ' <span class="opacity-60">$' + t.price.toFixed(2) + '</span></span>';
+                                  }).join('');
+                                  return '<div class="w-full mb-3 flex flex-wrap items-center gap-1"><span class="pixel-font text-xs font-black uppercase tracking-widest opacity-40 mr-1">Vol.</span>' + chips + (hasMore ? '<span class="pixel-font text-xs opacity-40 font-bold">+' + (sorted.length - 4) + ' more</span>' : '') + '</div>';
+                              })()
+                            : '<div class="mb-3"></div>'
+                          )
                       )
                     + '<div class="flex w-full items-center justify-between gap-2 mb-4" onclick="event.stopPropagation()">'
                     + '<div class="flex items-center gap-3">'
@@ -1610,8 +1714,8 @@
                     + '<span class="pixel-font text-xl font-bold" id="grid-count-' + p.id + '">' + localCounts[p.id] + '</span>'
                     + '<button onclick="updateLocalCount(' + p.id + ', 1)" class="w-8 h-8 border border-beige-950 dark:border-beige-100 flex items-center justify-center font-bold hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950">+</button>'
                     + '</div>'
-                    + (p.variants
-                        ? '<button onclick="showProductDetail(' + p.id + ')" class="flex-grow border-2 border-beige-950 dark:border-beige-100 py-2 font-bold uppercase tracking-widest hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950 transition pixel-font text-lg">Select Version</button>'
+                    + (p.variants || p.sizeVariants
+                        ? '<button onclick="showProductDetail(' + p.id + ')" class="flex-grow border-2 border-beige-950 dark:border-beige-100 py-2 font-bold uppercase tracking-widest hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950 transition pixel-font text-lg">' + (p.sizeVariants ? 'Select Size' : 'Select Version') + '</button>'
                         : '<button onclick="commitToCart(' + p.id + ')" class="flex-grow border-2 border-beige-950 dark:border-beige-100 py-2 font-bold uppercase tracking-widest hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950 transition pixel-font text-lg">Add</button>'
                       )
                     + '</div></div>';
@@ -1685,28 +1789,32 @@
             if (index !== -1) cart.splice(index, 1);
 
             // Reprice remaining units of this product at the new total qty tier
-            var remaining = cart.filter(function(item) { return item.id === id; });
-            if (remaining.length > 0) {
-                var p = products.find(function(x) { return x.id === id; });
-                if (p) {
-                    // Check if it's a variant product — reprice per variant group
-                    if (p.variants) {
-                        p.variants.forEach(function(v) {
-                            var variantQty = cart.filter(function(i) { return i.id === id && i.variantKey === v.key; }).length;
-                            if (variantQty > 0) {
-                                var unitPrice = getUnitPrice(p, variantQty, v.price);
-                                cart.forEach(function(item) {
-                                    if (item.id === id && item.variantKey === v.key) item.price = unitPrice;
-                                });
-                            }
-                        });
-                    } else {
-                        var totalQty = remaining.length;
-                        var unitPrice = getUnitPrice(p, totalQty);
-                        cart.forEach(function(item) {
-                            if (item.id === id) item.price = unitPrice;
-                        });
+            var p = products.find(function(x) { return x.id === id; });
+            if (!p) { updateCartUI(); return; }
+
+            if (p.sizeVariants) {
+                // Reprice per size group
+                p.sizeVariants.forEach(function(sv, si) {
+                    var sizeKey = 'size_' + si;
+                    var qty = cart.filter(function(i) { return i.id === id && i.sizeKey === sizeKey; }).length;
+                    if (qty > 0) {
+                        var unitPrice = getUnitPrice(p, qty, null, sv);
+                        cart.forEach(function(item) { if (item.id === id && item.sizeKey === sizeKey) item.price = unitPrice; });
                     }
+                });
+            } else if (p.variants) {
+                p.variants.forEach(function(v) {
+                    var variantQty = cart.filter(function(i) { return i.id === id && i.variantKey === v.key; }).length;
+                    if (variantQty > 0) {
+                        var unitPrice = getUnitPrice(p, variantQty, v.price);
+                        cart.forEach(function(item) { if (item.id === id && item.variantKey === v.key) item.price = unitPrice; });
+                    }
+                });
+            } else {
+                var totalQty = cart.filter(function(i) { return i.id === id; }).length;
+                if (totalQty > 0) {
+                    var unitPrice = getUnitPrice(p, totalQty);
+                    cart.forEach(function(item) { if (item.id === id) item.price = unitPrice; });
                 }
             }
 
@@ -1872,6 +1980,46 @@
                         : '<div class="flex gap-3 mb-1 px-0"><span class="pixel-font text-xs opacity-40 uppercase w-[calc(50%-6px)]">Min Qty</span><span class="pixel-font text-xs opacity-40 uppercase w-[calc(50%-6px)]">Price / Unit</span></div>'
                           + tierRows)
                     + '</div>';
+                // Build size variants editor
+                var svList = p.sizeVariants && p.sizeVariants.length ? p.sizeVariants : [];
+                var svRows = svList.map(function(sv, svi) {
+                    var svTiers = sv.scaledPricing && sv.scaledPricing.length ? sv.scaledPricing.slice().sort(function(a,b){return a.minQty-b.minQty;}) : [];
+                    var svTierRows = svTiers.map(function(tier, ti) {
+                        return '<div class="flex gap-2 items-center mb-1 ml-4">'
+                            + '<span class="pixel-font text-xs opacity-40 uppercase w-4">@</span>'
+                            + '<input type="number" value="' + tier.minQty + '" min="1" onchange="adminUpdateSVTier(' + idx + ',' + svi + ',' + ti + ',\'minQty\',parseInt(this.value))" class="w-16 p-1.5 border border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-800 text-beige-950 dark:text-beige-100 outline-none pixel-font text-base" title="Min qty">'
+                            + '<span class="pixel-font text-xs opacity-40">+ units</span>'
+                            + '<input type="number" value="' + tier.price.toFixed(2) + '" step="0.01" min="0" onchange="adminUpdateSVTier(' + idx + ',' + svi + ',' + ti + ',\'price\',parseFloat(this.value))" class="w-24 p-1.5 border border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-800 text-beige-950 dark:text-beige-100 outline-none pixel-font text-base" title="Price/unit">'
+                            + '<span class="pixel-font text-xs opacity-40">/unit</span>'
+                            + '<button onclick="adminRemoveSVTier(' + idx + ',' + svi + ',' + ti + ')" class="p-1 bg-red-600 text-white hover:bg-red-800 transition-colors"><i data-lucide="x" class="w-3 h-3"></i></button>'
+                            + '</div>';
+                    }).join('');
+
+                    return '<div class="border border-beige-950/20 dark:border-beige-100/20 p-3 mb-2 bg-beige-50 dark:bg-zinc-800/50">'
+                        + '<div class="flex gap-3 items-center mb-2">'
+                        + '<input type="text" value="' + sv.label + '" onchange="adminUpdateSV(' + idx + ',' + svi + ',\'label\',this.value)" class="flex-1 p-2 border border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-800 text-beige-950 dark:text-beige-100 outline-none pixel-font text-lg" placeholder="Size label e.g. 5MG">'
+                        + '<span class="pixel-font opacity-40 text-sm">$</span>'
+                        + '<input type="number" value="' + sv.price.toFixed(2) + '" step="0.01" min="0" onchange="adminUpdateSV(' + idx + ',' + svi + ',\'price\',parseFloat(this.value))" class="w-28 p-2 border border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-800 text-beige-950 dark:text-beige-100 outline-none pixel-font text-lg" placeholder="Base price">'
+                        + '<button onclick="adminRemoveSV(' + idx + ',' + svi + ')" class="p-2 bg-red-600 text-white hover:bg-red-800 transition-colors shrink-0"><i data-lucide="trash-2" class="w-4 h-4"></i></button>'
+                        + '</div>'
+                        + '<div class="flex justify-between items-center mb-1">'
+                        + '<span class="pixel-font text-xs uppercase opacity-40 font-bold">Vol. tiers for this size</span>'
+                        + '<button onclick="adminAddSVTier(' + idx + ',' + svi + ')" class="pixel-font text-xs border border-beige-950/30 dark:border-beige-100/30 px-2 py-0.5 hover:bg-beige-200 dark:hover:bg-zinc-700 transition-colors flex items-center gap-1 text-beige-950 dark:text-beige-100"><i data-lucide="plus" class="w-3 h-3"></i> tier</button>'
+                        + '</div>'
+                        + (svTierRows || '<p class="pixel-font text-xs opacity-30 uppercase ml-4">No tiers — base price always used</p>')
+                        + '</div>';
+                }).join('');
+
+                var sizeVariantSection = '<div class="mt-3 pt-3 border-t border-beige-950/20 dark:border-beige-100/20">'
+                    + '<div class="flex justify-between items-center mb-2">'
+                    + '<p class="pixel-font text-base uppercase font-bold opacity-60">Vial Size Variants</p>'
+                    + '<button onclick="adminAddSV(' + idx + ')" class="pixel-font text-sm uppercase font-bold border border-beige-950 dark:border-beige-100 text-beige-950 dark:text-beige-100 px-3 py-1 hover:bg-beige-200 dark:hover:bg-zinc-700 transition-colors flex items-center gap-1"><i data-lucide="plus" class="w-3 h-3"></i> Add Size</button>'
+                    + '</div>'
+                    + (svList.length === 0
+                        ? '<p class="pixel-font text-sm opacity-40 uppercase mb-2">No size variants — product uses base price.</p>'
+                        : svRows)
+                    + '</div>';
+
                 container.innerHTML +=
                     '<div class="bg-white dark:bg-zinc-900 border-2 border-beige-950 dark:border-beige-100 p-6 shadow-[6px_6px_0px_0px_rgba(28,28,22,0.15)]">'
                     + '<div class="flex justify-between items-start mb-4">'
@@ -1886,10 +2034,12 @@
                     + '<input type="text" value="' + p.name + '" onchange="adminUpdate(' + idx + ',\'name\',this.value)" class="' + inputCls + '"></div>'
                     + '<div><label class="' + labelCls + '">Abbreviation</label>'
                     + '<input type="text" value="' + p.abbrev + '" onchange="adminUpdate(' + idx + ',\'abbrev\',this.value)" class="' + inputCls + '"></div>'
-                    + '<div><label class="' + labelCls + '">Size / Unit</label>'
+                    + '<div><label class="' + labelCls + '">Size / Unit Label</label>'
                     + '<input type="text" value="' + p.mg + '" onchange="adminUpdate(' + idx + ',\'mg\',this.value)" class="' + inputCls + '"></div>'
-                    + (!p.variants ? '<div><label class="' + labelCls + '">Base Price ($)</label>'
-                    + '<input type="number" value="' + p.price.toFixed(2) + '" step="0.01" min="0" onchange="adminUpdate(' + idx + ',\'price\',parseFloat(this.value))" class="' + inputCls + '"></div>' : '')
+                    + (!p.variants && !(p.sizeVariants && p.sizeVariants.length)
+                        ? '<div><label class="' + labelCls + '">Base Price ($)</label>'
+                          + '<input type="number" value="' + p.price.toFixed(2) + '" step="0.01" min="0" onchange="adminUpdate(' + idx + ',\'price\',parseFloat(this.value))" class="' + inputCls + '"></div>'
+                        : '')
                     + '<div><label class="' + labelCls + '">Color (hex)</label>'
                     + '<div class="flex gap-2 items-center">'
                     + '<input type="color" value="' + p.color + '" onchange="adminUpdate(' + idx + ',\'color\',this.value)" class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 cursor-pointer p-1">'
@@ -1904,6 +2054,7 @@
                     + '</div>'
                     + variantSection
                     + scaledSection
+                    + sizeVariantSection
                     + '</div>';
             });
             lucide.createIcons();
@@ -2006,6 +2157,86 @@
             lucide.createIcons();
         }
         // ============================================================
+
+        // ---- Size Variant admin functions ----
+        function adminAddSV(idx) {
+            if (!products[idx].sizeVariants) products[idx].sizeVariants = [];
+            // If this is the first size being added, use the current base price & mg label as the initial variant
+            var isFirst = products[idx].sizeVariants.length === 0;
+            products[idx].sizeVariants.push({
+                label: isFirst ? (products[idx].mg || 'Original') : 'New Size',
+                price: products[idx].price,
+                scaledPricing: isFirst && products[idx].scaledPricing && products[idx].scaledPricing.length
+                    ? products[idx].scaledPricing.slice()  // migrate existing volume tiers to this size
+                    : []
+            });
+            // Once sizes take over pricing, clear the root scaledPricing to avoid confusion
+            if (isFirst && products[idx].scaledPricing) {
+                products[idx].scaledPricing = null;
+            }
+            syncBasePriceFromSizes(idx);
+            saveProductToSupabase(products[idx]).then(function() { showAdminToast('Size added'); });
+            renderProductGrid(products);
+            renderAdminProductList();
+            lucide.createIcons();
+        }
+
+        function adminUpdateSV(idx, svi, field, value) {
+            products[idx].sizeVariants[svi][field] = value;
+            syncBasePriceFromSizes(idx);
+            saveProductToSupabase(products[idx]).then(function() { showAdminToast('Saved'); });
+            renderProductGrid(products);
+            renderAdminProductList();
+            lucide.createIcons();
+        }
+
+        function adminRemoveSV(idx, svi) {
+            products[idx].sizeVariants.splice(svi, 1);
+            if (products[idx].sizeVariants.length === 0) products[idx].sizeVariants = null;
+            syncBasePriceFromSizes(idx);
+            saveProductToSupabase(products[idx]).then(function() { showAdminToast('Size removed'); });
+            renderProductGrid(products);
+            renderAdminProductList();
+            lucide.createIcons();
+        }
+
+        // Keeps p.price in sync with the lowest size variant price (used as the display/fallback price)
+        function syncBasePriceFromSizes(idx) {
+            var sv = products[idx].sizeVariants;
+            if (sv && sv.length > 0) {
+                products[idx].price = Math.min.apply(null, sv.map(function(s) { return s.price; }));
+            }
+        }
+
+        function adminAddSVTier(idx, svi) {
+            if (!products[idx].sizeVariants[svi].scaledPricing) products[idx].sizeVariants[svi].scaledPricing = [];
+            var existing = products[idx].sizeVariants[svi].scaledPricing;
+            var nextQty = existing.length === 0 ? 1 : Math.max.apply(null, existing.map(function(t){return t.minQty;})) + 1;
+            products[idx].sizeVariants[svi].scaledPricing.push({ minQty: nextQty, price: products[idx].sizeVariants[svi].price });
+            saveProductToSupabase(products[idx]).then(function() { showAdminToast('Tier added'); });
+            renderAdminProductList();
+            lucide.createIcons();
+        }
+
+        function adminUpdateSVTier(idx, svi, ti, field, value) {
+            var tiers = products[idx].sizeVariants[svi].scaledPricing.slice().sort(function(a,b){return a.minQty-b.minQty;});
+            tiers[ti][field] = value;
+            products[idx].sizeVariants[svi].scaledPricing = tiers;
+            saveProductToSupabase(products[idx]).then(function() { showAdminToast('Saved'); });
+            renderProductGrid(products);
+            renderAdminProductList();
+            lucide.createIcons();
+        }
+
+        function adminRemoveSVTier(idx, svi, ti) {
+            var tiers = products[idx].sizeVariants[svi].scaledPricing.slice().sort(function(a,b){return a.minQty-b.minQty;});
+            tiers.splice(ti, 1);
+            products[idx].sizeVariants[svi].scaledPricing = tiers.length ? tiers : [];
+            saveProductToSupabase(products[idx]).then(function() { showAdminToast('Tier removed'); });
+            renderProductGrid(products);
+            renderAdminProductList();
+            lucide.createIcons();
+        }
 
         // Load products from Supabase, then init the rest of the UI
         loadProducts();
