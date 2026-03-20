@@ -2105,9 +2105,7 @@
         }
 
         function adminAddProduct() {
-            var newId = products.reduce(function(max, p) { return Math.max(max, p.id); }, 0) + 1;
             var newProduct = {
-                id: newId,
                 name: 'New Product',
                 price: 0.00,
                 mg: '10MG',
@@ -2117,13 +2115,28 @@
                 graphic: 'vial',
                 sort_order: products.length
             };
-            products.push(newProduct);
-            saveProductToSupabase(newProduct).then(function() { showAdminToast('Product added'); });
-            renderProductGrid(products);
-            renderAdminProductList();
-            var container = document.getElementById('admin-product-list');
-            setTimeout(function() { container.lastElementChild && container.lastElementChild.scrollIntoView({ behavior: 'smooth' }); }, 100);
-            lucide.createIcons();
+
+            // Insert without an id — let Supabase auto-generate it
+            (async function() {
+                try {
+                    var row = productToDbRow(newProduct);
+                    delete row.id; // remove id so Supabase uses serial auto-increment
+                    var result = await supabaseClient.from('products').insert([row]).select().single();
+                    if (result.error) throw result.error;
+                    // Use the real id Supabase assigned
+                    newProduct.id = result.data.id;
+                    products.push(newProduct);
+                    showAdminToast('Product added');
+                    renderProductGrid(products);
+                    renderAdminProductList();
+                    var container = document.getElementById('admin-product-list');
+                    setTimeout(function() { container.lastElementChild && container.lastElementChild.scrollIntoView({ behavior: 'smooth' }); }, 100);
+                    lucide.createIcons();
+                } catch (err) {
+                    console.error(err);
+                    showAdminToast('Failed to add: ' + err.message, true);
+                }
+            })();
         }
 
         function adminAddTier(idx) {
