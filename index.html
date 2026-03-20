@@ -2327,6 +2327,8 @@
         // Load products from Supabase, then init the rest of the UI
         loadProducts();
         // updateCartUI is called inside loadProducts after products are ready
+
+        function adminAddProduct() {
             var newProduct = {
                 name: 'New Product',
                 price: 0.00,
@@ -2367,10 +2369,6 @@
                 }
             })();
         }
-
-        // Load products from Supabase, then init the rest of the UI
-        loadProducts();
-        // updateCartUI is called inside loadProducts after products are ready
     </script>
 
     <!-- Mobile Bottom Nav -->
