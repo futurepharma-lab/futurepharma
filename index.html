@@ -507,7 +507,7 @@
                         <p class="pixel-font text-sm uppercase opacity-50 mt-1 tracking-widest">Verified Purity</p>
                     </div>
                     <div class="p-8 md:border-r-2 border-beige-950 dark:border-beige-100 text-center">
-                        <p class="text-5xl md:text-6xl font-black tracking-tighter pixel-font">9+</p>
+                        <p class="text-5xl md:text-6xl font-black tracking-tighter pixel-font">100+</p>
                         <p class="pixel-font text-sm uppercase opacity-50 mt-1 tracking-widest">Compounds</p>
                     </div>
                     <div class="p-8 border-r-2 border-t-2 md:border-t-0 border-beige-950 dark:border-beige-100 text-center">
@@ -1311,15 +1311,26 @@
         // Tracks which product indices have unsaved changes
         var unsavedProducts = {};
 
+        function toggleAdminCard(idx) {
+            var body = document.getElementById('admin-card-body-' + idx);
+            var chevron = document.getElementById('card-chevron-' + idx);
+            if (!body) return;
+            var isOpen = body.style.display !== 'none';
+            body.style.display = isOpen ? 'none' : 'block';
+            if (chevron) chevron.innerText = isOpen ? '▸' : '▾';
+        }
+
         function markUnsaved(idx) {
             unsavedProducts[idx] = true;
             var banner = document.getElementById('unsaved-banner-' + idx);
             var saveBtn = document.getElementById('save-btn-' + idx);
             if (banner) banner.style.display = 'flex';
-            if (saveBtn) {
-                saveBtn.disabled = false;
-                saveBtn.style.opacity = '1';
-            }
+            if (saveBtn) { saveBtn.disabled = false; saveBtn.style.opacity = '1'; }
+            // Auto-expand the card so user can see what needs saving
+            var body = document.getElementById('admin-card-body-' + idx);
+            var chevron = document.getElementById('card-chevron-' + idx);
+            if (body) body.style.display = 'block';
+            if (chevron) chevron.innerText = '▾';
             var statusLine = document.getElementById('admin-status-line');
             if (statusLine) statusLine.innerText = '● Unsaved changes present';
         }
@@ -2106,20 +2117,26 @@
                     + '</div>';
 
                 container.innerHTML +=
-                    '<div class="bg-white dark:bg-zinc-900 border-2 border-beige-950 dark:border-beige-100 p-6 shadow-[6px_6px_0px_0px_rgba(28,28,22,0.15)]">'
-                    + '<div id="unsaved-banner-' + idx + '" style="display:' + (unsavedProducts[idx] ? 'flex' : 'none') + '" class="items-center gap-3 mb-4 bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-400 px-4 py-2">'
+                    '<div class="bg-white dark:bg-zinc-900 border-2 border-beige-950 dark:border-beige-100 shadow-[6px_6px_0px_0px_rgba(28,28,22,0.15)]">'
+                    + '<div id="unsaved-banner-' + idx + '" style="display:' + (unsavedProducts[idx] ? 'flex' : 'none') + '" class="items-center gap-3 bg-yellow-50 dark:bg-yellow-900/20 border-b-2 border-yellow-400 px-4 py-2">'
                     + '<span class="pixel-font text-base font-black uppercase text-yellow-700 dark:text-yellow-400">● Unsaved changes</span>'
                     + '</div>'
-                    + '<div class="flex justify-between items-start mb-4">'
+                    // Clickable header row — toggles collapse
+                    + '<div onclick="toggleAdminCard(' + idx + ')" style="cursor:pointer!important;" class="flex justify-between items-center px-6 py-4 select-none">'
                     + '<div class="flex items-center gap-3">'
-                    + '<div class="w-10 h-10 bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 flex items-center justify-center pixel-font text-xl font-black">' + p.id + '</div>'
-                    + '<span class="pixel-font text-2xl font-black uppercase text-beige-950 dark:text-beige-100">' + p.name + '</span>'
+                    + '<div class="w-8 h-8 bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 flex items-center justify-center pixel-font text-base font-black shrink-0">' + p.id + '</div>'
+                    + '<span class="pixel-font text-xl font-black uppercase text-beige-950 dark:text-beige-100">' + p.name + '</span>'
+                    + (unsavedProducts[idx] ? '<span class="pixel-font text-xs text-yellow-600 dark:text-yellow-400 font-bold uppercase">● unsaved</span>' : '')
                     + '</div>'
-                    + '<div class="flex items-center gap-2">'
-                    + '<button id="save-btn-' + idx + '" onclick="adminSaveProduct(' + idx + ')" class="pixel-font text-base font-black uppercase px-4 py-2 bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 hover:invert transition-all">Save Changes</button>'
-                    + '<button onclick="adminRemoveProduct(' + idx + ')" class="flex items-center gap-1 bg-red-600 text-white px-3 py-2 pixel-font text-base uppercase font-bold hover:bg-red-800 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>'
+                    + '<div class="flex items-center gap-2" onclick="event.stopPropagation()">'
+                    + '<button id="save-btn-' + idx + '" onclick="adminSaveProduct(' + idx + ')" class="pixel-font text-sm font-black uppercase px-3 py-1.5 bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 hover:invert transition-all">Save</button>'
+                    + '<button onclick="adminRemoveProduct(' + idx + ')" class="flex items-center gap-1 bg-red-600 text-white px-2 py-1.5 pixel-font text-sm uppercase font-bold hover:bg-red-800 transition-colors"><i data-lucide="trash-2" class="w-3 h-3"></i></button>'
+                    + '<span id="card-chevron-' + idx + '" class="pixel-font text-xl text-beige-950 dark:text-beige-100 ml-1">▸</span>'
                     + '</div>'
                     + '</div>'
+                    // Collapsible body — hidden by default
+                    + '<div id="admin-card-body-' + idx + '" style="display:none;">'
+                    + '<div class="px-6 pb-6">'
                     + '<div class="grid grid-cols-2 md:grid-cols-3 gap-4">'
                     + '<div><label class="' + labelCls + '">Name</label>'
                     + '<input type="text" value="' + p.name + '" onchange="adminUpdate(' + idx + ',\'name\',this.value)" class="' + inputCls + '"></div>'
@@ -2146,7 +2163,7 @@
                     + variantSection
                     + scaledSection
                     + sizeVariantSection
-                    + '</div>';
+                    + '</div></div></div>'; // close px-6 pb-6, card-body, card
             });
             lucide.createIcons();
         }
