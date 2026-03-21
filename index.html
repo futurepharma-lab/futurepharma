@@ -167,8 +167,10 @@
 
         .email-suggestion-box { display: none; position: absolute; z-index: 110; width: 100%; background: #fff; border: 2px solid #1C1C16; margin-top: -1px; }
         .dark .email-suggestion-box { background: #1A1A1A; border-color: #F5F5DC; }
-        .suggestion-item { padding: 8px 12px; cursor: pointer; }
+        .suggestion-item { padding: 8px 12px; cursor: pointer; color: #1C1C16; }
+        .dark .suggestion-item { color: #F5F5DC; }
         .suggestion-item:hover { background: #F5F5DC; color: #1C1C16; }
+        .dark .suggestion-item:hover { background: #333; color: #F5F5DC; }
 
         .crypto-option:checked + label { background-color: #1C1C16; color: #F5F5DC; }
         .dark .crypto-option:checked + label { background-color: #F5F5DC; color: #1C1C16; }
@@ -935,6 +937,20 @@
                         </div>
 
                         <div id="payment-display" class="hidden mb-10">
+                            <!-- Live crypto amount + timer bar -->
+                            <div id="crypto-rate-bar" class="flex items-center justify-between px-5 py-3 bg-beige-950 dark:bg-beige-100 text-beige-50 dark:text-beige-950 border-2 border-b-0 border-beige-950">
+                                <div>
+                                    <p class="pixel-font text-xs uppercase opacity-60 leading-none mb-0.5">Send Exactly</p>
+                                    <p id="crypto-amount-display" class="pixel-font text-2xl font-black leading-none">— —</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="pixel-font text-xs uppercase opacity-60 leading-none mb-0.5">Rate Locked For</p>
+                                    <p id="crypto-countdown" class="pixel-font text-2xl font-black leading-none tabular-nums">5:00</p>
+                                </div>
+                            </div>
+                            <div id="crypto-rate-loading" class="hidden px-5 py-2 bg-yellow-50 dark:bg-yellow-900/30 border-2 border-b-0 border-t-0 border-yellow-400">
+                                <p id="crypto-rate-msg" class="pixel-font text-sm uppercase font-bold text-yellow-700 dark:text-yellow-300">Fetching live rate…</p>
+                            </div>
                             <div class="bg-beige-50 dark:bg-zinc-800 border-2 border-beige-950 p-6 flex flex-col md:flex-row items-center gap-8">
                                 <div class="bg-white p-2 border-2 border-beige-950">
                                     <img id="qr-image" src="" class="w-32 h-32 object-contain" />
@@ -1000,7 +1016,8 @@
                     <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" d="M5 13l4 4L19 7"/></svg>
                 </div>
                 <h1 class="pixel-font text-5xl font-black uppercase tracking-tighter mb-3 text-beige-950 dark:text-beige-100">Order Received</h1>
-                <p class="pixel-font text-xl opacity-60 uppercase mb-6 text-beige-950 dark:text-beige-100">Your research materials are on their way</p>
+                <p class="pixel-font text-xl opacity-60 uppercase mb-1 text-beige-950 dark:text-beige-100">Your research materials are on their way</p>
+                <p class="pixel-font text-base font-black uppercase mb-6 text-beige-950 dark:text-beige-100">Order ID: <span id="success-order-id" class="text-green-600"></span></p>
                 <div id="success-order-summary" class="text-left border-t-2 border-b-2 border-beige-950/10 dark:border-beige-100/10 py-4 mb-6 space-y-2"></div>
                 <p class="pixel-font text-base opacity-50 uppercase mb-8 text-beige-950 dark:text-beige-100">We will process your order once payment is confirmed on the blockchain. Check your email for updates.</p>
                 <button onclick="closeOrderSuccess()" class="w-full bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 py-5 pixel-font text-2xl font-black uppercase hover:invert transition-all">
@@ -1249,7 +1266,73 @@
             ltc:  'ltc1q5fy3qdshprh8s9d4p95qgccc8z63eex48kp7a4'
         };
 
+        // --- Live Crypto Rate + Timer ---
+        var cryptoTimerInterval = null;
+        var cryptoTimerSeconds = 0;
+        var currentCryptoType = null;
+        var currentCryptoAmount = null;
+        var coinGeckoIds = { btc: 'bitcoin', eth: 'ethereum', usdt: 'tether', ltc: 'litecoin' };
+        var cryptoDecimals = { btc: 6, eth: 5, usdt: 2, ltc: 4 };
+        var cryptoSymbols = { btc: 'BTC', eth: 'ETH', usdt: 'USDT', ltc: 'LTC' };
+
+        function getOrderTotal() {
+            var shippingCost = SHIPPING_OPTIONS[selectedShipping].price;
+            var subtotal = cart.reduce(function(s, i) { return s + i.price; }, 0);
+            return subtotal + shippingCost;
+        }
+
+        async function fetchCryptoRate(type) {
+            var loadingEl = document.getElementById('crypto-rate-loading');
+            var msgEl = document.getElementById('crypto-rate-msg');
+            var amountEl = document.getElementById('crypto-amount-display');
+            if (type === 'usdt') {
+                currentCryptoAmount = getOrderTotal().toFixed(2);
+                amountEl.innerText = currentCryptoAmount + ' USDT';
+                loadingEl.classList.add('hidden');
+                return;
+            }
+            loadingEl.classList.remove('hidden');
+            msgEl.innerText = 'Fetching live rate…';
+            amountEl.innerText = '— —';
+            try {
+                var resp = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=' + coinGeckoIds[type] + '&vs_currencies=usd');
+                if (!resp.ok) throw new Error('Network error');
+                var data = await resp.json();
+                var rate = data[coinGeckoIds[type]] && data[coinGeckoIds[type]].usd;
+                if (!rate) throw new Error('No rate');
+                var total = getOrderTotal();
+                currentCryptoAmount = (total / rate).toFixed(cryptoDecimals[type]);
+                amountEl.innerText = currentCryptoAmount + ' ' + cryptoSymbols[type];
+                loadingEl.classList.add('hidden');
+            } catch(e) {
+                msgEl.innerText = 'Could not fetch rate — please refresh';
+                amountEl.innerText = '— —';
+                currentCryptoAmount = null;
+            }
+        }
+
+        function startCryptoTimer(type) {
+            if (cryptoTimerInterval) clearInterval(cryptoTimerInterval);
+            cryptoTimerSeconds = 300;
+            function tick() {
+                var m = Math.floor(cryptoTimerSeconds / 60);
+                var s = cryptoTimerSeconds % 60;
+                var el = document.getElementById('crypto-countdown');
+                if (el) el.innerText = m + ':' + (s < 10 ? '0' : '') + s;
+                if (cryptoTimerSeconds <= 0) {
+                    clearInterval(cryptoTimerInterval);
+                    fetchCryptoRate(type);
+                    startCryptoTimer(type);
+                    return;
+                }
+                cryptoTimerSeconds--;
+            }
+            tick();
+            cryptoTimerInterval = setInterval(tick, 1000);
+        }
+
         function selectCrypto(type) {
+            currentCryptoType = type;
             var display = document.getElementById('payment-display');
             var addressInput = document.getElementById('wallet-address');
             var qrImage = document.getElementById('qr-image');
@@ -1258,6 +1341,8 @@
             var qrMap = { btc: 'btc.JPG', eth: 'eth.JPG', usdt: 'usdt.JPG', ltc: 'ltc.JPG' };
             qrImage.src = qrMap[type];
             document.getElementById('copy-status').classList.add('hidden');
+            fetchCryptoRate(type);
+            startCryptoTimer(type);
         }
 
         async function copyAddress() {
@@ -1290,13 +1375,10 @@
                 return;
             }
             var atPos = val.indexOf('@');
-            var hasDomainDot = atPos > -1 && val.indexOf('.', atPos) > atPos + 1;
-            // Stay neutral while still completing the domain
-            if (!hasDomainDot) {
-                input.style.borderBottomColor = '';
-                icon.innerText = '';
-                return;
-            }
+            if (atPos === -1) { input.style.borderBottomColor = ''; icon.innerText = ''; return; }
+            var afterAt = val.slice(atPos + 1);
+            var hasDomainDot = afterAt.indexOf('.') > 0;
+            if (!hasDomainDot) { input.style.borderBottomColor = ''; icon.innerText = ''; return; }
             var valid = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val);
             if (valid) {
                 input.style.borderBottomColor = '#16a34a';
@@ -1366,6 +1448,15 @@
                 var shippingCost = SHIPPING_OPTIONS[selectedShipping].price;
                 var subtotal = cart.reduce(function(s, i) { return s + i.price; }, 0);
 
+                // Generate short human-readable order ID
+                var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+                var orderId = 'FP-';
+                for (var i = 0; i < 4; i++) orderId += chars[Math.floor(Math.random() * chars.length)];
+
+                var cryptoAmountStr = (currentCryptoAmount && currentCryptoType)
+                    ? currentCryptoAmount + ' ' + cryptoSymbols[currentCryptoType]
+                    : null;
+
                 var insertResult = await supabaseClient.from('orders').insert([{
                     customer_name: name,
                     customer_email: email,
@@ -1375,10 +1466,15 @@
                     shipping_method: selectedShipping,
                     shipping_cost: shippingCost,
                     payment_method: cryptoType,
-                    proof_url: proofUrl
+                    proof_url: proofUrl,
+                    order_id: orderId,
+                    crypto_amount: cryptoAmountStr
                 }]);
 
                 if (insertResult.error) throw insertResult.error;
+
+                // Stop countdown — order placed
+                if (cryptoTimerInterval) clearInterval(cryptoTimerInterval);
 
                 // Show beautiful success overlay
                 showOrderSuccess({
@@ -1387,7 +1483,9 @@
                     total: subtotal + shippingCost,
                     shipping: selectedShipping,
                     shippingCost: shippingCost,
-                    crypto: cryptoType
+                    crypto: cryptoType,
+                    orderId: orderId,
+                    cryptoAmount: cryptoAmountStr
                 });
                 clearCart();
             } catch (err) {
@@ -1405,6 +1503,10 @@
             overlay.classList.remove('hidden');
             overlay.classList.add('flex');
 
+            // Populate order ID
+            var orderIdEl = document.getElementById('success-order-id');
+            if (orderIdEl) orderIdEl.innerText = data.orderId || '';
+
             // Build summary
             var grouped = {};
             data.items.forEach(function(item) {
@@ -1415,18 +1517,24 @@
             var summaryHtml = Object.keys(grouped).map(function(name) {
                 var g = grouped[name];
                 return '<div class="flex justify-between pixel-font text-base">'
-                    + '<span class="uppercase font-bold">' + name + ' <span class="opacity-50">×' + g.count + '</span></span>'
+                    + '<span class="uppercase font-bold">' + name + ' <span class="opacity-50">x' + g.count + '</span></span>'
                     + '<span class="opacity-70">$' + (g.price * g.count).toFixed(2) + '</span>'
                     + '</div>';
             }).join('');
             summaryHtml += '<div class="flex justify-between pixel-font text-base pt-2 border-t border-beige-950/10 dark:border-beige-100/10 mt-2">'
-                + '<span class="uppercase opacity-60">' + (data.shipping === 'express' ? '⚡ Express' : '📦 Standard') + ' shipping</span>'
+                + '<span class="uppercase opacity-60">' + (data.shipping === 'express' ? 'Express' : 'Standard') + ' Shipping</span>'
                 + '<span class="opacity-70">$' + data.shippingCost.toFixed(2) + '</span>'
                 + '</div>';
-            summaryHtml += '<div class="flex justify-between pixel-font text-lg font-black pt-2">'
-                + '<span class="uppercase">Total</span>'
+            summaryHtml += '<div class="flex justify-between pixel-font text-lg font-black pt-2 border-t border-beige-950/10 dark:border-beige-100/10 mt-2">'
+                + '<span class="uppercase">Total (USD)</span>'
                 + '<span>$' + data.total.toFixed(2) + '</span>'
                 + '</div>';
+            if (data.cryptoAmount) {
+                summaryHtml += '<div class="flex justify-between pixel-font text-base pt-1">'
+                    + '<span class="uppercase opacity-60">Crypto Sent</span>'
+                    + '<span class="font-black text-green-600">' + data.cryptoAmount + '</span>'
+                    + '</div>';
+            }
 
             var sumEl = document.getElementById('success-order-summary');
             if (sumEl) sumEl.innerHTML = summaryHtml;
@@ -1434,7 +1542,6 @@
             // Navigate to home behind overlay
             showPage('home');
         }
-
         function closeOrderSuccess() {
             var overlay = document.getElementById('order-success');
             overlay.style.opacity = '0';
@@ -2985,7 +3092,7 @@
                     // Header
                     + '<div class="px-5 py-4 border-b border-beige-950/10 dark:border-beige-100/10 flex justify-between items-start gap-4">'
                     + '<div class="min-w-0">'
-                    + '<p class="pixel-font text-xs opacity-40 uppercase">' + date + '</p>'
+                    + '<p class="pixel-font text-xs opacity-40 uppercase">' + date + (o.order_id ? ' &nbsp;&bull;&nbsp; <span class="text-green-600 font-black">' + o.order_id + '</span>' : '') + '</p>'
                     + '<p class="pixel-font text-xl font-black uppercase truncate">' + (o.customer_name || 'Unknown') + '</p>'
                     + '<p class="pixel-font text-sm opacity-50 truncate">' + (o.customer_email || '') + '</p>'
                     + '</div>'
@@ -3003,6 +3110,7 @@
                     + '<div class="space-y-3">'
                     + '<div><p class="pixel-font text-xs uppercase opacity-40">Shipping</p><p class="pixel-font text-sm font-bold uppercase">' + (o.shipping_method === 'express' ? '⚡ Express' : '📦 Standard') + ' · $' + parseFloat(o.shipping_cost || 0).toFixed(2) + '</p></div>'
                     + '<div><p class="pixel-font text-xs uppercase opacity-40">Payment Method</p><p class="pixel-font text-sm font-bold uppercase">' + (o.payment_method || 'N/A') + '</p></div>'
+                    + '<div><p class="pixel-font text-xs uppercase opacity-40">Crypto Amount</p><p class="pixel-font text-sm font-black text-green-600">' + (o.crypto_amount || '—') + '</p></div>'
                     + '<div><p class="pixel-font text-xs uppercase opacity-40">Delivery Address</p><p class="pixel-font text-sm opacity-60" style="white-space:pre-wrap">' + (o.shipping_address || '—') + '</p></div>'
                     + '<div>' + proofHtml + '</div>'
                     + '</div>'
