@@ -1277,12 +1277,27 @@
         function validateEmailInput(input) {
             var val = input.value.trim();
             var valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
-            var wrap = input.parentElement;
-            var icon = wrap.querySelector('.email-val-icon');
-            if (!icon) { icon = document.createElement('span'); icon.className = 'email-val-icon'; wrap.style.position = 'relative'; wrap.appendChild(icon); }
-            if (val.length === 0) { input.classList.remove('email-input-valid','email-input-invalid'); icon.innerText = ''; }
-            else if (valid) { input.classList.add('email-input-valid'); input.classList.remove('email-input-invalid'); icon.className='email-val-icon email-valid-check'; icon.innerText='✓'; }
-            else { input.classList.add('email-input-invalid'); input.classList.remove('email-input-valid'); icon.className='email-val-icon email-invalid-x'; icon.innerText='✗'; }
+            // Find or create icon sibling — inject after input, not in wrapper
+            var iconId = 'email-icon-' + input.id;
+            var icon = document.getElementById(iconId);
+            if (!icon) {
+                icon = document.createElement('span');
+                icon.id = iconId;
+                icon.style.cssText = 'position:absolute;right:4px;top:50%;transform:translateY(-50%);font-size:1.1rem;pointer-events:none;z-index:5;';
+                input.parentElement.appendChild(icon);
+            }
+            if (val.length === 0) {
+                input.style.borderBottomColor = '';
+                icon.innerText = '';
+            } else if (valid) {
+                input.style.borderBottomColor = '#16a34a';
+                icon.style.color = '#16a34a';
+                icon.innerText = '✓';
+            } else {
+                input.style.borderBottomColor = '#dc2626';
+                icon.style.color = '#dc2626';
+                icon.innerText = '✗';
+            }
         }
         document.querySelectorAll('input[type="email"]').forEach(function(el) {
             el.addEventListener('input', function() { validateEmailInput(el); });
@@ -2944,9 +2959,6 @@
                     ? '<a href="' + o.proof_url + '" target="_blank" class="pixel-font text-sm underline text-blue-500 uppercase font-bold">View Proof ↗</a>'
                     : '<span class="pixel-font text-sm opacity-30 uppercase">No proof uploaded</span>';
 
-                // Escape the id for safe use in onclick
-                var oid = String(o.id).replace(/'/g, "\\'");
-
                 return '<div class="border-2 ' + (isFulfilled ? 'border-beige-950/20 dark:border-beige-100/20' : 'border-beige-950 dark:border-beige-100') + ' bg-white dark:bg-zinc-900 overflow-hidden ' + (isFulfilled ? 'opacity-60' : '') + '">'
                     // Header
                     + '<div class="px-5 py-4 border-b border-beige-950/10 dark:border-beige-100/10 flex justify-between items-start gap-4">'
@@ -2976,10 +2988,10 @@
                     // Action bar
                     + '<div class="px-5 py-3 border-t border-beige-950/10 dark:border-beige-100/10 flex items-center gap-3 bg-beige-50 dark:bg-zinc-800/50">'
                     + (isFulfilled
-                        ? '<button onclick="orderAction(\'unarchive\',\'' + oid + '\')" class="pixel-font text-sm uppercase font-bold px-3 py-1.5 border-2 border-beige-950 dark:border-beige-100 hover:bg-beige-200 dark:hover:bg-zinc-700 transition-colors">↩ Unarchive</button>'
-                        : '<button onclick="orderAction(\'fulfill\',\'' + oid + '\')" class="pixel-font text-sm uppercase font-black px-4 py-1.5 bg-green-600 text-white hover:bg-green-700 transition-colors">✓ Fulfill</button>'
+                        ? '<button class="order-action-btn pixel-font text-sm uppercase font-bold px-3 py-1.5 border-2 border-beige-950 dark:border-beige-100 hover:bg-beige-200 dark:hover:bg-zinc-700 transition-colors" data-action="unarchive" data-id="' + o.id + '">↩ Unarchive</button>'
+                        : '<button class="order-action-btn pixel-font text-sm uppercase font-black px-4 py-1.5 bg-green-600 text-white hover:bg-green-700 transition-colors" data-action="fulfill" data-id="' + o.id + '">✓ Fulfill</button>'
                       )
-                    + '<button onclick="orderAction(\'delete\',\'' + oid + '\')" class="pixel-font text-sm uppercase font-bold px-3 py-1.5 bg-red-600 text-white hover:bg-red-700 transition-colors ml-auto">Delete</button>'
+                    + '<button class="order-action-btn pixel-font text-sm uppercase font-bold px-3 py-1.5 bg-red-600 text-white hover:bg-red-700 transition-colors ml-auto" data-action="delete" data-id="' + o.id + '">Delete</button>'
                     + '</div>'
                     + '</div>';
             }
@@ -3009,6 +3021,13 @@
                 + '</div>';
 
             container.innerHTML = html;
+
+            // Wire up action buttons via delegation (avoids inline onclick escaping issues)
+            container.querySelectorAll('.order-action-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    orderAction(btn.getAttribute('data-action'), btn.getAttribute('data-id'));
+                });
+            });
         }
 
         function toggleOrderArchive(btn) {
