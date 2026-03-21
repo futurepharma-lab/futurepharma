@@ -1276,8 +1276,6 @@
         // 7. Email input live validation
         function validateEmailInput(input) {
             var val = input.value.trim();
-            var valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
-            // Find or create icon sibling — inject after input, not in wrapper
             var iconId = 'email-icon-' + input.id;
             var icon = document.getElementById(iconId);
             if (!icon) {
@@ -1289,7 +1287,18 @@
             if (val.length === 0) {
                 input.style.borderBottomColor = '';
                 icon.innerText = '';
-            } else if (valid) {
+                return;
+            }
+            var atPos = val.indexOf('@');
+            var hasDomainDot = atPos > -1 && val.indexOf('.', atPos) > atPos + 1;
+            // Stay neutral while still completing the domain
+            if (!hasDomainDot) {
+                input.style.borderBottomColor = '';
+                icon.innerText = '';
+                return;
+            }
+            var valid = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val);
+            if (valid) {
                 input.style.borderBottomColor = '#16a34a';
                 icon.style.color = '#16a34a';
                 icon.innerText = '✓';
@@ -1448,19 +1457,32 @@
                     var parts = val.split('@');
                     var user = parts[0];
                     var domain = parts[1] || '';
-                    box.innerHTML = providers.filter(function(p) { return p.startsWith(domain); })
-                        .map(function(p) {
-                            return '<div class="suggestion-item" onclick="selectEmail(\'' + inputId + '\', \'' + suggestionId + '\', \'' + user + '@' + p + '\')">' + user + '@' + p + '</div>';
-                        }).join('');
-                    box.style.display = box.innerHTML ? 'block' : 'none';
+                    var matches = providers.filter(function(p) { return p.startsWith(domain); });
+                    box.innerHTML = matches.map(function(p) {
+                        return '<div class="suggestion-item" data-full="' + user + '@' + p + '">' + user + '@' + p + '</div>';
+                    }).join('');
+                    box.style.display = matches.length ? 'block' : 'none';
                 } else {
                     box.style.display = 'none';
                 }
             });
+            // mousedown fires before blur, so the click registers before the box hides
+            box.addEventListener('mousedown', function(e) {
+                var item = e.target.closest('.suggestion-item');
+                if (!item) return;
+                e.preventDefault();
+                input.value = item.getAttribute('data-full');
+                box.style.display = 'none';
+                validateEmailInput(input);
+            });
         }
         function selectEmail(inputId, suggestionId, fullEmail) {
-            document.getElementById(inputId).value = fullEmail;
-            document.getElementById(suggestionId).style.display = 'none';
+            var inp = document.getElementById(inputId);
+            if (!inp) return;
+            inp.value = fullEmail;
+            var box = document.getElementById(suggestionId);
+            if (box) box.style.display = 'none';
+            validateEmailInput(inp);
         }
         initEmailAutocomplete('contact-email', 'contact-email-suggestions');
         initEmailAutocomplete('checkout-email', 'checkout-email-suggestions');
