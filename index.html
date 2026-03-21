@@ -450,6 +450,7 @@
                     <button onclick="showPage('lab-testing')" class="nav-link">LAB TESTING</button>
                     <button onclick="showPage('bespoke')" class="nav-link">BESPOKE</button>
                     <button onclick="showPage('contact')" class="nav-link">CONTACT</button>
+                    <button onclick="showPage('order-tracking')" class="nav-link">TRACK ORDER</button>
                     <button onclick="if(cart&&cart.length>0){showPage('order-page')}else{showCartEmptyNotice()}" class="bg-beige-950 text-beige-100 px-6 py-2 rounded-sm hover:invert transition-all">ORDER NOW</button>
                 </div>
 
@@ -994,6 +995,103 @@
                 </div>
             </div>
         </main>
+        <!-- ORDER TRACKING -->
+        <main id="order-tracking" class="page-section pt-32 pb-20">
+            <div class="max-w-3xl mx-auto px-6">
+                <h2 class="text-5xl font-black uppercase tracking-tighter mb-2">Track Your Order</h2>
+                <p class="pixel-font text-lg opacity-50 uppercase mb-10">Enter your order code to view your receipt and live status</p>
+
+                <!-- Lookup box -->
+                <div class="bg-white dark:bg-zinc-900 border-4 border-beige-950 dark:border-beige-100 shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] p-8 mb-10">
+                    <div class="flex gap-3">
+                        <input type="text" id="tracking-input" placeholder="e.g. FP-K7MN"
+                            class="flex-grow p-4 border-2 border-beige-950 dark:border-beige-100 bg-transparent outline-none pixel-font text-2xl uppercase tracking-widest"
+                            oninput="this.value=this.value.toUpperCase()"
+                            onkeydown="if(event.key==='Enter')lookupOrder()">
+                        <button onclick="lookupOrder()" class="bg-beige-950 dark:bg-beige-100 text-beige-50 dark:text-beige-950 px-8 pixel-font text-xl font-black uppercase hover:invert transition-all">
+                            Search
+                        </button>
+                    </div>
+                    <p id="tracking-error" class="pixel-font text-red-500 text-base uppercase font-bold mt-3 hidden"></p>
+                </div>
+
+                <!-- Result area -->
+                <div id="tracking-result" class="hidden space-y-8">
+
+                    <!-- Progress pipeline -->
+                    <div class="bg-white dark:bg-zinc-900 border-4 border-beige-950 dark:border-beige-100 shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] p-8">
+                        <p class="pixel-font text-xs uppercase opacity-40 mb-6">Order Progress</p>
+                        <div id="tracking-pipeline" class="relative"></div>
+                    </div>
+
+                    <!-- Receipt -->
+                    <div class="bg-white dark:bg-zinc-900 border-4 border-beige-950 dark:border-beige-100 shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] overflow-hidden">
+                        <!-- Receipt header -->
+                        <div class="bg-beige-950 dark:bg-beige-100 text-beige-50 dark:text-beige-950 px-8 py-5 flex justify-between items-center">
+                            <div>
+                                <p class="pixel-font text-xs uppercase opacity-60 mb-0.5">Order Receipt</p>
+                                <p id="receipt-order-id" class="pixel-font text-2xl font-black"></p>
+                            </div>
+                            <div class="text-right">
+                                <p class="pixel-font text-xs uppercase opacity-60 mb-0.5">Date Placed</p>
+                                <p id="receipt-date" class="pixel-font text-base font-bold"></p>
+                            </div>
+                        </div>
+                        <!-- Customer info -->
+                        <div class="grid md:grid-cols-2 gap-0 border-b-2 border-beige-950/10 dark:border-beige-100/10">
+                            <div class="px-8 py-5 border-r-0 md:border-r-2 border-beige-950/10 dark:border-beige-100/10">
+                                <p class="pixel-font text-xs uppercase opacity-40 mb-1">Customer</p>
+                                <p id="receipt-name" class="pixel-font text-lg font-bold"></p>
+                                <p id="receipt-email" class="pixel-font text-sm opacity-50"></p>
+                            </div>
+                            <div class="px-8 py-5">
+                                <p class="pixel-font text-xs uppercase opacity-40 mb-1">Delivery Address</p>
+                                <p id="receipt-address" class="pixel-font text-sm opacity-70" style="white-space:pre-wrap"></p>
+                            </div>
+                        </div>
+                        <!-- Items -->
+                        <div class="px-8 py-5 border-b-2 border-beige-950/10 dark:border-beige-100/10">
+                            <p class="pixel-font text-xs uppercase opacity-40 mb-3">Items Ordered</p>
+                            <div id="receipt-items" class="space-y-2"></div>
+                        </div>
+                        <!-- Totals -->
+                        <div class="px-8 py-5 border-b-2 border-beige-950/10 dark:border-beige-100/10 space-y-2">
+                            <div class="flex justify-between pixel-font text-base">
+                                <span class="uppercase opacity-60" id="receipt-shipping-label">Standard Shipping</span>
+                                <span id="receipt-shipping-cost"></span>
+                            </div>
+                            <div class="flex justify-between pixel-font text-xl font-black">
+                                <span class="uppercase">Total</span>
+                                <span id="receipt-total"></span>
+                            </div>
+                            <div class="flex justify-between pixel-font text-sm" id="receipt-crypto-row">
+                                <span class="uppercase opacity-60">Crypto Paid</span>
+                                <span id="receipt-crypto" class="text-green-600 font-bold"></span>
+                            </div>
+                        </div>
+                        <!-- Payment + shipping -->
+                        <div class="grid md:grid-cols-2 gap-0 px-8 py-5">
+                            <div class="md:border-r-2 border-beige-950/10 dark:border-beige-100/10 md:pr-8">
+                                <p class="pixel-font text-xs uppercase opacity-40 mb-1">Payment Method</p>
+                                <p id="receipt-payment" class="pixel-font text-base font-bold uppercase"></p>
+                            </div>
+                            <div class="md:pl-8 mt-4 md:mt-0">
+                                <p class="pixel-font text-xs uppercase opacity-40 mb-1">Tracking Number</p>
+                                <p id="receipt-tracking" class="pixel-font text-base font-bold"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status history -->
+                    <div class="bg-white dark:bg-zinc-900 border-4 border-beige-950 dark:border-beige-100 shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] px-8 py-6">
+                        <p class="pixel-font text-xs uppercase opacity-40 mb-5">Status History</p>
+                        <div id="tracking-history" class="space-y-4"></div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+
     </div>
 
     <!-- Order Success Overlay -->
@@ -1485,7 +1583,8 @@
                     payment_method: cryptoType,
                     proof_url: proofUrl,
                     order_id: orderId,
-                    crypto_amount: cryptoAmountStr
+                    crypto_amount: cryptoAmountStr,
+                    status_history: JSON.stringify([{ status: 'pending', timestamp: new Date().toISOString() }])
                 }]);
 
                 if (insertResult.error) throw insertResult.error;
@@ -1897,7 +1996,8 @@
             'bespoke': 'Bespoke Synthesis | FuturePharma',
             'contact': 'Contact | FuturePharma',
             'order-page': 'Order | FuturePharma',
-            'crypto-checkout': 'Checkout | FuturePharma'
+            'crypto-checkout': 'Checkout | FuturePharma',
+            'order-tracking': 'Track Order | FuturePharma'
         };
 
         function showPage(id) {
@@ -3132,13 +3232,24 @@
                     + '<div>' + proofHtml + '</div>'
                     + '</div>'
                     + '</div>'
-                    // Action bar
-                    + '<div class="px-5 py-3 border-t border-beige-950/10 dark:border-beige-100/10 flex items-center gap-3 bg-beige-50 dark:bg-zinc-800/50">'
-                    + (isFulfilled
-                        ? '<button class="order-action-btn pixel-font text-sm uppercase font-bold px-3 py-1.5 border-2 border-beige-950 dark:border-beige-100 hover:bg-beige-200 dark:hover:bg-zinc-700 transition-colors" data-action="unarchive" data-id="' + o.id + '">↩ Unarchive</button>'
-                        : '<button class="order-action-btn pixel-font text-sm uppercase font-black px-4 py-1.5 bg-green-600 text-white hover:bg-green-700 transition-colors" data-action="fulfill" data-id="' + o.id + '">✓ Fulfill</button>'
-                      )
+                    // Action bar — status dropdown + tracking number + delete
+                    + '<div class="px-5 py-4 border-t border-beige-950/10 dark:border-beige-100/10 bg-beige-50 dark:bg-zinc-800/50 space-y-3">'
+                    + '<div class="flex flex-wrap items-center gap-3">'
+                    + '<label class="pixel-font text-xs uppercase opacity-50 whitespace-nowrap">Set Status:</label>'
+                    + '<select class="order-action-btn pixel-font text-sm uppercase font-bold px-3 py-1.5 border-2 border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-800 text-beige-950 dark:text-beige-100 outline-none" data-action="setstatus" data-id="' + o.id + '">'
+                    + '<option value="pending"' + (o.status==='pending'?' selected':'') + '>Order Received</option>'
+                    + '<option value="payment_confirmed"' + (o.status==='payment_confirmed'?' selected':'') + '>Payment Confirmed</option>'
+                    + '<option value="processing"' + (o.status==='processing'?' selected':'') + '>Processing</option>'
+                    + '<option value="shipped"' + (o.status==='shipped'?' selected':'') + '>Shipped / In Transit</option>'
+                    + '<option value="arrived"' + ((o.status==='arrived'||o.status==='fulfilled')?' selected':'') + '>Arrived</option>'
+                    + '</select>'
                     + '<button class="order-action-btn pixel-font text-sm uppercase font-bold px-3 py-1.5 bg-red-600 text-white hover:bg-red-700 transition-colors ml-auto" data-action="delete" data-id="' + o.id + '">Delete</button>'
+                    + '</div>'
+                    + '<div class="flex items-center gap-2">'
+                    + '<label class="pixel-font text-xs uppercase opacity-50 whitespace-nowrap">Tracking No:</label>'
+                    + '<input type="text" placeholder="e.g. 1Z999AA10123456784" value="' + (o.tracking_number||'') + '" class="order-tracking-input flex-grow p-1.5 border-2 border-beige-950/30 dark:border-beige-100/30 bg-white dark:bg-zinc-800 text-beige-950 dark:text-beige-100 outline-none pixel-font text-sm" data-id="' + o.id + '">'
+                    + '<button class="order-action-btn pixel-font text-xs uppercase font-bold px-3 py-1.5 border-2 border-beige-950 dark:border-beige-100 hover:bg-beige-200 dark:hover:bg-zinc-700 whitespace-nowrap" data-action="savetracking" data-id="' + o.id + '">Save</button>'
+                    + '</div>'
                     + '</div>'
                     + '</div>';
             }
@@ -3171,8 +3282,23 @@
 
             // Wire up action buttons via delegation (avoids inline onclick escaping issues)
             container.querySelectorAll('.order-action-btn').forEach(function(btn) {
+                btn.addEventListener('change', function() {
+                    // select (setstatus) fires on change
+                    if (btn.tagName === 'SELECT') {
+                        orderAction('setstatus', btn.getAttribute('data-id'), btn.value);
+                    }
+                });
                 btn.addEventListener('click', function() {
-                    orderAction(btn.getAttribute('data-action'), btn.getAttribute('data-id'));
+                    if (btn.tagName === 'SELECT') return; // handled by change
+                    var action = btn.getAttribute('data-action');
+                    var id = btn.getAttribute('data-id');
+                    if (action === 'savetracking') {
+                        // Find the tracking input for this order
+                        var inp = container.querySelector('.order-tracking-input[data-id="' + id + '"]');
+                        orderAction('savetracking', id, inp ? inp.value : '');
+                    } else {
+                        orderAction(action, id);
+                    }
                 });
             });
         }
@@ -3185,7 +3311,7 @@
             btn.querySelector('span').innerText = isOpen ? '▸' : '▾';
         }
 
-        async function orderAction(action, orderId) {
+        async function orderAction(action, orderId, extra) {
             if (action === 'delete') {
                 if (!confirm('Permanently delete this order? This cannot be undone.')) return;
                 try {
@@ -3194,22 +3320,36 @@
                     showAdminToast('Order deleted');
                     loadAdminOrders();
                 } catch(err) { showAdminToast('Delete failed: ' + err.message, true); }
-            } else if (action === 'fulfill') {
+
+            } else if (action === 'setstatus') {
+                var newStatus = extra;
                 try {
-                    var r = await supabaseClient.from('orders').update({ status: 'fulfilled' }).eq('id', orderId);
+                    var fetched = await supabaseClient.from('orders').select('status_history').eq('id', orderId).single();
+                    var history = [];
+                    if (fetched.data && fetched.data.status_history) {
+                        history = typeof fetched.data.status_history === 'string'
+                            ? JSON.parse(fetched.data.status_history)
+                            : (fetched.data.status_history || []);
+                    }
+                    history.push({ status: newStatus, timestamp: new Date().toISOString() });
+                    var r = await supabaseClient.from('orders').update({
+                        status: newStatus,
+                        status_history: history
+                    }).eq('id', orderId);
                     if (r.error) throw r.error;
-                    showAdminToast('Order fulfilled ✓');
+                    showAdminToast('Status updated');
                     loadAdminOrders();
                 } catch(err) { showAdminToast('Failed: ' + err.message, true); }
-            } else if (action === 'unarchive') {
+
+            } else if (action === 'savetracking') {
                 try {
-                    var r = await supabaseClient.from('orders').update({ status: 'pending' }).eq('id', orderId);
+                    var r = await supabaseClient.from('orders').update({ tracking_number: extra }).eq('id', orderId);
                     if (r.error) throw r.error;
-                    showAdminToast('Order unarchived');
-                    loadAdminOrders();
+                    showAdminToast('Tracking number saved');
                 } catch(err) { showAdminToast('Failed: ' + err.message, true); }
             }
         }
+
 
         // ============================================================
         var dragSrcIdx = null;
@@ -3270,6 +3410,174 @@
                 }
                 card.setAttribute('draggable', 'false'); // default off until handle grabbed
             });
+        }
+
+
+        // ============================================================
+        // ORDER TRACKING
+        // ============================================================
+        var ORDER_STATUSES = [
+            { key: 'pending',           label: 'Order Received',     icon: '\u2713', desc: 'We have received your order and are awaiting payment confirmation.' },
+            { key: 'payment_confirmed', label: 'Payment Confirmed',   icon: '\u20BF', desc: 'Your payment has been verified on the blockchain.' },
+            { key: 'processing',        label: 'Processing Order',    icon: '\u2697', desc: 'Your peptides are being prepared and quality checked.' },
+            { key: 'shipped',           label: 'Shipped / In Transit', icon: '\u2708', desc: 'Your package is on its way.' },
+            { key: 'arrived',           label: 'Arrived',             icon: '\u2605', desc: 'Your order has been delivered.' }
+        ];
+        // Map legacy 'fulfilled' to 'arrived'
+        function normaliseStatus(s) {
+            if (s === 'fulfilled') return 'arrived';
+            return s || 'pending';
+        }
+
+        async function lookupOrder() {
+            var code = document.getElementById('tracking-input').value.trim().toUpperCase();
+            var errEl = document.getElementById('tracking-error');
+            var resultEl = document.getElementById('tracking-result');
+            errEl.classList.add('hidden');
+            resultEl.classList.add('hidden');
+
+            if (!code) { errEl.innerText = 'Please enter an order code.'; errEl.classList.remove('hidden'); return; }
+
+            try {
+                var r = await supabaseClient.from('orders').select('*').eq('order_id', code).single();
+                if (r.error || !r.data) {
+                    errEl.innerText = 'No order found with that code. Please check and try again.';
+                    errEl.classList.remove('hidden');
+                    return;
+                }
+                renderTrackingResult(r.data);
+            } catch(e) {
+                errEl.innerText = 'Could not connect. Please try again.';
+                errEl.classList.remove('hidden');
+            }
+        }
+
+        function renderTrackingResult(o) {
+            var status = normaliseStatus(o.status);
+            var statusIdx = ORDER_STATUSES.findIndex(function(s) { return s.key === status; });
+            if (statusIdx < 0) statusIdx = 0;
+
+            // ── Pipeline ──────────────────────────────────────────
+            var pipelineEl = document.getElementById('tracking-pipeline');
+            var pipeHtml = '<div class="flex items-start gap-0">';
+            ORDER_STATUSES.forEach(function(s, i) {
+                var done = i <= statusIdx;
+                var active = i === statusIdx;
+                var last = i === ORDER_STATUSES.length - 1;
+                pipeHtml += '<div class="flex flex-col items-center flex-1 min-w-0">'
+                    // Circle
+                    + '<div class="relative flex items-center justify-center w-10 h-10 border-3 font-black pixel-font text-lg flex-shrink-0 '
+                    + (active ? 'bg-beige-950 dark:bg-beige-100 text-beige-50 dark:text-beige-950 border-beige-950 dark:border-beige-100 ring-4 ring-beige-950/20 dark:ring-beige-100/20'
+                              : done ? 'bg-green-500 text-white border-green-500'
+                              : 'bg-white dark:bg-zinc-900 text-beige-950/20 dark:text-beige-100/20 border-beige-950/20 dark:border-beige-100/20')
+                    + '" style="border-width:2px;">'
+                    + (done && !active ? '\u2713' : (active ? s.icon : ''))
+                    + '</div>';
+                // Connector line
+                if (!last) {
+                    pipeHtml += '</div>'
+                        + '<div class="flex-1 h-0.5 mt-5 flex-shrink-0 '
+                        + (i < statusIdx ? 'bg-green-500' : 'bg-beige-950/15 dark:bg-beige-100/15')
+                        + '"></div>';
+                } else {
+                    pipeHtml += '</div>';
+                }
+            });
+            pipeHtml += '</div>';
+            // Labels row
+            pipeHtml += '<div class="flex items-start gap-0 mt-3">';
+            ORDER_STATUSES.forEach(function(s, i) {
+                var done = i <= statusIdx;
+                var active = i === statusIdx;
+                pipeHtml += '<div class="flex-1 flex flex-col items-center min-w-0 px-1">'
+                    + '<p class="pixel-font text-xs text-center leading-tight uppercase font-bold '
+                    + (active ? 'text-beige-950 dark:text-beige-100' : done ? 'text-green-600' : 'opacity-25')
+                    + '">' + s.label + '</p>'
+                    + '</div>';
+                if (i < ORDER_STATUSES.length - 1) pipeHtml += '<div class="flex-1"></div>';
+            });
+            pipeHtml += '</div>';
+            // Active step description
+            var cur = ORDER_STATUSES[statusIdx];
+            pipeHtml += '<div class="mt-6 px-5 py-3 bg-beige-50 dark:bg-zinc-800 border-l-4 border-beige-950 dark:border-beige-100">'
+                + '<p class="pixel-font text-sm uppercase font-bold mb-0.5">' + cur.label + '</p>'
+                + '<p class="pixel-font text-xs opacity-60">' + cur.desc + '</p>'
+                + '</div>';
+            pipelineEl.innerHTML = pipeHtml;
+
+            // ── Receipt ───────────────────────────────────────────
+            document.getElementById('receipt-order-id').innerText = o.order_id || '—';
+            document.getElementById('receipt-date').innerText = o.created_at ? new Date(o.created_at).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) : '—';
+            document.getElementById('receipt-name').innerText = o.customer_name || '—';
+            document.getElementById('receipt-email').innerText = o.customer_email || '';
+            document.getElementById('receipt-address').innerText = o.shipping_address || '—';
+            document.getElementById('receipt-shipping-label').innerText = (o.shipping_method === 'express' ? 'Express' : 'Standard') + ' Shipping';
+            document.getElementById('receipt-shipping-cost').innerText = '$' + parseFloat(o.shipping_cost || 0).toFixed(2);
+            document.getElementById('receipt-total').innerText = '$' + parseFloat(o.total_price || 0).toFixed(2);
+            document.getElementById('receipt-payment').innerText = (o.payment_method || '—').toUpperCase();
+            var trackingNum = o.tracking_number || null;
+            document.getElementById('receipt-tracking').innerText = trackingNum || 'Not yet assigned';
+            // Crypto row
+            if (o.crypto_amount) {
+                document.getElementById('receipt-crypto').innerText = o.crypto_amount;
+                document.getElementById('receipt-crypto-row').style.display = '';
+            } else {
+                document.getElementById('receipt-crypto-row').style.display = 'none';
+            }
+            // Items
+            var itemsEl = document.getElementById('receipt-items');
+            var manifest = o.order_manifest;
+            if (typeof manifest === 'string') { try { manifest = JSON.parse(manifest); } catch(e) { manifest = []; } }
+            if (Array.isArray(manifest) && manifest.length) {
+                var grouped = {};
+                manifest.forEach(function(item) {
+                    var k = item.name || 'Unknown';
+                    if (!grouped[k]) grouped[k] = { count: 0, price: item.price || 0 };
+                    grouped[k].count++;
+                });
+                itemsEl.innerHTML = Object.keys(grouped).map(function(name) {
+                    var g = grouped[name];
+                    return '<div class="flex justify-between pixel-font text-base border-b border-beige-950/5 dark:border-beige-100/5 pb-2">'
+                        + '<span class="uppercase font-bold">' + name + ' <span class="opacity-40">x' + g.count + '</span></span>'
+                        + '<span class="opacity-70">$' + (g.price * g.count).toFixed(2) + '</span>'
+                        + '</div>';
+                }).join('');
+            } else {
+                itemsEl.innerHTML = '<p class="pixel-font text-sm opacity-40">No items found</p>';
+            }
+
+            // ── Status history ────────────────────────────────────
+            var historyEl = document.getElementById('tracking-history');
+            var history = o.status_history;
+            if (typeof history === 'string') { try { history = JSON.parse(history); } catch(e) { history = null; } }
+            if (!Array.isArray(history) || !history.length) {
+                // Synthesise a basic history from created_at + current status
+                history = [{ status: 'pending', timestamp: o.created_at }];
+                if (status !== 'pending') history.push({ status: status, timestamp: o.updated_at || o.created_at });
+            }
+            var statusLabels = {};
+            ORDER_STATUSES.forEach(function(s) { statusLabels[s.key] = s.label; });
+            var histHtml = '';
+            var reversedHistory = history.slice().reverse();
+            reversedHistory.forEach(function(entry, i) {
+                var sKey = normaliseStatus(entry.status);
+                var label = statusLabels[sKey] || entry.status;
+                var ts = entry.timestamp ? new Date(entry.timestamp).toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
+                var isLatest = i === 0;
+                histHtml += '<div class="flex gap-4 items-start">'
+                    + '<div class="flex flex-col items-center">'
+                    + '<div class="w-3 h-3 rounded-full mt-1 flex-shrink-0 ' + (isLatest ? 'bg-beige-950 dark:bg-beige-100' : 'bg-green-500') + '"></div>'
+                    + (i < reversedHistory.length - 1 ? '<div class="w-0.5 flex-1 bg-beige-950/10 dark:bg-beige-100/10 mt-1 mb-1" style="min-height:24px;"></div>' : '')
+                    + '</div>'
+                    + '<div class="pb-4">'
+                    + '<p class="pixel-font text-sm font-black uppercase ' + (isLatest ? '' : 'opacity-60') + '">' + label + '</p>'
+                    + '<p class="pixel-font text-xs opacity-40">' + ts + '</p>'
+                    + '</div>'
+                    + '</div>';
+            });
+            historyEl.innerHTML = histHtml;
+
+            document.getElementById('tracking-result').classList.remove('hidden');
         }
 
         updateMobileNav('home');
