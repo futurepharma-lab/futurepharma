@@ -63,7 +63,9 @@
         .dark body { background-color: #0F0F0F; color: #F5F5DC; }
         .dark nav { background-color: #0F0F0F; border-color: rgba(245, 245, 220, 0.2); }
         .dark .bg-white { background-color: #1A1A1A; color: #F5F5DC; border-color: #F5F5DC; }
-        .dark .product-card:hover { background-color: #252525; box-shadow: 10px 10px 0px 0px rgba(245, 245, 220, 0.2); }
+        .dark .product-card:hover { background-color: #252525; box-shadow: 8px 8px 0px 0px rgba(245, 245, 220, 0.25); }
+        .product-card { transition: box-shadow 0.15s ease, transform 0.15s ease, background-color 0.15s ease; }
+        .product-card:hover { box-shadow: 8px 8px 0px 0px rgba(28,28,22,1); transform: translate(-2px,-2px); }
         .dark .text-beige-800 { color: #D1D1D1; }
         .dark .nav-link::after { background: #F5F5DC; }
         .dark .bg-beige-950 { background-color: #F5F5DC; color: #0F0F0F; }
@@ -135,6 +137,12 @@
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
         }
+
+        /* 7. Email validation visual feedback */
+        .email-input-valid { border-bottom-color: #16a34a !important; }
+        .email-input-invalid { border-bottom-color: #dc2626 !important; }
+        .email-valid-check { position:absolute; right:0; top:50%; transform:translateY(-50%); color:#16a34a; font-size:1.2rem; pointer-events:none; }
+        .email-invalid-x { position:absolute; right:0; top:50%; transform:translateY(-50%); color:#dc2626; font-size:1.2rem; pointer-events:none; }
 
         /* 8. Sticky mobile catalog search */
         @media (max-width: 1023px) {
@@ -933,13 +941,13 @@
                                 </div>
                                 <div class="flex-grow w-full">
                                     <p class="pixel-font text-lg font-bold mb-2 uppercase opacity-60">Recipient Address:</p>
-                                    <div class="flex items-stretch border-2 border-beige-950 bg-white">
-                                        <input type="text" id="wallet-address" readonly class="flex-grow p-3 pixel-font text-lg outline-none bg-transparent">
-                                        <button type="button" onclick="copyAddress()" class="bg-beige-950 text-beige-100 px-4 hover:invert transition-all">
+                                    <div class="flex items-stretch border-2 border-beige-950 bg-white cursor-pointer group" onclick="copyAddress()" title="Tap to copy">
+                                        <input type="text" id="wallet-address" readonly class="flex-grow p-3 pixel-font text-lg outline-none bg-transparent cursor-pointer" placeholder="Select payment method">
+                                        <button type="button" class="bg-beige-950 text-beige-100 px-4 hover:invert transition-all shrink-0">
                                             <i data-lucide="copy" class="w-5 h-5"></i>
                                         </button>
                                     </div>
-                                    <p id="copy-status" class="pixel-font text-sm mt-2 text-green-700 font-bold hidden uppercase">Address Copied!</p>
+                                    <p id="copy-status" class="pixel-font text-sm mt-2 text-green-700 font-bold hidden uppercase">✓ Address Copied!</p>
                                 </div>
                             </div>
                         </div>
@@ -1002,11 +1010,61 @@
         </div>
     </div>
 
-    <footer class="w-full py-12 px-6 border-t border-beige-950/10 mt-20">
-        <div class="max-w-7xl mx-auto text-center">
-            <p class="text-sm leading-relaxed opacity-60">
-                <strong>Research Use Disclaimer:</strong> All products sold by FuturePharma are supplied strictly for laboratory research, analytical, or in-vitro testing purposes only.
-            </p>
+    <footer class="w-full border-t-4 border-beige-950 dark:border-beige-100 mt-20 bg-beige-950 dark:bg-beige-100 text-beige-50 dark:text-beige-950">
+        <div class="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-4 gap-12">
+            <!-- Brand -->
+            <div class="md:col-span-1">
+                <div class="flex items-center gap-3 mb-4">
+                    <svg viewBox="0 0 16 20" class="w-8 h-8" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="5" y="1" width="6" height="3" fill="#F5F5DC" stroke="#F5F5DC" stroke-width="0.3"/>
+                        <rect x="6" y="4" width="4" height="2" fill="#999" stroke="#F5F5DC" stroke-width="0.3"/>
+                        <rect x="4" y="6" width="8" height="11" fill="#FFF" stroke="#F5F5DC" stroke-width="0.3"/>
+                        <rect x="6" y="13" width="4" height="3" fill="#5DADE2"/>
+                        <rect x="5" y="8" width="6" height="4" fill="#E8E8C8"/>
+                    </svg>
+                    <span class="pixel-font text-2xl font-black uppercase tracking-tight">FuturePharma</span>
+                </div>
+                <p class="text-sm opacity-60 leading-relaxed">Precision peptide research compounds. HPLC-verified. Third-party tested. Delivered worldwide.</p>
+            </div>
+            <!-- Nav -->
+            <div>
+                <p class="pixel-font text-base font-black uppercase mb-4 opacity-50">Navigate</p>
+                <ul class="space-y-2 pixel-font text-lg">
+                    <li><button onclick="showPage('home')" class="opacity-70 hover:opacity-100 transition-opacity">Home</button></li>
+                    <li><button onclick="showPage('peptides')" class="opacity-70 hover:opacity-100 transition-opacity">Catalog</button></li>
+                    <li><button onclick="showPage('lab-testing')" class="opacity-70 hover:opacity-100 transition-opacity">Lab Testing</button></li>
+                    <li><button onclick="showPage('bespoke')" class="opacity-70 hover:opacity-100 transition-opacity">Bespoke</button></li>
+                    <li><button onclick="showPage('contact')" class="opacity-70 hover:opacity-100 transition-opacity">Contact</button></li>
+                </ul>
+            </div>
+            <!-- Info -->
+            <div>
+                <p class="pixel-font text-base font-black uppercase mb-4 opacity-50">Shipping</p>
+                <ul class="space-y-2 pixel-font text-lg opacity-70">
+                    <li>📦 Standard — up to 3 weeks</li>
+                    <li>⚡ Express — up to 5 days</li>
+                    <li>🌍 Worldwide delivery</li>
+                    <li>🔒 Discreet packaging</li>
+                </ul>
+            </div>
+            <!-- Payment -->
+            <div>
+                <p class="pixel-font text-base font-black uppercase mb-4 opacity-50">Payment</p>
+                <ul class="space-y-2 pixel-font text-lg opacity-70">
+                    <li>₿ Bitcoin (BTC)</li>
+                    <li>Ξ Ethereum (ETH)</li>
+                    <li>₮ Tether (USDT)</li>
+                    <li>Ł Litecoin (LTC)</li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-beige-50/10 dark:border-beige-950/10 px-6 py-6">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-xs opacity-40 text-center md:text-left leading-relaxed max-w-2xl">
+                    <strong>Research Use Only:</strong> All products are supplied strictly for laboratory research, analytical, or in-vitro testing purposes. Not for human consumption. By purchasing you confirm compliance with all applicable laws.
+                </p>
+                <p class="pixel-font text-sm opacity-30 shrink-0">© 2025 FuturePharma</p>
+            </div>
         </div>
     </footer>
 
@@ -1213,6 +1271,21 @@
         document.getElementById('payment-proof').addEventListener('change', function(e) {
             var fileName = e.target.files[0] ? e.target.files[0].name : 'Select Image File';
             document.getElementById('file-name-display').innerText = fileName;
+        });
+
+        // 7. Email input live validation
+        function validateEmailInput(input) {
+            var val = input.value.trim();
+            var valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+            var wrap = input.parentElement;
+            var icon = wrap.querySelector('.email-val-icon');
+            if (!icon) { icon = document.createElement('span'); icon.className = 'email-val-icon'; wrap.style.position = 'relative'; wrap.appendChild(icon); }
+            if (val.length === 0) { input.classList.remove('email-input-valid','email-input-invalid'); icon.innerText = ''; }
+            else if (valid) { input.classList.add('email-input-valid'); input.classList.remove('email-input-invalid'); icon.className='email-val-icon email-valid-check'; icon.innerText='✓'; }
+            else { input.classList.add('email-input-invalid'); input.classList.remove('email-input-valid'); icon.className='email-val-icon email-invalid-x'; icon.innerText='✗'; }
+        }
+        document.querySelectorAll('input[type="email"]').forEach(function(el) {
+            el.addEventListener('input', function() { validateEmailInput(el); });
         });
 
         function showCartEmptyNotice() {
@@ -1655,14 +1728,27 @@
         var cart = JSON.parse(localStorage.getItem('futurePharmaCart')) || [];
         var localCounts = {};
 
+        var PAGE_TITLES = {
+            'home': 'FuturePharma | The Future of Peptide Research',
+            'peptides': 'Catalog | FuturePharma',
+            'product-detail': 'Product | FuturePharma',
+            'lab-testing': 'Lab Testing | FuturePharma',
+            'bespoke': 'Bespoke Synthesis | FuturePharma',
+            'contact': 'Contact | FuturePharma',
+            'order-page': 'Order | FuturePharma',
+            'crypto-checkout': 'Checkout | FuturePharma'
+        };
+
         function showPage(id) {
             document.querySelectorAll('.page-section').forEach(function(p) { p.classList.remove('active'); });
             var target = document.getElementById(id);
             if (target) target.classList.add('active');
-            window.scrollTo(0, 0);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
             updateOrderSummary();
             lucide.createIcons();
-            // 5. Active nav indicator
+            // 12. Update page title
+            document.title = PAGE_TITLES[id] || 'FuturePharma';
+            // Active nav indicator
             var navMap = { home: 'HOME', peptides: 'PEPTIDES', 'lab-testing': 'LAB TESTING', bespoke: 'BESPOKE', contact: 'CONTACT' };
             document.querySelectorAll('.nav-link').forEach(function(btn) { btn.classList.remove('nav-active'); });
             document.querySelectorAll('.nav-link').forEach(function(btn) {
@@ -1774,6 +1860,7 @@
 
             document.getElementById('detail-content').innerHTML = vialSVG + rightPanel;
             updateHash(id);
+            document.title = (p.name || 'Product') + ' | FuturePharma';
             showPage('product-detail');
         }
 
@@ -2822,110 +2909,139 @@
         function renderAdminOrders(orders) {
             var container = document.getElementById('admin-orders-list');
             if (!orders.length) {
-                container.innerHTML = '<p class="pixel-font text-lg opacity-40 uppercase">No orders yet.</p>';
+                container.innerHTML = '<div class="text-center py-16"><p class="pixel-font text-2xl opacity-30 uppercase">No orders yet.</p></div>';
                 return;
             }
 
             var active = orders.filter(function(o) { return o.status !== 'fulfilled'; });
             var archived = orders.filter(function(o) { return o.status === 'fulfilled'; });
 
-            function buildOrderCard(o) {
-                var date = o.created_at ? new Date(o.created_at).toLocaleString() : 'Unknown date';
-                var manifest = '';
+            function buildManifest(o) {
                 try {
                     var items = Array.isArray(o.order_manifest) ? o.order_manifest : JSON.parse(o.order_manifest || '[]');
                     var grouped = {};
                     items.forEach(function(item) {
                         var key = item.name || 'Unknown';
-                        if (!grouped[key]) grouped[key] = { count: 0, price: item.price };
+                        if (!grouped[key]) grouped[key] = { count: 0, price: item.price || 0 };
                         grouped[key].count += 1;
                     });
-                    manifest = Object.keys(grouped).map(function(name) {
+                    return Object.keys(grouped).map(function(name) {
                         var g = grouped[name];
-                        return '<div class="flex justify-between text-sm py-0.5">'
-                            + '<span class="pixel-font uppercase font-bold">' + name + ' &times;' + g.count + '</span>'
-                            + '<span class="pixel-font opacity-60">$' + (g.price * g.count).toFixed(2) + '</span>'
+                        return '<div class="flex justify-between py-0.5">'
+                            + '<span class="pixel-font text-sm uppercase font-bold">' + name + ' <span class="opacity-40">×' + g.count + '</span></span>'
+                            + '<span class="pixel-font text-sm opacity-60">$' + (g.price * g.count).toFixed(2) + '</span>'
                             + '</div>';
                     }).join('');
-                } catch(e) { manifest = '<span class="opacity-40 text-xs">Could not parse manifest</span>'; }
+                } catch(e) { return '<span class="pixel-font text-xs opacity-40">Could not parse items</span>'; }
+            }
 
-                var statusColors = { confirmed: '#16a34a', pending: '#d97706', cancelled: '#dc2626', fulfilled: '#2563eb' };
-                var status = o.status || 'pending';
-                var isFulfilled = status === 'fulfilled';
+            function buildCard(o) {
+                var isFulfilled = o.status === 'fulfilled';
+                var date = o.created_at ? new Date(o.created_at).toLocaleString() : '—';
+                var statusColors = { pending:'#d97706', confirmed:'#16a34a', cancelled:'#dc2626', fulfilled:'#2563eb' };
+                var statusCol = statusColors[o.status] || '#888';
                 var proofHtml = o.proof_url
-                    ? '<a href="' + o.proof_url + '" target="_blank" class="pixel-font text-sm underline text-blue-600 dark:text-blue-400 uppercase">View Proof</a>'
-                    : '<span class="pixel-font text-sm opacity-40 uppercase">No proof</span>';
+                    ? '<a href="' + o.proof_url + '" target="_blank" class="pixel-font text-sm underline text-blue-500 uppercase font-bold">View Proof ↗</a>'
+                    : '<span class="pixel-font text-sm opacity-30 uppercase">No proof uploaded</span>';
 
-                var fulfillBtn = isFulfilled
-                    ? '<button onclick="setOrderStatus(\'' + o.id + '\', \'pending\')" class="pixel-font text-sm uppercase font-bold px-3 py-1.5 border-2 border-beige-950 dark:border-beige-100 text-beige-950 dark:text-beige-100 hover:bg-beige-200 dark:hover:bg-zinc-700 transition-colors">↩ Unarchive</button>'
-                    : '<button onclick="setOrderStatus(\'' + o.id + '\', \'fulfilled\')" class="pixel-font text-sm uppercase font-bold px-3 py-1.5 bg-green-600 text-white hover:bg-green-700 transition-colors flex items-center gap-1">✓ Mark Fulfilled</button>';
+                // Escape the id for safe use in onclick
+                var oid = String(o.id).replace(/'/g, "\\'");
 
-                return '<div class="bg-white dark:bg-zinc-900 border-2 ' + (isFulfilled ? 'border-beige-950/30 dark:border-beige-100/30 opacity-70' : 'border-beige-950 dark:border-beige-100') + ' overflow-hidden">'
-                    + '<div class="flex justify-between items-start px-5 py-4 border-b border-beige-950/10 dark:border-beige-100/10">'
+                return '<div class="border-2 ' + (isFulfilled ? 'border-beige-950/20 dark:border-beige-100/20' : 'border-beige-950 dark:border-beige-100') + ' bg-white dark:bg-zinc-900 overflow-hidden ' + (isFulfilled ? 'opacity-60' : '') + '">'
+                    // Header
+                    + '<div class="px-5 py-4 border-b border-beige-950/10 dark:border-beige-100/10 flex justify-between items-start gap-4">'
+                    + '<div class="min-w-0">'
+                    + '<p class="pixel-font text-xs opacity-40 uppercase">' + date + '</p>'
+                    + '<p class="pixel-font text-xl font-black uppercase truncate">' + (o.customer_name || 'Unknown') + '</p>'
+                    + '<p class="pixel-font text-sm opacity-50 truncate">' + (o.customer_email || '') + '</p>'
+                    + '</div>'
+                    + '<div class="flex flex-col items-end gap-2 shrink-0">'
+                    + '<p class="pixel-font text-2xl font-black">$' + parseFloat(o.total_price || 0).toFixed(2) + '</p>'
+                    + '<span class="pixel-font text-xs font-black uppercase px-2 py-0.5 text-white" style="background:' + statusCol + '">' + (o.status || 'pending') + '</span>'
+                    + '</div>'
+                    + '</div>'
+                    // Body
+                    + '<div class="px-5 py-4 grid md:grid-cols-2 gap-6">'
                     + '<div>'
-                    + '<p class="pixel-font text-xs opacity-40 uppercase mb-0.5">' + date + '</p>'
-                    + '<p class="pixel-font text-xl font-black uppercase text-beige-950 dark:text-beige-100">' + (o.customer_name || 'Unknown') + '</p>'
-                    + '<p class="pixel-font text-sm opacity-60">' + (o.customer_email || '') + '</p>'
+                    + '<p class="pixel-font text-xs uppercase opacity-40 mb-2">Order Items</p>'
+                    + buildManifest(o)
                     + '</div>'
-                    + '<div class="text-right flex flex-col items-end gap-2">'
-                    + '<p class="pixel-font text-2xl font-black text-beige-950 dark:text-beige-100">$' + parseFloat(o.total_price || 0).toFixed(2) + '</p>'
-                    + '<div class="flex items-center gap-2">'
-                    + '<span class="pixel-font text-xs font-black uppercase px-2 py-0.5" style="background:' + (statusColors[status] || '#888') + ';color:#fff;">' + status + '</span>'
-                    + fulfillBtn
-                    + '</div>'
-                    + '</div>'
-                    + '</div>'
-                    + '<div class="px-5 py-4 grid md:grid-cols-2 gap-4">'
-                    + '<div><p class="pixel-font text-xs uppercase opacity-40 mb-1">Items</p>' + manifest + '</div>'
-                    + '<div class="space-y-2">'
+                    + '<div class="space-y-3">'
                     + '<div><p class="pixel-font text-xs uppercase opacity-40">Shipping</p><p class="pixel-font text-sm font-bold uppercase">' + (o.shipping_method === 'express' ? '⚡ Express' : '📦 Standard') + ' · $' + parseFloat(o.shipping_cost || 0).toFixed(2) + '</p></div>'
-                    + '<div><p class="pixel-font text-xs uppercase opacity-40">Payment</p><p class="pixel-font text-sm font-bold uppercase">' + (o.payment_method || 'N/A').toUpperCase() + '</p></div>'
-                    + '<div><p class="pixel-font text-xs uppercase opacity-40">Address</p><p class="pixel-font text-sm opacity-70" style="white-space:pre-wrap;">' + (o.shipping_address || '—') + '</p></div>'
+                    + '<div><p class="pixel-font text-xs uppercase opacity-40">Payment Method</p><p class="pixel-font text-sm font-bold uppercase">' + (o.payment_method || 'N/A') + '</p></div>'
+                    + '<div><p class="pixel-font text-xs uppercase opacity-40">Delivery Address</p><p class="pixel-font text-sm opacity-60" style="white-space:pre-wrap">' + (o.shipping_address || '—') + '</p></div>'
                     + '<div>' + proofHtml + '</div>'
                     + '</div>'
+                    + '</div>'
+                    // Action bar
+                    + '<div class="px-5 py-3 border-t border-beige-950/10 dark:border-beige-100/10 flex items-center gap-3 bg-beige-50 dark:bg-zinc-800/50">'
+                    + (isFulfilled
+                        ? '<button onclick="orderAction(\'unarchive\',\'' + oid + '\')" class="pixel-font text-sm uppercase font-bold px-3 py-1.5 border-2 border-beige-950 dark:border-beige-100 hover:bg-beige-200 dark:hover:bg-zinc-700 transition-colors">↩ Unarchive</button>'
+                        : '<button onclick="orderAction(\'fulfill\',\'' + oid + '\')" class="pixel-font text-sm uppercase font-black px-4 py-1.5 bg-green-600 text-white hover:bg-green-700 transition-colors">✓ Fulfill</button>'
+                      )
+                    + '<button onclick="orderAction(\'delete\',\'' + oid + '\')" class="pixel-font text-sm uppercase font-bold px-3 py-1.5 bg-red-600 text-white hover:bg-red-700 transition-colors ml-auto">Delete</button>'
                     + '</div>'
                     + '</div>';
             }
 
             var html = '';
 
-            // Active orders
+            // Active orders section
+            html += '<p class="pixel-font text-xs uppercase opacity-40 mb-3">' + active.length + ' active order' + (active.length !== 1 ? 's' : '') + '</p>';
             if (active.length) {
-                html += '<div class="space-y-4">' + active.map(buildOrderCard).join('') + '</div>';
+                html += '<div class="space-y-4 mb-10">' + active.map(buildCard).join('') + '</div>';
             } else {
-                html += '<p class="pixel-font text-lg opacity-40 uppercase mb-8">No active orders.</p>';
+                html += '<div class="text-center py-10 border-2 border-dashed border-beige-950/20 dark:border-beige-100/20 mb-10"><p class="pixel-font text-lg opacity-30 uppercase">No active orders</p></div>';
             }
 
-            // Archive
-            html += '<div class="mt-10">'
-                + '<button onclick="toggleOrderArchive()" id="archive-toggle-btn" class="flex items-center gap-3 pixel-font text-xl font-black uppercase mb-4 hover:opacity-70 transition-opacity text-beige-950 dark:text-beige-100">'
-                + '<span>▸</span> Fulfilled Archive (' + archived.length + ')'
+            // Archive section
+            html += '<div class="border-t-2 border-beige-950/20 dark:border-beige-100/20 pt-6">'
+                + '<button onclick="toggleOrderArchive(this)" class="flex items-center gap-3 w-full pixel-font text-lg font-black uppercase mb-4 hover:opacity-70 transition-opacity">'
+                + '<span class="text-beige-950 dark:text-beige-100">▸</span>'
+                + '<span class="text-beige-950 dark:text-beige-100">Fulfilled Archive</span>'
+                + '<span class="pixel-font text-sm opacity-40 font-bold ml-1">(' + archived.length + ')</span>'
                 + '</button>'
-                + '<div id="order-archive-list" style="display:none;" class="space-y-4">'
-                + (archived.length ? archived.map(buildOrderCard).join('') : '<p class="pixel-font text-lg opacity-40 uppercase">No fulfilled orders yet.</p>')
+                + '<div class="archive-list" style="display:none;">'
+                + (archived.length
+                    ? '<div class="space-y-4">' + archived.map(buildCard).join('') + '</div>'
+                    : '<p class="pixel-font text-lg opacity-30 uppercase text-center py-8">No fulfilled orders yet</p>')
                 + '</div>'
                 + '</div>';
 
             container.innerHTML = html;
         }
 
-        function toggleOrderArchive() {
-            var list = document.getElementById('order-archive-list');
-            var btn = document.getElementById('archive-toggle-btn');
+        function toggleOrderArchive(btn) {
+            var list = btn.nextElementSibling;
             if (!list) return;
             var isOpen = list.style.display !== 'none';
             list.style.display = isOpen ? 'none' : 'block';
-            if (btn) btn.querySelector('span').innerText = isOpen ? '▸' : '▾';
+            btn.querySelector('span').innerText = isOpen ? '▸' : '▾';
         }
 
-        async function setOrderStatus(orderId, newStatus) {
-            try {
-                var result = await supabaseClient.from('orders').update({ status: newStatus }).eq('id', orderId);
-                if (result.error) throw result.error;
-                loadAdminOrders();
-                showAdminToast(newStatus === 'fulfilled' ? 'Order fulfilled ✓' : 'Order unarchived');
-            } catch (err) {
-                showAdminToast('Failed: ' + err.message, true);
+        async function orderAction(action, orderId) {
+            if (action === 'delete') {
+                if (!confirm('Permanently delete this order? This cannot be undone.')) return;
+                try {
+                    var r = await supabaseClient.from('orders').delete().eq('id', orderId);
+                    if (r.error) throw r.error;
+                    showAdminToast('Order deleted');
+                    loadAdminOrders();
+                } catch(err) { showAdminToast('Delete failed: ' + err.message, true); }
+            } else if (action === 'fulfill') {
+                try {
+                    var r = await supabaseClient.from('orders').update({ status: 'fulfilled' }).eq('id', orderId);
+                    if (r.error) throw r.error;
+                    showAdminToast('Order fulfilled ✓');
+                    loadAdminOrders();
+                } catch(err) { showAdminToast('Failed: ' + err.message, true); }
+            } else if (action === 'unarchive') {
+                try {
+                    var r = await supabaseClient.from('orders').update({ status: 'pending' }).eq('id', orderId);
+                    if (r.error) throw r.error;
+                    showAdminToast('Order unarchived');
+                    loadAdminOrders();
+                } catch(err) { showAdminToast('Failed: ' + err.message, true); }
             }
         }
 
