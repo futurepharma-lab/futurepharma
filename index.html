@@ -109,6 +109,11 @@
             border-color: #5DADE2 !important;
             box-shadow: 0 0 0 3px rgba(93,173,226,0.4) !important;
         }
+
+        @keyframes successPop {
+            from { transform: scale(0); opacity: 0; }
+            to   { transform: scale(1); opacity: 1; }
+        }
         @keyframes vialFloat {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-12px); }
@@ -435,7 +440,7 @@
                     <button onclick="showPage('lab-testing')" class="nav-link">LAB TESTING</button>
                     <button onclick="showPage('bespoke')" class="nav-link">BESPOKE</button>
                     <button onclick="showPage('contact')" class="nav-link">CONTACT</button>
-                    <button onclick="showPage('order-page')" class="bg-beige-950 text-beige-100 px-6 py-2 rounded-sm hover:invert transition-all">ORDER NOW</button>
+                    <button onclick="if(cart&&cart.length>0){showPage('order-page')}else{showCartEmptyNotice()}" class="bg-beige-950 text-beige-100 px-6 py-2 rounded-sm hover:invert transition-all">ORDER NOW</button>
                 </div>
 
                 <div class="flex items-center gap-6">
@@ -967,6 +972,36 @@
         </main>
     </div>
 
+    <!-- Order Success Overlay -->
+    <div id="order-success" class="fixed inset-0 z-[300] hidden flex-col items-center justify-center bg-[#F5F5DC] dark:bg-[#0F0F0F]" style="animation:pageEnter 0.4s cubic-bezier(0.22,1,0.36,1);">
+        <div class="max-w-lg w-full mx-6 text-center px-6">
+            <!-- Animated vial -->
+            <div class="flex justify-center mb-8" id="success-vial">
+                <svg viewBox="0 0 16 20" class="w-24 h-24" xmlns="http://www.w3.org/2000/svg" style="animation:vialSway 2.5s ease-in-out infinite;">
+                    <rect x="5" y="1" width="6" height="3" fill="#333" stroke="#1C1C16" stroke-width="0.3"/>
+                    <rect x="6" y="4" width="4" height="2" fill="#DDD" stroke="#1C1C16" stroke-width="0.3"/>
+                    <rect x="4" y="6" width="8" height="11" fill="#FFF" stroke="#1C1C16" stroke-width="0.3"/>
+                    <rect x="5" y="7" width="1" height="9" fill="#EEE"/>
+                    <rect x="6" y="13" width="4" height="3" fill="#5DADE2"/>
+                    <rect x="5" y="8" width="6" height="4" fill="#E8E8C8"/>
+                    <text x="8" y="11" font-family="VT323, monospace" font-size="2.8" fill="#1C1C16" text-anchor="middle">FP</text>
+                </svg>
+            </div>
+            <div class="border-4 border-beige-950 dark:border-beige-100 p-10 bg-white dark:bg-zinc-900 shadow-[12px_12px_0px_0px_rgba(28,28,22,1)]">
+                <div class="w-16 h-16 bg-green-500 flex items-center justify-center mx-auto mb-6" style="animation:successPop 0.5s cubic-bezier(0.22,1,0.36,1) 0.2s both;">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" d="M5 13l4 4L19 7"/></svg>
+                </div>
+                <h1 class="pixel-font text-5xl font-black uppercase tracking-tighter mb-3 text-beige-950 dark:text-beige-100">Order Received</h1>
+                <p class="pixel-font text-xl opacity-60 uppercase mb-6 text-beige-950 dark:text-beige-100">Your research materials are on their way</p>
+                <div id="success-order-summary" class="text-left border-t-2 border-b-2 border-beige-950/10 dark:border-beige-100/10 py-4 mb-6 space-y-2"></div>
+                <p class="pixel-font text-base opacity-50 uppercase mb-8 text-beige-950 dark:text-beige-100">We will process your order once payment is confirmed on the blockchain. Check your email for updates.</p>
+                <button onclick="closeOrderSuccess()" class="w-full bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 py-5 pixel-font text-2xl font-black uppercase hover:invert transition-all">
+                    Return to Home
+                </button>
+            </div>
+        </div>
+    </div>
+
     <footer class="w-full py-12 px-6 border-t border-beige-950/10 mt-20">
         <div class="max-w-7xl mx-auto text-center">
             <p class="text-sm leading-relaxed opacity-60">
@@ -1007,7 +1042,7 @@
                 <span>Total</span>
                 <span id="cart-total">$0.00</span>
             </div>
-            <button onclick="showPage('order-page'); toggleCart();" class="w-full bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 py-4 font-bold uppercase pixel-font text-2xl">Checkout</button>
+            <button onclick="if(cart&&cart.length>0){showPage('order-page');toggleCart();}else{showCartEmptyNotice();}" class="w-full bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 py-4 font-bold uppercase pixel-font text-2xl">Checkout</button>
         </div>
     </div>
 
@@ -1180,7 +1215,25 @@
             document.getElementById('file-name-display').innerText = fileName;
         });
 
+        function showCartEmptyNotice() {
+            var existing = document.getElementById('empty-cart-toast');
+            if (existing) existing.remove();
+            var toast = document.createElement('div');
+            toast.id = 'empty-cart-toast';
+            toast.style.cssText = 'position:fixed;bottom:32px;left:50%;transform:translateX(-50%);z-index:9999;font-family:"VT323",monospace;font-size:20px;letter-spacing:0.05em;text-transform:uppercase;padding:16px 28px;border:3px solid #1C1C16;background:#F5F5DC;color:#1C1C16;box-shadow:6px 6px 0 rgba(28,28,22,0.25);transition:opacity 0.4s;white-space:nowrap;';
+            toast.innerText = '🛒 Add products before checking out';
+            document.body.appendChild(toast);
+            setTimeout(function() { toast.style.opacity = '0'; setTimeout(function() { toast.remove(); }, 400); }, 3000);
+            // Also open the cart so they can see it's empty
+            var sidebar = document.getElementById('cart-sidebar');
+            if (sidebar && sidebar.style.transform !== 'translateX(0%)') toggleCart();
+        }
+
         function goToCheckout() {
+            if (!cart || cart.length === 0) {
+                showCartEmptyNotice();
+                return;
+            }
             var shippingInfo = SHIPPING_OPTIONS[selectedShipping];
             var infoEl = document.getElementById('checkout-shipping-info');
             if (infoEl) {
@@ -1230,9 +1283,16 @@
 
                 if (insertResult.error) throw insertResult.error;
 
-                alert('Order Placed Successfully! We will process your research materials once payment is confirmed.');
+                // Show beautiful success overlay
+                showOrderSuccess({
+                    name: name,
+                    items: cart,
+                    total: subtotal + shippingCost,
+                    shipping: selectedShipping,
+                    shippingCost: shippingCost,
+                    crypto: cryptoType
+                });
                 clearCart();
-                showPage('home');
             } catch (err) {
                 console.error(err);
                 alert('Submission Error: ' + err.message);
@@ -1242,7 +1302,53 @@
             }
         }
 
-        // --- Email Autocomplete ---
+        // --- Order Success Overlay ---
+        function showOrderSuccess(data) {
+            var overlay = document.getElementById('order-success');
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+
+            // Build summary
+            var grouped = {};
+            data.items.forEach(function(item) {
+                var key = item.name || 'Unknown';
+                if (!grouped[key]) grouped[key] = { count: 0, price: item.price };
+                grouped[key].count += 1;
+            });
+            var summaryHtml = Object.keys(grouped).map(function(name) {
+                var g = grouped[name];
+                return '<div class="flex justify-between pixel-font text-base">'
+                    + '<span class="uppercase font-bold">' + name + ' <span class="opacity-50">×' + g.count + '</span></span>'
+                    + '<span class="opacity-70">$' + (g.price * g.count).toFixed(2) + '</span>'
+                    + '</div>';
+            }).join('');
+            summaryHtml += '<div class="flex justify-between pixel-font text-base pt-2 border-t border-beige-950/10 dark:border-beige-100/10 mt-2">'
+                + '<span class="uppercase opacity-60">' + (data.shipping === 'express' ? '⚡ Express' : '📦 Standard') + ' shipping</span>'
+                + '<span class="opacity-70">$' + data.shippingCost.toFixed(2) + '</span>'
+                + '</div>';
+            summaryHtml += '<div class="flex justify-between pixel-font text-lg font-black pt-2">'
+                + '<span class="uppercase">Total</span>'
+                + '<span>$' + data.total.toFixed(2) + '</span>'
+                + '</div>';
+
+            var sumEl = document.getElementById('success-order-summary');
+            if (sumEl) sumEl.innerHTML = summaryHtml;
+
+            // Navigate to home behind overlay
+            showPage('home');
+        }
+
+        function closeOrderSuccess() {
+            var overlay = document.getElementById('order-success');
+            overlay.style.opacity = '0';
+            overlay.style.transition = 'opacity 0.3s ease';
+            setTimeout(function() {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+                overlay.style.opacity = '';
+                overlay.style.transition = '';
+            }, 300);
+        }
         var providers = ['gmail.com', 'outlook.com', 'hotmail.com', 'icloud.com', 'protonmail.com'];
         function initEmailAutocomplete(inputId, suggestionId) {
             var input = document.getElementById(inputId);
@@ -1991,9 +2097,13 @@
             renderProductGrid(filtered);
         }
 
-        // 8. Hash routing — navigate to a product via URL hash e.g. #product-5
+        // 8. Hash routing — navigate to a product via URL hash e.g. #product-ghk-cu
+        function slugify(name) {
+            return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        }
         function updateHash(productId) {
-            if (history.replaceState) history.replaceState(null, '', '#product-' + productId);
+            var p = products.find(function(x) { return x.id === productId; });
+            if (p && history.replaceState) history.replaceState(null, '', '#product-' + slugify(p.name));
         }
         function clearHash() {
             if (history.replaceState) history.replaceState(null, '', window.location.pathname);
@@ -2001,16 +2111,13 @@
         function handleHashOnLoad() {
             var hash = window.location.hash;
             if (hash && hash.startsWith('#product-')) {
-                var id = parseInt(hash.replace('#product-', ''));
-                if (!isNaN(id)) {
-                    // Wait for products to load then open
-                    var attempts = 0;
-                    var interval = setInterval(function() {
-                        var p = products.find(function(x) { return x.id === id; });
-                        if (p) { clearInterval(interval); showProductDetail(id); }
-                        if (++attempts > 20) clearInterval(interval);
-                    }, 200);
-                }
+                var slug = hash.replace('#product-', '');
+                var attempts = 0;
+                var interval = setInterval(function() {
+                    var p = products.find(function(x) { return slugify(x.name) === slug; });
+                    if (p) { clearInterval(interval); showProductDetail(p.id); }
+                    if (++attempts > 20) clearInterval(interval);
+                }, 200);
             }
         }
         window.addEventListener('load', handleHashOnLoad);
@@ -2718,12 +2825,15 @@
                 container.innerHTML = '<p class="pixel-font text-lg opacity-40 uppercase">No orders yet.</p>';
                 return;
             }
-            container.innerHTML = orders.map(function(o) {
+
+            var active = orders.filter(function(o) { return o.status !== 'fulfilled'; });
+            var archived = orders.filter(function(o) { return o.status === 'fulfilled'; });
+
+            function buildOrderCard(o) {
                 var date = o.created_at ? new Date(o.created_at).toLocaleString() : 'Unknown date';
                 var manifest = '';
                 try {
                     var items = Array.isArray(o.order_manifest) ? o.order_manifest : JSON.parse(o.order_manifest || '[]');
-                    // Group by name
                     var grouped = {};
                     items.forEach(function(item) {
                         var key = item.name || 'Unknown';
@@ -2737,50 +2847,86 @@
                             + '<span class="pixel-font opacity-60">$' + (g.price * g.count).toFixed(2) + '</span>'
                             + '</div>';
                     }).join('');
-                } catch(e) {
-                    manifest = '<span class="opacity-40 text-xs">Could not parse manifest</span>';
-                }
+                } catch(e) { manifest = '<span class="opacity-40 text-xs">Could not parse manifest</span>'; }
 
-                var statusColor = { confirmed: '#16a34a', pending: '#d97706', cancelled: '#dc2626' };
+                var statusColors = { confirmed: '#16a34a', pending: '#d97706', cancelled: '#dc2626', fulfilled: '#2563eb' };
                 var status = o.status || 'pending';
+                var isFulfilled = status === 'fulfilled';
                 var proofHtml = o.proof_url
                     ? '<a href="' + o.proof_url + '" target="_blank" class="pixel-font text-sm underline text-blue-600 dark:text-blue-400 uppercase">View Proof</a>'
                     : '<span class="pixel-font text-sm opacity-40 uppercase">No proof</span>';
 
-                return '<div class="bg-white dark:bg-zinc-900 border-2 border-beige-950 dark:border-beige-100 overflow-hidden">'
-                    // Order header
+                var fulfillBtn = isFulfilled
+                    ? '<button onclick="setOrderStatus(\'' + o.id + '\', \'pending\')" class="pixel-font text-sm uppercase font-bold px-3 py-1.5 border-2 border-beige-950 dark:border-beige-100 text-beige-950 dark:text-beige-100 hover:bg-beige-200 dark:hover:bg-zinc-700 transition-colors">↩ Unarchive</button>'
+                    : '<button onclick="setOrderStatus(\'' + o.id + '\', \'fulfilled\')" class="pixel-font text-sm uppercase font-bold px-3 py-1.5 bg-green-600 text-white hover:bg-green-700 transition-colors flex items-center gap-1">✓ Mark Fulfilled</button>';
+
+                return '<div class="bg-white dark:bg-zinc-900 border-2 ' + (isFulfilled ? 'border-beige-950/30 dark:border-beige-100/30 opacity-70' : 'border-beige-950 dark:border-beige-100') + ' overflow-hidden">'
                     + '<div class="flex justify-between items-start px-5 py-4 border-b border-beige-950/10 dark:border-beige-100/10">'
                     + '<div>'
                     + '<p class="pixel-font text-xs opacity-40 uppercase mb-0.5">' + date + '</p>'
                     + '<p class="pixel-font text-xl font-black uppercase text-beige-950 dark:text-beige-100">' + (o.customer_name || 'Unknown') + '</p>'
                     + '<p class="pixel-font text-sm opacity-60">' + (o.customer_email || '') + '</p>'
                     + '</div>'
-                    + '<div class="text-right">'
+                    + '<div class="text-right flex flex-col items-end gap-2">'
                     + '<p class="pixel-font text-2xl font-black text-beige-950 dark:text-beige-100">$' + parseFloat(o.total_price || 0).toFixed(2) + '</p>'
-                    + '<span class="pixel-font text-xs font-black uppercase px-2 py-0.5" style="background:' + (statusColor[status] || '#888') + ';color:#fff;">' + status + '</span>'
+                    + '<div class="flex items-center gap-2">'
+                    + '<span class="pixel-font text-xs font-black uppercase px-2 py-0.5" style="background:' + (statusColors[status] || '#888') + ';color:#fff;">' + status + '</span>'
+                    + fulfillBtn
                     + '</div>'
                     + '</div>'
-                    // Order body
+                    + '</div>'
                     + '<div class="px-5 py-4 grid md:grid-cols-2 gap-4">'
-                    + '<div>'
-                    + '<p class="pixel-font text-xs uppercase opacity-40 mb-1">Items</p>'
-                    + manifest
-                    + '</div>'
+                    + '<div><p class="pixel-font text-xs uppercase opacity-40 mb-1">Items</p>' + manifest + '</div>'
                     + '<div class="space-y-2">'
-                    + '<div><p class="pixel-font text-xs uppercase opacity-40">Shipping</p>'
-                    + '<p class="pixel-font text-sm font-bold uppercase">' + (o.shipping_method === 'express' ? '⚡ Express' : '📦 Standard') + ' · $' + parseFloat(o.shipping_cost || 0).toFixed(2) + '</p>'
-                    + '</div>'
-                    + '<div><p class="pixel-font text-xs uppercase opacity-40">Payment</p>'
-                    + '<p class="pixel-font text-sm font-bold uppercase">' + (o.payment_method || 'N/A').toUpperCase() + '</p>'
-                    + '</div>'
-                    + '<div><p class="pixel-font text-xs uppercase opacity-40">Address</p>'
-                    + '<p class="pixel-font text-sm opacity-70" style="white-space:pre-wrap;">' + (o.shipping_address || '—') + '</p>'
-                    + '</div>'
+                    + '<div><p class="pixel-font text-xs uppercase opacity-40">Shipping</p><p class="pixel-font text-sm font-bold uppercase">' + (o.shipping_method === 'express' ? '⚡ Express' : '📦 Standard') + ' · $' + parseFloat(o.shipping_cost || 0).toFixed(2) + '</p></div>'
+                    + '<div><p class="pixel-font text-xs uppercase opacity-40">Payment</p><p class="pixel-font text-sm font-bold uppercase">' + (o.payment_method || 'N/A').toUpperCase() + '</p></div>'
+                    + '<div><p class="pixel-font text-xs uppercase opacity-40">Address</p><p class="pixel-font text-sm opacity-70" style="white-space:pre-wrap;">' + (o.shipping_address || '—') + '</p></div>'
                     + '<div>' + proofHtml + '</div>'
                     + '</div>'
                     + '</div>'
                     + '</div>';
-            }).join('');
+            }
+
+            var html = '';
+
+            // Active orders
+            if (active.length) {
+                html += '<div class="space-y-4">' + active.map(buildOrderCard).join('') + '</div>';
+            } else {
+                html += '<p class="pixel-font text-lg opacity-40 uppercase mb-8">No active orders.</p>';
+            }
+
+            // Archive
+            html += '<div class="mt-10">'
+                + '<button onclick="toggleOrderArchive()" id="archive-toggle-btn" class="flex items-center gap-3 pixel-font text-xl font-black uppercase mb-4 hover:opacity-70 transition-opacity text-beige-950 dark:text-beige-100">'
+                + '<span>▸</span> Fulfilled Archive (' + archived.length + ')'
+                + '</button>'
+                + '<div id="order-archive-list" style="display:none;" class="space-y-4">'
+                + (archived.length ? archived.map(buildOrderCard).join('') : '<p class="pixel-font text-lg opacity-40 uppercase">No fulfilled orders yet.</p>')
+                + '</div>'
+                + '</div>';
+
+            container.innerHTML = html;
+        }
+
+        function toggleOrderArchive() {
+            var list = document.getElementById('order-archive-list');
+            var btn = document.getElementById('archive-toggle-btn');
+            if (!list) return;
+            var isOpen = list.style.display !== 'none';
+            list.style.display = isOpen ? 'none' : 'block';
+            if (btn) btn.querySelector('span').innerText = isOpen ? '▸' : '▾';
+        }
+
+        async function setOrderStatus(orderId, newStatus) {
+            try {
+                var result = await supabaseClient.from('orders').update({ status: newStatus }).eq('id', orderId);
+                if (result.error) throw result.error;
+                loadAdminOrders();
+                showAdminToast(newStatus === 'fulfilled' ? 'Order fulfilled ✓' : 'Order unarchived');
+            } catch (err) {
+                showAdminToast('Failed: ' + err.message, true);
+            }
         }
 
         // ============================================================
