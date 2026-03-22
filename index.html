@@ -450,7 +450,6 @@
                     <button onclick="showPage('lab-testing')" class="nav-link">LAB TESTING</button>
                     <button onclick="showPage('bespoke')" class="nav-link">BESPOKE</button>
                     <button onclick="showPage('contact')" class="nav-link">CONTACT</button>
-                    <button onclick="showPage('order-tracking')" class="nav-link">TRACK ORDER</button>
                     <button onclick="if(cart&&cart.length>0){showPage('order-page')}else{showCartEmptyNotice()}" class="bg-beige-950 text-beige-100 px-6 py-2 rounded-sm hover:invert transition-all">ORDER NOW</button>
                 </div>
 
@@ -463,6 +462,9 @@
                         </label>
                         <i data-lucide="moon" class="w-4 h-4"></i>
                     </div>
+                    <button onclick="showPage('order-tracking')" class="relative p-2 hover:bg-beige-200 dark:hover:bg-beige-950/30 transition-colors" title="Track your order">
+                        <i data-lucide="package-search" class="w-5 h-5"></i>
+                    </button>
                     <button onclick="toggleCart()" class="relative p-2 hover:bg-beige-200 transition-colors">
                         <i data-lucide="shopping-cart" class="w-5 h-5"></i>
                         <span id="cart-count" class="absolute -top-1 -right-1 bg-beige-950 text-beige-100 text-[12px] rounded-full h-4 w-4 flex items-center justify-center pixel-font">0</span>
@@ -1070,15 +1072,9 @@
                             </div>
                         </div>
                         <!-- Payment + shipping -->
-                        <div class="grid md:grid-cols-2 gap-0 px-8 py-5">
-                            <div class="md:border-r-2 border-beige-950/10 dark:border-beige-100/10 md:pr-8">
+                        <div class="px-8 py-5">
                                 <p class="pixel-font text-xs uppercase opacity-40 mb-1">Payment Method</p>
                                 <p id="receipt-payment" class="pixel-font text-base font-bold uppercase"></p>
-                            </div>
-                            <div class="md:pl-8 mt-4 md:mt-0">
-                                <p class="pixel-font text-xs uppercase opacity-40 mb-1">Tracking Number</p>
-                                <p id="receipt-tracking" class="pixel-font text-base font-bold"></p>
-                            </div>
                         </div>
                     </div>
 
@@ -1095,8 +1091,8 @@
     </div>
 
     <!-- Order Success Overlay -->
-    <div id="order-success" class="fixed inset-0 z-[300] hidden flex-col items-center justify-center bg-[#F5F5DC] dark:bg-[#0F0F0F]" style="animation:pageEnter 0.4s cubic-bezier(0.22,1,0.36,1);">
-        <div class="max-w-lg w-full mx-6 text-center px-6">
+    <div id="order-success" class="fixed inset-0 z-[300] hidden flex-col items-start justify-start bg-[#F5F5DC] dark:bg-[#0F0F0F] overflow-y-auto" style="animation:pageEnter 0.4s cubic-bezier(0.22,1,0.36,1);">
+        <div class="max-w-lg w-full mx-auto text-center px-6 py-12">
             <!-- Animated vial -->
             <div class="flex justify-center mb-8" id="success-vial">
                 <svg viewBox="0 0 16 20" class="w-24 h-24" xmlns="http://www.w3.org/2000/svg" style="animation:vialSway 2.5s ease-in-out infinite;">
@@ -1114,7 +1110,7 @@
                     <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" d="M5 13l4 4L19 7"/></svg>
                 </div>
                 <h1 class="pixel-font text-5xl font-black uppercase tracking-tighter mb-3 text-beige-950 dark:text-beige-100">Order Received</h1>
-                <p class="pixel-font text-xl opacity-60 uppercase mb-1 text-beige-950 dark:text-beige-100">Your research materials are on their way</p>
+                <p class="pixel-font text-xl opacity-60 uppercase mb-1 text-beige-950 dark:text-beige-100">A receipt has been sent to your email</p>
                 <p class="pixel-font text-base font-black uppercase mb-6 text-beige-950 dark:text-beige-100">Order ID: <span id="success-order-id" class="text-green-600"></span></p>
                 <div id="success-order-summary" class="text-left border-t-2 border-b-2 border-beige-950/10 dark:border-beige-100/10 py-4 mb-6 space-y-2"></div>
                 <p class="pixel-font text-base opacity-50 uppercase mb-8 text-beige-950 dark:text-beige-100">We will process your order once payment is confirmed on the blockchain. Check your email for updates.</p>
@@ -3245,11 +3241,6 @@
                     + '</select>'
                     + '<button class="order-action-btn pixel-font text-sm uppercase font-bold px-3 py-1.5 bg-red-600 text-white hover:bg-red-700 transition-colors ml-auto" data-action="delete" data-id="' + o.id + '">Delete</button>'
                     + '</div>'
-                    + '<div class="flex items-center gap-2">'
-                    + '<label class="pixel-font text-xs uppercase opacity-50 whitespace-nowrap">Tracking No:</label>'
-                    + '<input type="text" placeholder="e.g. 1Z999AA10123456784" value="' + (o.tracking_number||'') + '" class="order-tracking-input flex-grow p-1.5 border-2 border-beige-950/30 dark:border-beige-100/30 bg-white dark:bg-zinc-800 text-beige-950 dark:text-beige-100 outline-none pixel-font text-sm" data-id="' + o.id + '">'
-                    + '<button class="order-action-btn pixel-font text-xs uppercase font-bold px-3 py-1.5 border-2 border-beige-950 dark:border-beige-100 hover:bg-beige-200 dark:hover:bg-zinc-700 whitespace-nowrap" data-action="savetracking" data-id="' + o.id + '">Save</button>'
-                    + '</div>'
                     + '</div>'
                     + '</div>';
             }
@@ -3292,13 +3283,7 @@
                     if (btn.tagName === 'SELECT') return; // handled by change
                     var action = btn.getAttribute('data-action');
                     var id = btn.getAttribute('data-id');
-                    if (action === 'savetracking') {
-                        // Find the tracking input for this order
-                        var inp = container.querySelector('.order-tracking-input[data-id="' + id + '"]');
-                        orderAction('savetracking', id, inp ? inp.value : '');
-                    } else {
-                        orderAction(action, id);
-                    }
+                    orderAction(action, id);
                 });
             });
         }
@@ -3341,12 +3326,6 @@
                     loadAdminOrders();
                 } catch(err) { showAdminToast('Failed: ' + err.message, true); }
 
-            } else if (action === 'savetracking') {
-                try {
-                    var r = await supabaseClient.from('orders').update({ tracking_number: extra }).eq('id', orderId);
-                    if (r.error) throw r.error;
-                    showAdminToast('Tracking number saved');
-                } catch(err) { showAdminToast('Failed: ' + err.message, true); }
             }
         }
 
@@ -3515,8 +3494,6 @@
             document.getElementById('receipt-shipping-cost').innerText = '$' + parseFloat(o.shipping_cost || 0).toFixed(2);
             document.getElementById('receipt-total').innerText = '$' + parseFloat(o.total_price || 0).toFixed(2);
             document.getElementById('receipt-payment').innerText = (o.payment_method || '—').toUpperCase();
-            var trackingNum = o.tracking_number || null;
-            document.getElementById('receipt-tracking').innerText = trackingNum || 'Not yet assigned';
             // Crypto row
             if (o.crypto_amount) {
                 document.getElementById('receipt-crypto').innerText = o.crypto_amount;
