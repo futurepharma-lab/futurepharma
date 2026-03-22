@@ -3149,6 +3149,11 @@
         // ---- Admin order viewer ----
         async function loadAdminOrders() {
             var container = document.getElementById('admin-orders-list');
+            // Remember if the archive section was open before reloading
+            var archiveWasOpen = false;
+            var existingArchiveList = container.querySelector('.archive-list');
+            if (existingArchiveList) archiveWasOpen = existingArchiveList.style.display !== 'none';
+
             container.innerHTML = '<p class="pixel-font text-lg opacity-40 uppercase">Loading...</p>';
             try {
                 var result = await supabaseClient
@@ -3157,13 +3162,13 @@
                     .order('created_at', { ascending: false })
                     .limit(100);
                 if (result.error) throw result.error;
-                renderAdminOrders(result.data || []);
+                renderAdminOrders(result.data || [], archiveWasOpen);
             } catch (err) {
                 container.innerHTML = '<p class="pixel-font text-lg text-red-500 uppercase">Failed to load: ' + err.message + '</p>';
             }
         }
 
-        function renderAdminOrders(orders) {
+        function renderAdminOrders(orders, archiveWasOpen) {
             var container = document.getElementById('admin-orders-list');
             if (!orders.length) {
                 container.innerHTML = '<div class="text-center py-16"><p class="pixel-font text-2xl opacity-30 uppercase">No orders yet.</p></div>';
@@ -3258,11 +3263,11 @@
             // Archive section
             html += '<div class="border-t-2 border-beige-950/20 dark:border-beige-100/20 pt-6">'
                 + '<button onclick="toggleOrderArchive(this)" class="flex items-center gap-3 w-full pixel-font text-lg font-black uppercase mb-4 hover:opacity-70 transition-opacity">'
-                + '<span class="text-beige-950 dark:text-beige-100">▸</span>'
+                + '<span class="text-beige-950 dark:text-beige-100">' + (archiveWasOpen ? '▾' : '▸') + '</span>'
                 + '<span class="text-beige-950 dark:text-beige-100">Fulfilled Archive</span>'
                 + '<span class="pixel-font text-sm opacity-40 font-bold ml-1">(' + archived.length + ')</span>'
                 + '</button>'
-                + '<div class="archive-list" style="display:none;">'
+                + '<div class="archive-list" style="' + (archiveWasOpen ? 'display:block;' : 'display:none;') + '">'
                 + (archived.length
                     ? '<div class="space-y-4">' + archived.map(buildCard).join('') + '</div>'
                     : '<p class="pixel-font text-lg opacity-30 uppercase text-center py-8">No fulfilled orders yet</p>')
