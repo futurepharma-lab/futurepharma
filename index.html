@@ -1585,6 +1585,28 @@
 
                 if (insertResult.error) throw insertResult.error;
 
+                // Send order confirmation email
+                try {
+                    await supabaseClient.functions.invoke('send-order-email', {
+                        body: {
+                            order: {
+                                order_id: orderId,
+                                customer_name: name,
+                                customer_email: email,
+                                shipping_address: address,
+                                order_manifest: cart,
+                                total_price: subtotal + shippingCost,
+                                shipping_cost: shippingCost,
+                                shipping_method: selectedShipping,
+                                payment_method: cryptoType,
+                                crypto_amount: cryptoAmountStr
+                            }
+                        }
+                    })
+                } catch(e) {
+                    console.warn('Email failed:', e)
+                }
+
                 // Stop countdown — order placed
                 if (cryptoTimerInterval) clearInterval(cryptoTimerInterval);
 
