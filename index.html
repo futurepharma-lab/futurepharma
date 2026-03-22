@@ -3170,8 +3170,8 @@
                 return;
             }
 
-            var active = orders.filter(function(o) { return o.status !== 'fulfilled'; });
-            var archived = orders.filter(function(o) { return o.status === 'fulfilled'; });
+            var active = orders.filter(function(o) { return o.status !== 'fulfilled' && o.status !== 'arrived'; });
+            var archived = orders.filter(function(o) { return o.status === 'fulfilled' || o.status === 'arrived'; });
 
             function buildManifest(o) {
                 try {
