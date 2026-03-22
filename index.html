@@ -3264,7 +3264,16 @@
                 if (section) section.style.display = isActive ? 'block' : 'none';
             });
             if (tab === 'orders') loadAdminOrders();
-            if (tab === 'visitors') loadVisitorMap();
+            if (tab === 'visitors') {
+                loadVisitorMap();
+                // Auto-refresh every 30 seconds while on this tab
+                if (analyticsRefreshInterval) clearInterval(analyticsRefreshInterval);
+                analyticsRefreshInterval = setInterval(loadVisitorMap, 10000);
+            } else {
+                // Stop refreshing when leaving the tab
+                if (analyticsRefreshInterval) clearInterval(analyticsRefreshInterval);
+                analyticsRefreshInterval = null;
+            }
         }
 
         // ---- Admin order viewer ----
@@ -3690,6 +3699,9 @@
         var visitorMap = null;
         var visitorMapData = { visitors: [], orders: [] };
         var analyticsCharts = {};
+        var analyticsRefreshInterval = null;
+        var analyticsLastFingerprint = null;
+        var analyticsFirstLoad = true;
 
         // Generate or retrieve session ID
         var analyticsSessionId = sessionStorage.getItem('fpSessionId');
@@ -3877,10 +3889,11 @@
 
         async function loadVisitorMap() {
             var tableEl = document.getElementById('visitor-table');
-            tableEl.innerHTML = '<p class="pixel-font text-sm opacity-40 uppercase px-5 py-4">Loading...</p>';
+            if (analyticsFirstLoad) {
+                tableEl.innerHTML = '<p class="pixel-font text-sm opacity-40 uppercase px-5 py-4">Loading...</p>';
+            }
 
             try {
-                // Fetch visitors and orders in parallel
                 var [visitorResult, pageViewResult, orderResult] = await Promise.all([
                     supabaseClient.from('visitor_logs').select('*').order('visited_at', { ascending: false }).limit(1000),
                     supabaseClient.from('page_views').select('*').order('viewed_at', { ascending: false }).limit(2000),
@@ -3891,12 +3904,14 @@
                 var pageViews = pageViewResult.data || [];
                 var orders = orderResult.data || [];
 
-                // Try to get lat/lng from order shipping addresses via visitor_logs ip match
-                // For now plot orders that have matching session visitor data
-                visitorMapData.visitors = visitors;
-                visitorMapData.orders = orders.filter(function(o) { return o.latitude && o.longitude; });
+                // Generate a fingerprint to detect if data changed
+                var fingerprint = visitors.length + '_' + pageViews.length + '_' + orders.length
+                    + '_' + (visitors[0] ? visitors[0].id : '') 
+                    + '_' + (pageViews[0] ? pageViews[0].id : '');
+                var dataChanged = fingerprint !== analyticsLastFingerprint;
+                analyticsLastFingerprint = fingerprint;
 
-                // ── Key stats ──────────────────────────────────────────
+                // ── Key stats — always update these (no flicker, just text) ──
                 var today = new Date().toDateString();
                 var todayCount = visitors.filter(function(v) { return new Date(v.visited_at).toDateString() === today; }).length;
                 var countries = [...new Set(visitors.map(function(v) { return v.country; }).filter(Boolean))].length;
@@ -3908,88 +3923,91 @@
                 document.getElementById('visitor-stat-pageviews').innerText = pageViews.length;
                 document.getElementById('visitor-stat-conversion').innerText = convRate;
 
-                // ── Visits over last 30 days ───────────────────────────
-                var days = [];
-                var dayCounts = [];
-                for (var i = 29; i >= 0; i--) {
-                    var d = new Date();
-                    d.setDate(d.getDate() - i);
-                    var label = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
-                    var ds = d.toDateString();
-                    days.push(label);
-                    dayCounts.push(visitors.filter(function(v) { return new Date(v.visited_at).toDateString() === ds; }).length);
+                // ── Only rebuild charts + map if data actually changed ────
+                if (dataChanged || analyticsFirstLoad) {
+                    analyticsFirstLoad = false;
+                    visitorMapData.visitors = visitors;
+                    visitorMapData.orders = orders.filter(function(o) { return o.latitude && o.longitude; });
+
+                    // Visits over last 30 days
+                    var days = [], dayCounts = [];
+                    for (var i = 29; i >= 0; i--) {
+                        var d = new Date();
+                        d.setDate(d.getDate() - i);
+                        var label = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+                        var ds = d.toDateString();
+                        days.push(label);
+                        dayCounts.push(visitors.filter(function(v) { return new Date(v.visited_at).toDateString() === ds; }).length);
+                    }
+                    makeLineChart('chart-visits', days, dayCounts);
+
+                    // Top pages
+                    var pageCounts = {};
+                    pageViews.forEach(function(pv) {
+                        var p = pv.page || 'Unknown';
+                        pageCounts[p] = (pageCounts[p] || 0) + 1;
+                    });
+                    var sortedPages = Object.entries(pageCounts).sort(function(a,b) { return b[1]-a[1]; }).slice(0, 7);
+                    makeBarChart('chart-pages', sortedPages.map(function(x){return x[0];}), sortedPages.map(function(x){return x[1];}), '#1C1C16');
+
+                    // Top countries
+                    var countryCounts = {};
+                    visitors.forEach(function(v) {
+                        if (!v.country) return;
+                        countryCounts[v.country] = (countryCounts[v.country] || 0) + 1;
+                    });
+                    var sortedCountries = Object.entries(countryCounts).sort(function(a,b) { return b[1]-a[1]; }).slice(0, 7);
+                    makeBarChart('chart-countries', sortedCountries.map(function(x){return x[0];}), sortedCountries.map(function(x){return x[1];}), '#5DADE2');
+
+                    // Device breakdown
+                    var deviceCounts = {};
+                    visitors.forEach(function(v) {
+                        var d = v.device || 'Unknown';
+                        deviceCounts[d] = (deviceCounts[d] || 0) + 1;
+                    });
+                    makeDoughnutChart('chart-devices', Object.keys(deviceCounts), Object.values(deviceCounts));
+
+                    // Traffic sources
+                    var refCounts = {};
+                    visitors.forEach(function(v) {
+                        var r = v.referrer || 'Direct';
+                        refCounts[r] = (refCounts[r] || 0) + 1;
+                    });
+                    makeDoughnutChart('chart-referrers', Object.keys(refCounts), Object.values(refCounts));
+
+                    // Map
+                    if (!visitorMap) {
+                        visitorMap = L.map('visitor-map').setView([20, 0], 2);
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '© OpenStreetMap'
+                        }).addTo(visitorMap);
+                    }
+                    refreshMapPins();
+                    setTimeout(function() { visitorMap.invalidateSize(); }, 150);
+
+                    // Recent visitors table — only rebuild if data changed
+                    if (!visitors.length) {
+                        tableEl.innerHTML = '<p class="pixel-font text-sm opacity-40 uppercase px-5 py-4">No visitors yet</p>';
+                    } else {
+                        tableEl.innerHTML = visitors.slice(0, 50).map(function(v) {
+                            var ts = v.visited_at ? new Date(v.visited_at).toLocaleString('en-GB', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }) : '—';
+                            return '<div class="flex justify-between items-center px-5 py-3 hover:bg-beige-50 dark:hover:bg-zinc-800 transition-colors">'
+                                + '<div>'
+                                + '<p class="pixel-font text-sm font-bold uppercase">' + (v.city || '—') + ', ' + (v.country || '—') + '</p>'
+                                + '<p class="pixel-font text-xs opacity-40">' + (v.device || '') + ' &bull; ' + (v.browser || '') + ' &bull; ' + (v.referrer || 'Direct') + '</p>'
+                                + '</div>'
+                                + '<div class="text-right">'
+                                + '<p class="pixel-font text-xs opacity-40">' + ts + '</p>'
+                                + '<p class="pixel-font text-xs opacity-30">' + (v.ip || '') + '</p>'
+                                + '</div>'
+                                + '</div>';
+                        }).join('');
+                    }
                 }
-                makeLineChart('chart-visits', days, dayCounts);
-
-                // ── Top pages ──────────────────────────────────────────
-                var pageCounts = {};
-                pageViews.forEach(function(pv) {
-                    var p = pv.page || 'Unknown';
-                    pageCounts[p] = (pageCounts[p] || 0) + 1;
-                });
-                var sortedPages = Object.entries(pageCounts).sort(function(a,b) { return b[1]-a[1]; }).slice(0, 7);
-                makeBarChart('chart-pages', sortedPages.map(function(x){return x[0];}), sortedPages.map(function(x){return x[1];}), '#1C1C16');
-
-                // ── Top countries ──────────────────────────────────────
-                var countryCounts = {};
-                visitors.forEach(function(v) {
-                    if (!v.country) return;
-                    countryCounts[v.country] = (countryCounts[v.country] || 0) + 1;
-                });
-                var sortedCountries = Object.entries(countryCounts).sort(function(a,b) { return b[1]-a[1]; }).slice(0, 7);
-                makeBarChart('chart-countries', sortedCountries.map(function(x){return x[0];}), sortedCountries.map(function(x){return x[1];}), '#5DADE2');
-
-                // ── Device breakdown ───────────────────────────────────
-                var deviceCounts = {};
-                visitors.forEach(function(v) {
-                    var d = v.device || 'Unknown';
-                    deviceCounts[d] = (deviceCounts[d] || 0) + 1;
-                });
-                makeDoughnutChart('chart-devices', Object.keys(deviceCounts), Object.values(deviceCounts));
-
-                // ── Traffic sources ────────────────────────────────────
-                var refCounts = {};
-                visitors.forEach(function(v) {
-                    var r = v.referrer || 'Direct';
-                    refCounts[r] = (refCounts[r] || 0) + 1;
-                });
-                makeDoughnutChart('chart-referrers', Object.keys(refCounts), Object.values(refCounts));
-
-                // ── Map ────────────────────────────────────────────────
-                if (!visitorMap) {
-                    visitorMap = L.map('visitor-map').setView([20, 0], 2);
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        attribution: '© OpenStreetMap'
-                    }).addTo(visitorMap);
-                }
-                refreshMapPins();
-                setTimeout(function() { visitorMap.invalidateSize(); }, 150);
-
-                // ── Recent visitors table ──────────────────────────────
-                if (!visitors.length) {
-                    tableEl.innerHTML = '<p class="pixel-font text-sm opacity-40 uppercase px-5 py-4">No visitors yet</p>';
-                    return;
-                }
-                tableEl.innerHTML = visitors.slice(0, 50).map(function(v) {
-                    var ts = v.visited_at ? new Date(v.visited_at).toLocaleString('en-GB', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }) : '—';
-                    return '<div class="flex justify-between items-center px-5 py-3 hover:bg-beige-50 dark:hover:bg-zinc-800 transition-colors">'
-                        + '<div>'
-                        + '<p class="pixel-font text-sm font-bold uppercase">' + (v.city || '—') + ', ' + (v.country || '—') + '</p>'
-                        + '<p class="pixel-font text-xs opacity-40">' + (v.device || '') + ' &bull; ' + (v.browser || '') + ' &bull; ' + (v.referrer || 'Direct') + '</p>'
-                        + '</div>'
-                        + '<div class="text-right">'
-                        + '<p class="pixel-font text-xs opacity-40">' + ts + '</p>'
-                        + '<p class="pixel-font text-xs opacity-30">' + (v.ip || '') + '</p>'
-                        + '</div>'
-                        + '</div>';
-                }).join('');
 
             } catch(err) {
-                tableEl.innerHTML = '<p class="pixel-font text-sm text-red-500 uppercase px-5 py-4">Failed: ' + err.message + '</p>';
+                if (analyticsFirstLoad) {
+                    tableEl.innerHTML = '<p class="pixel-font text-sm text-red-500 uppercase px-5 py-4">Failed: ' + err.message + '</p>';
+                }
             }
         }
-
-        updateMobileNav('home');
-    </script>
-</body>
-</html>
