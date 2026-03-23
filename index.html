@@ -1118,14 +1118,14 @@
                     <div class="border-2 border-beige-950 dark:border-beige-100 p-4 bg-white dark:bg-zinc-900"><p class="pixel-font text-xs uppercase opacity-40 mb-1">Page Views</p><p id="visitor-stat-pageviews" class="pixel-font text-3xl font-black">—</p></div>
                     <div class="border-2 border-beige-950 dark:border-beige-100 p-4 bg-white dark:bg-zinc-900"><p class="pixel-font text-xs uppercase opacity-40 mb-1">Conversion</p><p id="visitor-stat-conversion" class="pixel-font text-3xl font-black">—</p></div>
                 </div>
-                <div class="border-2 border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-900 p-5 mb-6"><p class="pixel-font text-xs uppercase opacity-40 mb-4">Visits — Last 30 Days</p><canvas id="chart-visits" height="80"></canvas></div>
+                <div class="border-2 border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-900 p-5 mb-6"><p class="pixel-font text-xs uppercase opacity-40 mb-4">Visits — Last 30 Days</p><div style="position:relative;height:180px;width:100%;"><canvas id="chart-visits"></canvas></div></div>
                 <div class="grid md:grid-cols-2 gap-6 mb-6">
-                    <div class="border-2 border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-900 p-5"><p class="pixel-font text-xs uppercase opacity-40 mb-4">Top Pages</p><canvas id="chart-pages" height="160"></canvas></div>
-                    <div class="border-2 border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-900 p-5"><p class="pixel-font text-xs uppercase opacity-40 mb-4">Top Countries</p><canvas id="chart-countries" height="160"></canvas></div>
+                    <div class="border-2 border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-900 p-5"><p class="pixel-font text-xs uppercase opacity-40 mb-4">Top Pages</p><div style="position:relative;height:200px;width:100%;"><canvas id="chart-pages"></canvas></div></div>
+                    <div class="border-2 border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-900 p-5"><p class="pixel-font text-xs uppercase opacity-40 mb-4">Top Countries</p><div style="position:relative;height:200px;width:100%;"><canvas id="chart-countries"></canvas></div></div>
                 </div>
                 <div class="grid md:grid-cols-2 gap-6 mb-6">
-                    <div class="border-2 border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-900 p-5"><p class="pixel-font text-xs uppercase opacity-40 mb-4">Device Breakdown</p><canvas id="chart-devices" height="160"></canvas></div>
-                    <div class="border-2 border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-900 p-5"><p class="pixel-font text-xs uppercase opacity-40 mb-4">Traffic Sources</p><canvas id="chart-referrers" height="160"></canvas></div>
+                    <div class="border-2 border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-900 p-5"><p class="pixel-font text-xs uppercase opacity-40 mb-4">Device Breakdown</p><div style="position:relative;height:200px;width:100%;"><canvas id="chart-devices"></canvas></div></div>
+                    <div class="border-2 border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-900 p-5"><p class="pixel-font text-xs uppercase opacity-40 mb-4">Traffic Sources</p><div style="position:relative;height:200px;width:100%;"><canvas id="chart-referrers"></canvas></div></div>
                 </div>
                 <div class="border-4 border-beige-950 dark:border-beige-100 overflow-hidden mb-6">
                     <div class="px-4 py-2 bg-beige-950 dark:bg-beige-100 flex gap-4">
@@ -3518,20 +3518,20 @@
         function makeBarChart(id, labels, data, color) {
             destroyChart(id);
             var ctx = document.getElementById(id); if (!ctx) return;
-            ctx.style.height = '200px'; analyticsCharts[id] = new Chart(ctx, { type: 'bar', data: { labels: labels, datasets: [{ data: data, backgroundColor: color || '#1C1C16', borderRadius: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, font: { family: 'VT323', size: 13 } }, grid: { color: 'rgba(28,28,22,0.06)' } }, x: { ticks: { font: { family: 'VT323', size: 13 } }, grid: { display: false } } } } });
+            analyticsCharts[id] = new Chart(ctx, { type: 'bar', data: { labels: labels, datasets: [{ data: data, backgroundColor: color || '#1C1C16', borderRadius: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, font: { family: 'VT323', size: 13 } }, grid: { color: 'rgba(28,28,22,0.06)' } }, x: { ticks: { font: { family: 'VT323', size: 13 } }, grid: { display: false } } } } });
         }
 
         function makeLineChart(id, labels, data) {
             destroyChart(id);
             var ctx = document.getElementById(id); if (!ctx) return;
-            ctx.style.height = '180px'; analyticsCharts[id] = new Chart(ctx, { type: 'line', data: { labels: labels, datasets: [{ data: data, borderColor: '#1C1C16', backgroundColor: 'rgba(28,28,22,0.07)', fill: true, tension: 0.3, pointRadius: 3, pointBackgroundColor: '#1C1C16' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, font: { family: 'VT323', size: 13 } }, grid: { color: 'rgba(28,28,22,0.06)' } }, x: { ticks: { font: { family: 'VT323', size: 13 }, maxRotation: 45 }, grid: { display: false } } } } });
+            analyticsCharts[id] = new Chart(ctx, { type: 'line', data: { labels: labels, datasets: [{ data: data, borderColor: '#1C1C16', backgroundColor: 'rgba(28,28,22,0.07)', fill: true, tension: 0.3, pointRadius: 3, pointBackgroundColor: '#1C1C16' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, font: { family: 'VT323', size: 13 } }, grid: { color: 'rgba(28,28,22,0.06)' } }, x: { ticks: { font: { family: 'VT323', size: 13 }, maxRotation: 45 }, grid: { display: false } } } } });
         }
 
         function makeDoughnutChart(id, labels, data) {
             destroyChart(id);
             var ctx = document.getElementById(id); if (!ctx) return;
             var colors = ['#1C1C16','#5DADE2','#EB984E','#52BE80','#AF7AC5','#E74C3C','#F4D03F'];
-            ctx.style.height = '200px'; analyticsCharts[id] = new Chart(ctx, { type: 'doughnut', data: { labels: labels, datasets: [{ data: data, backgroundColor: colors.slice(0, data.length), borderWidth: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { font: { family: 'VT323', size: 13 }, padding: 10 } } } } });
+            analyticsCharts[id] = new Chart(ctx, { type: 'doughnut', data: { labels: labels, datasets: [{ data: data, backgroundColor: colors.slice(0, data.length), borderWidth: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { font: { family: 'VT323', size: 13 }, padding: 10 } } } } });
         }
 
         function refreshMapPins() {
