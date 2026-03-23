@@ -3055,7 +3055,7 @@
                 if (section) section.style.display = isActive ? 'block' : 'none';
             });
             if (tab === 'orders') loadAdminOrders();
-            if (tab === 'visitors') { analyticsFirstLoad = true; analyticsLastFingerprint = null; loadVisitorMap(); if (analyticsRefreshInterval) clearInterval(analyticsRefreshInterval); analyticsRefreshInterval = setInterval(loadVisitorMap, 10000); } else { if (analyticsRefreshInterval) { clearInterval(analyticsRefreshInterval); analyticsRefreshInterval = null; } }
+            if (tab === 'visitors') { analyticsFirstLoad = true; analyticsLastFingerprint = null; setTimeout(function() { loadVisitorMap(); }, 300); if (analyticsRefreshInterval) clearInterval(analyticsRefreshInterval); analyticsRefreshInterval = setInterval(loadVisitorMap, 30000); } else { if (analyticsRefreshInterval) { clearInterval(analyticsRefreshInterval); analyticsRefreshInterval = null; } }
         }
 
         // ---- Admin order viewer ----
