@@ -3055,7 +3055,7 @@
                 if (section) section.style.display = isActive ? 'block' : 'none';
             });
             if (tab === 'orders') loadAdminOrders();
-            if (tab === 'visitors') { loadVisitorMap(); if (analyticsRefreshInterval) clearInterval(analyticsRefreshInterval); analyticsRefreshInterval = setInterval(loadVisitorMap, 10000); } else { if (analyticsRefreshInterval) { clearInterval(analyticsRefreshInterval); analyticsRefreshInterval = null; } }
+            if (tab === 'visitors') { analyticsFirstLoad = true; analyticsLastFingerprint = null; loadVisitorMap(); if (analyticsRefreshInterval) clearInterval(analyticsRefreshInterval); analyticsRefreshInterval = setInterval(loadVisitorMap, 10000); } else { if (analyticsRefreshInterval) { clearInterval(analyticsRefreshInterval); analyticsRefreshInterval = null; } }
         }
 
         // ---- Admin order viewer ----
@@ -3518,20 +3518,20 @@
         function makeBarChart(id, labels, data, color) {
             destroyChart(id);
             var ctx = document.getElementById(id); if (!ctx) return;
-            analyticsCharts[id] = new Chart(ctx, { type: 'bar', data: { labels: labels, datasets: [{ data: data, backgroundColor: color || '#1C1C16', borderRadius: 2 }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, font: { family: 'VT323', size: 13 } }, grid: { color: 'rgba(28,28,22,0.06)' } }, x: { ticks: { font: { family: 'VT323', size: 13 } }, grid: { display: false } } } } });
+            ctx.style.height = '200px'; analyticsCharts[id] = new Chart(ctx, { type: 'bar', data: { labels: labels, datasets: [{ data: data, backgroundColor: color || '#1C1C16', borderRadius: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, font: { family: 'VT323', size: 13 } }, grid: { color: 'rgba(28,28,22,0.06)' } }, x: { ticks: { font: { family: 'VT323', size: 13 } }, grid: { display: false } } } } });
         }
 
         function makeLineChart(id, labels, data) {
             destroyChart(id);
             var ctx = document.getElementById(id); if (!ctx) return;
-            analyticsCharts[id] = new Chart(ctx, { type: 'line', data: { labels: labels, datasets: [{ data: data, borderColor: '#1C1C16', backgroundColor: 'rgba(28,28,22,0.07)', fill: true, tension: 0.3, pointRadius: 3, pointBackgroundColor: '#1C1C16' }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, font: { family: 'VT323', size: 13 } }, grid: { color: 'rgba(28,28,22,0.06)' } }, x: { ticks: { font: { family: 'VT323', size: 13 }, maxRotation: 45 }, grid: { display: false } } } } });
+            ctx.style.height = '180px'; analyticsCharts[id] = new Chart(ctx, { type: 'line', data: { labels: labels, datasets: [{ data: data, borderColor: '#1C1C16', backgroundColor: 'rgba(28,28,22,0.07)', fill: true, tension: 0.3, pointRadius: 3, pointBackgroundColor: '#1C1C16' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, font: { family: 'VT323', size: 13 } }, grid: { color: 'rgba(28,28,22,0.06)' } }, x: { ticks: { font: { family: 'VT323', size: 13 }, maxRotation: 45 }, grid: { display: false } } } } });
         }
 
         function makeDoughnutChart(id, labels, data) {
             destroyChart(id);
             var ctx = document.getElementById(id); if (!ctx) return;
             var colors = ['#1C1C16','#5DADE2','#EB984E','#52BE80','#AF7AC5','#E74C3C','#F4D03F'];
-            analyticsCharts[id] = new Chart(ctx, { type: 'doughnut', data: { labels: labels, datasets: [{ data: data, backgroundColor: colors.slice(0, data.length), borderWidth: 2 }] }, options: { responsive: true, plugins: { legend: { position: 'right', labels: { font: { family: 'VT323', size: 13 }, padding: 10 } } } } });
+            ctx.style.height = '200px'; analyticsCharts[id] = new Chart(ctx, { type: 'doughnut', data: { labels: labels, datasets: [{ data: data, backgroundColor: colors.slice(0, data.length), borderWidth: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { font: { family: 'VT323', size: 13 }, padding: 10 } } } } });
         }
 
         function refreshMapPins() {
