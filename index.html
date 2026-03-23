@@ -3577,7 +3577,7 @@
                 var [vr, pvr, or_] = await Promise.all([
                     supabaseClient.from('visitor_logs').select('*').order('visited_at', { ascending: false }).limit(1000),
                     supabaseClient.from('page_views').select('*').order('viewed_at', { ascending: false }).limit(2000),
-                    supabaseClient.from('orders').select('id,order_id,total_price,created_at').order('created_at', { ascending: false }).limit(200)
+                    supabaseClient.from('orders').select('id,order_id,total_price,created_at,status').order('created_at', { ascending: false }).limit(200)
                 ]);
                 var visitors = vr.data || [], pageViews = pvr.data || [], orders = or_.data || [];
                 var fp = visitors.length + '_' + pageViews.length + '_' + orders.length + '_' + (visitors[0] ? visitors[0].id : '');
@@ -3589,7 +3589,8 @@
                 document.getElementById('visitor-stat-today').innerText = visitors.filter(function(v) { return new Date(v.visited_at).toDateString() === today; }).length;
                 document.getElementById('visitor-stat-countries').innerText = [...new Set(visitors.map(function(v) { return v.country; }).filter(Boolean))].length;
                 document.getElementById('visitor-stat-pageviews').innerText = pageViews.length;
-                document.getElementById('visitor-stat-conversion').innerText = visitors.length > 0 ? ((orders.length / visitors.length) * 100).toFixed(1) + '%' : '—';
+                var confirmedOrders = orders.filter(function(o) { return o.status === 'payment_confirmed' || o.status === 'processing' || o.status === 'shipped' || o.status === 'arrived' || o.status === 'fulfilled'; });
+                document.getElementById('visitor-stat-conversion').innerText = visitors.length > 0 ? ((confirmedOrders.length / visitors.length) * 100).toFixed(1) + '%' : '—';
 
                 if (changed || analyticsFirstLoad) {
                     analyticsFirstLoad = false;
