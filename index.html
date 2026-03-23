@@ -7,9 +7,9 @@
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg viewBox='0 0 16 20' xmlns='http://www.w3.org/2000/svg'><rect x='6' y='4' width='4' height='2' fill='%23DDD' stroke='%231C1C16' stroke-width='0.3'/><rect x='4' y='6' width='8' height='11' fill='%23FFF' stroke='%231C1C16' stroke-width='0.3'/><rect x='6' y='13' width='4' height='3' fill='%235DADE2'/><rect x='5' y='1' width='6' height='3' fill='%231C1C16' stroke='%231C1C16' stroke-width='0.3'/></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/lucide@0.383.0/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         tailwind.config = {
@@ -943,7 +943,6 @@
                         </div>
 
                         <div id="payment-display" class="hidden mb-10">
-                            <!-- Live crypto amount + timer bar -->
                             <div id="crypto-rate-bar" class="flex items-center justify-between px-5 py-3 bg-beige-950 dark:bg-beige-100 text-beige-50 dark:text-beige-950 border-2 border-b-0 border-beige-950">
                                 <div>
                                     <p class="pixel-font text-xs uppercase opacity-60 leading-none mb-0.5">Send Exactly</p>
@@ -1005,33 +1004,22 @@
             <div class="max-w-3xl mx-auto px-6">
                 <h2 class="text-5xl font-black uppercase tracking-tighter mb-2">Track Your Order</h2>
                 <p class="pixel-font text-lg opacity-50 uppercase mb-10">Enter your order code to view your receipt and live status</p>
-
-                <!-- Lookup box -->
                 <div class="bg-white dark:bg-zinc-900 border-4 border-beige-950 dark:border-beige-100 shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] p-8 mb-10">
                     <div class="flex gap-3">
                         <input type="text" id="tracking-input" placeholder="e.g. FP-K7MN"
                             class="flex-grow p-4 border-2 border-beige-950 dark:border-beige-100 bg-transparent outline-none pixel-font text-2xl uppercase tracking-widest"
                             oninput="this.value=this.value.toUpperCase()"
                             onkeydown="if(event.key==='Enter')lookupOrder()">
-                        <button onclick="lookupOrder()" class="bg-beige-950 dark:bg-beige-100 text-beige-50 dark:text-beige-950 px-8 pixel-font text-xl font-black uppercase hover:invert transition-all">
-                            Search
-                        </button>
+                        <button onclick="lookupOrder()" class="bg-beige-950 dark:bg-beige-100 text-beige-50 dark:text-beige-950 px-8 pixel-font text-xl font-black uppercase hover:invert transition-all">Search</button>
                     </div>
                     <p id="tracking-error" class="pixel-font text-red-500 text-base uppercase font-bold mt-3 hidden"></p>
                 </div>
-
-                <!-- Result area -->
                 <div id="tracking-result" class="hidden space-y-8">
-
-                    <!-- Progress pipeline -->
                     <div class="bg-white dark:bg-zinc-900 border-4 border-beige-950 dark:border-beige-100 shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] p-8">
                         <p class="pixel-font text-xs uppercase opacity-40 mb-6">Order Progress</p>
                         <div id="tracking-pipeline" class="relative"></div>
                     </div>
-
-                    <!-- Receipt -->
                     <div class="bg-white dark:bg-zinc-900 border-4 border-beige-950 dark:border-beige-100 shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] overflow-hidden">
-                        <!-- Receipt header -->
                         <div class="bg-beige-950 dark:bg-beige-100 text-beige-50 dark:text-beige-950 px-8 py-5 flex justify-between items-center">
                             <div>
                                 <p class="pixel-font text-xs uppercase opacity-60 mb-0.5">Order Receipt</p>
@@ -1042,7 +1030,6 @@
                                 <p id="receipt-date" class="pixel-font text-base font-bold"></p>
                             </div>
                         </div>
-                        <!-- Customer info -->
                         <div class="grid md:grid-cols-2 gap-0 border-b-2 border-beige-950/10 dark:border-beige-100/10">
                             <div class="px-8 py-5 border-r-0 md:border-r-2 border-beige-950/10 dark:border-beige-100/10">
                                 <p class="pixel-font text-xs uppercase opacity-40 mb-1">Customer</p>
@@ -1054,12 +1041,10 @@
                                 <p id="receipt-address" class="pixel-font text-sm opacity-70" style="white-space:pre-wrap"></p>
                             </div>
                         </div>
-                        <!-- Items -->
                         <div class="px-8 py-5 border-b-2 border-beige-950/10 dark:border-beige-100/10">
                             <p class="pixel-font text-xs uppercase opacity-40 mb-3">Items Ordered</p>
                             <div id="receipt-items" class="space-y-2"></div>
                         </div>
-                        <!-- Totals -->
                         <div class="px-8 py-5 border-b-2 border-beige-950/10 dark:border-beige-100/10 space-y-2">
                             <div class="flex justify-between pixel-font text-base">
                                 <span class="uppercase opacity-60" id="receipt-shipping-label">Standard Shipping</span>
@@ -1074,19 +1059,15 @@
                                 <span id="receipt-crypto" class="text-green-600 font-bold"></span>
                             </div>
                         </div>
-                        <!-- Payment + shipping -->
                         <div class="px-8 py-5">
-                                <p class="pixel-font text-xs uppercase opacity-40 mb-1">Payment Method</p>
-                                <p id="receipt-payment" class="pixel-font text-base font-bold uppercase"></p>
+                            <p class="pixel-font text-xs uppercase opacity-40 mb-1">Payment Method</p>
+                            <p id="receipt-payment" class="pixel-font text-base font-bold uppercase"></p>
                         </div>
                     </div>
-
-                    <!-- Status history -->
                     <div class="bg-white dark:bg-zinc-900 border-4 border-beige-950 dark:border-beige-100 shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] px-8 py-6">
                         <p class="pixel-font text-xs uppercase opacity-40 mb-5">Status History</p>
                         <div id="tracking-history" class="space-y-4"></div>
                     </div>
-
                 </div>
             </div>
         </main>
@@ -1120,6 +1101,43 @@
                 <button onclick="closeOrderSuccess()" class="w-full bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 py-5 pixel-font text-2xl font-black uppercase hover:invert transition-all">
                     Return to Home
                 </button>
+            </div>
+
+            <!-- Visitors / Analytics tab -->
+            <div id="admin-section-visitors" style="display:none;">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="pixel-font text-3xl font-black uppercase underline text-beige-950 dark:text-beige-100">Analytics</h2>
+                    <button onclick="loadVisitorMap()" class="border-2 border-beige-950 dark:border-beige-100 text-beige-950 dark:text-beige-100 px-4 py-2 pixel-font text-base uppercase hover:bg-beige-200 dark:hover:bg-zinc-700 transition-all flex items-center gap-2">
+                        <i data-lucide="refresh-cw" class="w-4 h-4"></i> Refresh
+                    </button>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+                    <div class="border-2 border-beige-950 dark:border-beige-100 p-4 bg-white dark:bg-zinc-900"><p class="pixel-font text-xs uppercase opacity-40 mb-1">Total Visits</p><p id="visitor-stat-total" class="pixel-font text-3xl font-black">—</p></div>
+                    <div class="border-2 border-beige-950 dark:border-beige-100 p-4 bg-white dark:bg-zinc-900"><p class="pixel-font text-xs uppercase opacity-40 mb-1">Today</p><p id="visitor-stat-today" class="pixel-font text-3xl font-black">—</p></div>
+                    <div class="border-2 border-beige-950 dark:border-beige-100 p-4 bg-white dark:bg-zinc-900"><p class="pixel-font text-xs uppercase opacity-40 mb-1">Countries</p><p id="visitor-stat-countries" class="pixel-font text-3xl font-black">—</p></div>
+                    <div class="border-2 border-beige-950 dark:border-beige-100 p-4 bg-white dark:bg-zinc-900"><p class="pixel-font text-xs uppercase opacity-40 mb-1">Page Views</p><p id="visitor-stat-pageviews" class="pixel-font text-3xl font-black">—</p></div>
+                    <div class="border-2 border-beige-950 dark:border-beige-100 p-4 bg-white dark:bg-zinc-900"><p class="pixel-font text-xs uppercase opacity-40 mb-1">Conversion</p><p id="visitor-stat-conversion" class="pixel-font text-3xl font-black">—</p></div>
+                </div>
+                <div class="border-2 border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-900 p-5 mb-6"><p class="pixel-font text-xs uppercase opacity-40 mb-4">Visits — Last 30 Days</p><canvas id="chart-visits" height="80"></canvas></div>
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div class="border-2 border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-900 p-5"><p class="pixel-font text-xs uppercase opacity-40 mb-4">Top Pages</p><canvas id="chart-pages" height="160"></canvas></div>
+                    <div class="border-2 border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-900 p-5"><p class="pixel-font text-xs uppercase opacity-40 mb-4">Top Countries</p><canvas id="chart-countries" height="160"></canvas></div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div class="border-2 border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-900 p-5"><p class="pixel-font text-xs uppercase opacity-40 mb-4">Device Breakdown</p><canvas id="chart-devices" height="160"></canvas></div>
+                    <div class="border-2 border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-900 p-5"><p class="pixel-font text-xs uppercase opacity-40 mb-4">Traffic Sources</p><canvas id="chart-referrers" height="160"></canvas></div>
+                </div>
+                <div class="border-4 border-beige-950 dark:border-beige-100 overflow-hidden mb-6">
+                    <div class="px-4 py-2 bg-beige-950 dark:bg-beige-100 flex gap-4">
+                        <label class="flex items-center gap-2 pixel-font text-xs uppercase text-beige-50 dark:text-beige-950 cursor-pointer"><input type="checkbox" id="map-show-visitors" checked onchange="refreshMapPins()"> Visitors</label>
+                        <label class="flex items-center gap-2 pixel-font text-xs uppercase text-beige-50 dark:text-beige-950 cursor-pointer"><input type="checkbox" id="map-show-orders" checked onchange="refreshMapPins()"> Orders</label>
+                    </div>
+                    <div id="visitor-map" style="height:420px;width:100%;background:#e8e8c8;"></div>
+                </div>
+                <div class="border-2 border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-900 overflow-hidden">
+                    <div class="px-5 py-3 border-b-2 border-beige-950/10 dark:border-beige-100/10"><p class="pixel-font text-sm uppercase font-black opacity-60">Recent Visitors</p></div>
+                    <div id="visitor-table" class="divide-y divide-beige-950/5 dark:divide-beige-100/5"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -1284,93 +1302,6 @@
             </div>
 
         </div>
-
-            <!-- Visitors / Analytics tab -->
-            <div id="admin-section-visitors" style="display:none;">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="pixel-font text-3xl font-black uppercase underline text-beige-950 dark:text-beige-100">Analytics</h2>
-                    <button onclick="loadVisitorMap()" class="border-2 border-beige-950 dark:border-beige-100 text-beige-950 dark:text-beige-100 px-4 py-2 pixel-font text-base uppercase hover:bg-beige-200 dark:hover:bg-zinc-700 transition-all flex items-center gap-2">
-                        <i data-lucide="refresh-cw" class="w-4 h-4"></i> Refresh
-                    </button>
-                </div>
-
-                <!-- Key stats row -->
-                <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
-                    <div class="border-2 border-beige-950 dark:border-beige-100 p-4 bg-white dark:bg-zinc-900">
-                        <p class="pixel-font text-xs uppercase opacity-40 mb-1">Total Visits</p>
-                        <p id="visitor-stat-total" class="pixel-font text-3xl font-black">—</p>
-                    </div>
-                    <div class="border-2 border-beige-950 dark:border-beige-100 p-4 bg-white dark:bg-zinc-900">
-                        <p class="pixel-font text-xs uppercase opacity-40 mb-1">Today</p>
-                        <p id="visitor-stat-today" class="pixel-font text-3xl font-black">—</p>
-                    </div>
-                    <div class="border-2 border-beige-950 dark:border-beige-100 p-4 bg-white dark:bg-zinc-900">
-                        <p class="pixel-font text-xs uppercase opacity-40 mb-1">Countries</p>
-                        <p id="visitor-stat-countries" class="pixel-font text-3xl font-black">—</p>
-                    </div>
-                    <div class="border-2 border-beige-950 dark:border-beige-100 p-4 bg-white dark:bg-zinc-900">
-                        <p class="pixel-font text-xs uppercase opacity-40 mb-1">Page Views</p>
-                        <p id="visitor-stat-pageviews" class="pixel-font text-3xl font-black">—</p>
-                    </div>
-                    <div class="border-2 border-beige-950 dark:border-beige-100 p-4 bg-white dark:bg-zinc-900">
-                        <p class="pixel-font text-xs uppercase opacity-40 mb-1">Conversion</p>
-                        <p id="visitor-stat-conversion" class="pixel-font text-3xl font-black">—</p>
-                    </div>
-                </div>
-
-                <!-- Visits over time chart -->
-                <div class="border-2 border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-900 p-5 mb-6">
-                    <p class="pixel-font text-xs uppercase opacity-40 mb-4">Visits — Last 30 Days</p>
-                    <canvas id="chart-visits" height="80"></canvas>
-                </div>
-
-                <!-- Row: top pages + top countries -->
-                <div class="grid md:grid-cols-2 gap-6 mb-6">
-                    <div class="border-2 border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-900 p-5">
-                        <p class="pixel-font text-xs uppercase opacity-40 mb-4">Top Pages</p>
-                        <canvas id="chart-pages" height="160"></canvas>
-                    </div>
-                    <div class="border-2 border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-900 p-5">
-                        <p class="pixel-font text-xs uppercase opacity-40 mb-4">Top Countries</p>
-                        <canvas id="chart-countries" height="160"></canvas>
-                    </div>
-                </div>
-
-                <!-- Row: device breakdown + referrers -->
-                <div class="grid md:grid-cols-2 gap-6 mb-6">
-                    <div class="border-2 border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-900 p-5">
-                        <p class="pixel-font text-xs uppercase opacity-40 mb-4">Device Breakdown</p>
-                        <canvas id="chart-devices" height="160"></canvas>
-                    </div>
-                    <div class="border-2 border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-900 p-5">
-                        <p class="pixel-font text-xs uppercase opacity-40 mb-4">Traffic Sources</p>
-                        <canvas id="chart-referrers" height="160"></canvas>
-                    </div>
-                </div>
-
-                <!-- World map -->
-                <div class="border-4 border-beige-950 dark:border-beige-100 overflow-hidden mb-6">
-                    <div class="px-4 py-2 bg-beige-950 dark:bg-beige-100 flex gap-4">
-                        <label class="flex items-center gap-2 pixel-font text-xs uppercase text-beige-50 dark:text-beige-950 cursor-pointer">
-                            <input type="checkbox" id="map-show-visitors" checked onchange="refreshMapPins()"> Visitors
-                        </label>
-                        <label class="flex items-center gap-2 pixel-font text-xs uppercase text-beige-50 dark:text-beige-950 cursor-pointer">
-                            <input type="checkbox" id="map-show-orders" checked onchange="refreshMapPins()"> Orders
-                        </label>
-                    </div>
-                    <div id="visitor-map" style="height:420px;width:100%;background:#e8e8c8;"></div>
-                </div>
-
-                <!-- Recent visitors table -->
-                <div class="border-2 border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-900 overflow-hidden">
-                    <div class="px-5 py-3 border-b-2 border-beige-950/10 dark:border-beige-100/10 flex justify-between items-center">
-                        <p class="pixel-font text-sm uppercase font-black opacity-60">Recent Visitors</p>
-                    </div>
-                    <div id="visitor-table" class="divide-y divide-beige-950/5 dark:divide-beige-100/5"></div>
-                </div>
-            </div>
-
-        </div>
     </div>
 
     <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
@@ -1451,87 +1382,6 @@
             ltc:  'ltc1q5fy3qdshprh8s9d4p95qgccc8z63eex48kp7a4'
         };
 
-        // --- Live Crypto Rate + Timer ---
-        var cryptoTimerInterval = null;
-        var cryptoTimerSeconds = 0;
-        var cryptoTimerStarted = false;
-        var currentCryptoType = null;
-        var currentCryptoAmount = null;
-
-        // Binance symbols for each coin (CORS-friendly, no API key needed)
-        var binanceSymbols = { btc: 'BTCUSDT', eth: 'ETHUSDT', ltc: 'LTCUSDT' };
-        var cryptoDecimals = { btc: 6, eth: 5, usdt: 2, ltc: 4 };
-        var cryptoSymbols = { btc: 'BTC', eth: 'ETH', usdt: 'USDT', ltc: 'LTC' };
-
-        function getOrderTotal() {
-            var shippingCost = SHIPPING_OPTIONS[selectedShipping].price;
-            var subtotal = cart.reduce(function(s, i) { return s + i.price; }, 0);
-            return subtotal + shippingCost;
-        }
-
-        async function fetchCryptoRate(type) {
-            var loadingEl = document.getElementById('crypto-rate-loading');
-            var msgEl = document.getElementById('crypto-rate-msg');
-            var amountEl = document.getElementById('crypto-amount-display');
-
-            // USDT is 1:1 with USD — no fetch needed
-            if (type === 'usdt') {
-                currentCryptoAmount = getOrderTotal().toFixed(2);
-                amountEl.innerText = currentCryptoAmount + ' USDT';
-                loadingEl.classList.add('hidden');
-                return;
-            }
-
-            loadingEl.classList.remove('hidden');
-            msgEl.innerText = 'Fetching live rate…';
-            amountEl.innerText = '— —';
-
-            try {
-                var symbol = binanceSymbols[type];
-                var resp = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=' + symbol);
-                if (!resp.ok) throw new Error('Network error');
-                var data = await resp.json();
-                var rate = parseFloat(data.price);
-                if (!rate) throw new Error('No rate');
-
-                var total = getOrderTotal();
-                currentCryptoAmount = (total / rate).toFixed(cryptoDecimals[type]);
-                amountEl.innerText = currentCryptoAmount + ' ' + cryptoSymbols[type];
-                loadingEl.classList.add('hidden');
-            } catch(e) {
-                msgEl.innerText = 'Could not fetch rate — please try again';
-                amountEl.innerText = '— —';
-                currentCryptoAmount = null;
-            }
-        }
-
-        function startCryptoTimer() {
-            // Only ever start the timer once — switching currencies does not reset it
-            if (cryptoTimerStarted) return;
-            cryptoTimerStarted = true;
-            cryptoTimerSeconds = 300;
-
-            function tick() {
-                var m = Math.floor(cryptoTimerSeconds / 60);
-                var s = cryptoTimerSeconds % 60;
-                var el = document.getElementById('crypto-countdown');
-                if (el) el.innerText = m + ':' + (s < 10 ? '0' : '') + s;
-
-                if (cryptoTimerSeconds <= 0) {
-                    // Rate expired — re-fetch for whichever coin is currently selected and reset
-                    clearInterval(cryptoTimerInterval);
-                    cryptoTimerStarted = false;
-                    fetchCryptoRate(currentCryptoType);
-                    startCryptoTimer();
-                    return;
-                }
-                cryptoTimerSeconds--;
-            }
-
-            tick();
-            cryptoTimerInterval = setInterval(tick, 1000);
-        }
-
         function selectCrypto(type) {
             currentCryptoType = type;
             var display = document.getElementById('payment-display');
@@ -1542,11 +1392,10 @@
             var qrMap = { btc: 'btc.JPG', eth: 'eth.JPG', usdt: 'usdt.JPG', ltc: 'ltc.JPG' };
             qrImage.src = qrMap[type];
             document.getElementById('copy-status').classList.add('hidden');
-            // Fetch new rate for selected coin (timer keeps running unchanged)
             fetchCryptoRate(type);
-            // Start the timer only on the very first coin selection
             startCryptoTimer();
         }
+
         async function copyAddress() {
             var address = document.getElementById('wallet-address').value;
             await navigator.clipboard.writeText(address);
@@ -1650,14 +1499,10 @@
                 var shippingCost = SHIPPING_OPTIONS[selectedShipping].price;
                 var subtotal = cart.reduce(function(s, i) { return s + i.price; }, 0);
 
-                // Generate short human-readable order ID
                 var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
                 var orderId = 'FP-';
                 for (var i = 0; i < 4; i++) orderId += chars[Math.floor(Math.random() * chars.length)];
-
-                var cryptoAmountStr = (currentCryptoAmount && currentCryptoType)
-                    ? currentCryptoAmount + ' ' + cryptoSymbols[currentCryptoType]
-                    : null;
+                var cryptoAmountStr = (currentCryptoAmount && currentCryptoType) ? currentCryptoAmount + ' ' + cryptoSymbols[currentCryptoType] : null;
 
                 var insertResult = await supabaseClient.from('orders').insert([{
                     customer_name: name,
@@ -1676,46 +1521,20 @@
 
                 if (insertResult.error) throw insertResult.error;
 
-                // Send order confirmation email
+                if (cryptoTimerInterval) clearInterval(cryptoTimerInterval);
+
                 try {
                     await fetch('https://kuawyjitkfuwmbduchla.supabase.co/functions/v1/hyper-handler', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': 'Bearer ' + supabaseKey
-                        },
-                        body: JSON.stringify({
-                            order: {
-                                order_id: orderId,
-                                customer_name: name,
-                                customer_email: email,
-                                shipping_address: address,
-                                order_manifest: cart,
-                                total_price: subtotal + shippingCost,
-                                shipping_cost: shippingCost,
-                                shipping_method: selectedShipping,
-                                payment_method: cryptoType,
-                                crypto_amount: cryptoAmountStr
-                            }
-                        })
-                    })
-                } catch(e) {
-                    console.warn('Email failed:', e)
-                }
+                        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + supabaseKey },
+                        body: JSON.stringify({ order: { order_id: orderId, customer_name: name, customer_email: email, shipping_address: address, order_manifest: cart, total_price: subtotal + shippingCost, shipping_cost: shippingCost, shipping_method: selectedShipping, payment_method: cryptoType, crypto_amount: cryptoAmountStr } })
+                    });
+                } catch(e) { console.warn('Email failed:', e); }
 
-                // Stop countdown — order placed
-                if (cryptoTimerInterval) clearInterval(cryptoTimerInterval);
-
-                // Show beautiful success overlay
                 showOrderSuccess({
-                    name: name,
-                    items: cart,
-                    total: subtotal + shippingCost,
-                    shipping: selectedShipping,
-                    shippingCost: shippingCost,
-                    crypto: cryptoType,
-                    orderId: orderId,
-                    cryptoAmount: cryptoAmountStr
+                    name: name, items: cart, total: subtotal + shippingCost,
+                    shipping: selectedShipping, shippingCost: shippingCost,
+                    crypto: cryptoType, orderId: orderId, cryptoAmount: cryptoAmountStr
                 });
                 clearCart();
             } catch (err) {
@@ -1732,46 +1551,19 @@
             var overlay = document.getElementById('order-success');
             overlay.classList.remove('hidden');
             overlay.classList.add('flex');
-
-            // Populate order ID
             var orderIdEl = document.getElementById('success-order-id');
             if (orderIdEl) orderIdEl.innerText = data.orderId || '';
-
-            // Build summary
             var grouped = {};
-            data.items.forEach(function(item) {
-                var key = item.name || 'Unknown';
-                if (!grouped[key]) grouped[key] = { count: 0, price: item.price };
-                grouped[key].count += 1;
-            });
-            var summaryHtml = Object.keys(grouped).map(function(name) {
-                var g = grouped[name];
-                return '<div class="flex justify-between pixel-font text-base">'
-                    + '<span class="uppercase font-bold">' + name + ' <span class="opacity-50">x' + g.count + '</span></span>'
-                    + '<span class="opacity-70">$' + (g.price * g.count).toFixed(2) + '</span>'
-                    + '</div>';
-            }).join('');
-            summaryHtml += '<div class="flex justify-between pixel-font text-base pt-2 border-t border-beige-950/10 dark:border-beige-100/10 mt-2">'
-                + '<span class="uppercase opacity-60">' + (data.shipping === 'express' ? 'Express' : 'Standard') + ' Shipping</span>'
-                + '<span class="opacity-70">$' + data.shippingCost.toFixed(2) + '</span>'
-                + '</div>';
-            summaryHtml += '<div class="flex justify-between pixel-font text-lg font-black pt-2 border-t border-beige-950/10 dark:border-beige-100/10 mt-2">'
-                + '<span class="uppercase">Total (USD)</span>'
-                + '<span>$' + data.total.toFixed(2) + '</span>'
-                + '</div>';
-            if (data.cryptoAmount) {
-                summaryHtml += '<div class="flex justify-between pixel-font text-base pt-1">'
-                    + '<span class="uppercase opacity-60">Crypto Sent</span>'
-                    + '<span class="font-black text-green-600">' + data.cryptoAmount + '</span>'
-                    + '</div>';
-            }
-
+            data.items.forEach(function(item) { var key = item.name || 'Unknown'; if (!grouped[key]) grouped[key] = { count: 0, price: item.price }; grouped[key].count += 1; });
+            var summaryHtml = Object.keys(grouped).map(function(name) { var g = grouped[name]; return '<div class="flex justify-between pixel-font text-base"><span class="uppercase font-bold">' + name + ' <span class="opacity-50">x' + g.count + '</span></span><span class="opacity-70">$' + (g.price * g.count).toFixed(2) + '</span></div>'; }).join('');
+            summaryHtml += '<div class="flex justify-between pixel-font text-base pt-2 border-t border-beige-950/10 dark:border-beige-100/10 mt-2"><span class="uppercase opacity-60">' + (data.shipping === 'express' ? 'Express' : 'Standard') + ' Shipping</span><span class="opacity-70">$' + data.shippingCost.toFixed(2) + '</span></div>';
+            summaryHtml += '<div class="flex justify-between pixel-font text-lg font-black pt-2 border-t border-beige-950/10 dark:border-beige-100/10 mt-2"><span class="uppercase">Total (USD)</span><span>$' + data.total.toFixed(2) + '</span></div>';
+            if (data.cryptoAmount) summaryHtml += '<div class="flex justify-between pixel-font text-base pt-1"><span class="uppercase opacity-60">Crypto Sent</span><span class="font-black text-green-600">' + data.cryptoAmount + '</span></div>';
             var sumEl = document.getElementById('success-order-summary');
             if (sumEl) sumEl.innerHTML = summaryHtml;
-
-            // Navigate to home behind overlay
             showPage('home');
         }
+
         function closeOrderSuccess() {
             var overlay = document.getElementById('order-success');
             overlay.style.opacity = '0';
@@ -2129,7 +1921,6 @@
             document.querySelectorAll('.nav-link').forEach(function(btn) {
                 if (btn.innerText.trim() === (navMap[id] || '')) btn.classList.add('nav-active');
             });
-            // Log page view
             if (typeof logPageView === 'function') logPageView(id);
         }
 
@@ -3144,7 +2935,7 @@
                 }
             })();
         }
-
+    </script>
 
     <!-- Mobile Bottom Nav -->
     <nav id="mobile-nav" aria-label="Mobile navigation">
@@ -3205,7 +2996,7 @@
         </div>
     </div>
 
-
+    <script>
         function openMobileMenu() {
             document.getElementById('mobile-menu').classList.add('open');
             lucide.createIcons();
@@ -3264,26 +3055,15 @@
                 if (section) section.style.display = isActive ? 'block' : 'none';
             });
             if (tab === 'orders') loadAdminOrders();
-            if (tab === 'visitors') {
-                loadVisitorMap();
-                // Auto-refresh every 30 seconds while on this tab
-                if (analyticsRefreshInterval) clearInterval(analyticsRefreshInterval);
-                analyticsRefreshInterval = setInterval(loadVisitorMap, 10000);
-            } else {
-                // Stop refreshing when leaving the tab
-                if (analyticsRefreshInterval) clearInterval(analyticsRefreshInterval);
-                analyticsRefreshInterval = null;
-            }
+            if (tab === 'visitors') { loadVisitorMap(); if (analyticsRefreshInterval) clearInterval(analyticsRefreshInterval); analyticsRefreshInterval = setInterval(loadVisitorMap, 10000); } else { if (analyticsRefreshInterval) { clearInterval(analyticsRefreshInterval); analyticsRefreshInterval = null; } }
         }
 
         // ---- Admin order viewer ----
         async function loadAdminOrders() {
             var container = document.getElementById('admin-orders-list');
-            // Remember if the archive section was open before reloading
             var archiveWasOpen = false;
             var existingArchiveList = container.querySelector('.archive-list');
             if (existingArchiveList) archiveWasOpen = existingArchiveList.style.display !== 'none';
-
             container.innerHTML = '<p class="pixel-font text-lg opacity-40 uppercase">Loading...</p>';
             try {
                 var result = await supabaseClient
@@ -3363,7 +3143,7 @@
                     + '<div>' + proofHtml + '</div>'
                     + '</div>'
                     + '</div>'
-                    // Action bar — status dropdown + delete
+                    // Action bar
                     + '<div class="px-5 py-4 border-t border-beige-950/10 dark:border-beige-100/10 bg-beige-50 dark:bg-zinc-800/50 space-y-3">'
                     + '<div class="flex flex-wrap items-center gap-3">'
                     + '<label class="pixel-font text-xs uppercase opacity-50 whitespace-nowrap">Set Status:</label>'
@@ -3409,16 +3189,11 @@
             // Wire up action buttons via delegation (avoids inline onclick escaping issues)
             container.querySelectorAll('.order-action-btn').forEach(function(btn) {
                 btn.addEventListener('change', function() {
-                    // select (setstatus) fires on change
-                    if (btn.tagName === 'SELECT') {
-                        orderAction('setstatus', btn.getAttribute('data-id'), btn.value);
-                    }
+                    if (btn.tagName === 'SELECT') orderAction('setstatus', btn.getAttribute('data-id'), btn.value);
                 });
                 btn.addEventListener('click', function() {
-                    if (btn.tagName === 'SELECT') return; // handled by change
-                    var action = btn.getAttribute('data-action');
-                    var id = btn.getAttribute('data-id');
-                    orderAction(action, id);
+                    if (btn.tagName === 'SELECT') return;
+                    orderAction(btn.getAttribute('data-action'), btn.getAttribute('data-id'));
                 });
             });
         }
@@ -3434,33 +3209,18 @@
         async function orderAction(action, orderId, extra) {
             if (action === 'delete') {
                 if (!confirm('Permanently delete this order? This cannot be undone.')) return;
-                try {
-                    var r = await supabaseClient.from('orders').delete().eq('id', orderId);
-                    if (r.error) throw r.error;
-                    showAdminToast('Order deleted');
-                    loadAdminOrders();
-                } catch(err) { showAdminToast('Delete failed: ' + err.message, true); }
-
+                try { var r = await supabaseClient.from('orders').delete().eq('id', orderId); if (r.error) throw r.error; showAdminToast('Order deleted'); loadAdminOrders(); } catch(err) { showAdminToast('Delete failed: ' + err.message, true); }
             } else if (action === 'setstatus') {
-                var newStatus = extra;
                 try {
                     var fetched = await supabaseClient.from('orders').select('status_history').eq('id', orderId).single();
                     var history = [];
-                    if (fetched.data && fetched.data.status_history) {
-                        history = typeof fetched.data.status_history === 'string'
-                            ? JSON.parse(fetched.data.status_history)
-                            : (fetched.data.status_history || []);
-                    }
-                    history.push({ status: newStatus, timestamp: new Date().toISOString() });
-                    var r = await supabaseClient.from('orders').update({
-                        status: newStatus,
-                        status_history: history
-                    }).eq('id', orderId);
+                    if (fetched.data && fetched.data.status_history) { history = typeof fetched.data.status_history === 'string' ? JSON.parse(fetched.data.status_history) : (fetched.data.status_history || []); }
+                    history.push({ status: extra, timestamp: new Date().toISOString() });
+                    var r = await supabaseClient.from('orders').update({ status: extra, status_history: history }).eq('id', orderId);
                     if (r.error) throw r.error;
                     showAdminToast('Status updated');
                     loadAdminOrders();
                 } catch(err) { showAdminToast('Failed: ' + err.message, true); }
-
             }
         }
 
@@ -3528,16 +3288,85 @@
 
 
         // ============================================================
+        // CRYPTO LIVE RATE + TIMER
+        // ============================================================
+        var cryptoTimerInterval = null;
+        var cryptoTimerSeconds = 0;
+        var cryptoTimerStarted = false;
+        var currentCryptoType = null;
+        var currentCryptoAmount = null;
+        var binanceSymbols = { btc: 'BTCUSDT', eth: 'ETHUSDT', ltc: 'LTCUSDT' };
+        var cryptoDecimals = { btc: 6, eth: 5, usdt: 2, ltc: 4 };
+        var cryptoSymbols = { btc: 'BTC', eth: 'ETH', usdt: 'USDT', ltc: 'LTC' };
+
+        function getOrderTotal() {
+            var shippingCost = SHIPPING_OPTIONS[selectedShipping].price;
+            var subtotal = cart.reduce(function(s, i) { return s + i.price; }, 0);
+            return subtotal + shippingCost;
+        }
+
+        async function fetchCryptoRate(type) {
+            var loadingEl = document.getElementById('crypto-rate-loading');
+            var msgEl = document.getElementById('crypto-rate-msg');
+            var amountEl = document.getElementById('crypto-amount-display');
+            if (type === 'usdt') {
+                currentCryptoAmount = getOrderTotal().toFixed(2);
+                amountEl.innerText = currentCryptoAmount + ' USDT';
+                loadingEl.classList.add('hidden');
+                return;
+            }
+            loadingEl.classList.remove('hidden');
+            msgEl.innerText = 'Fetching live rate\u2026';
+            amountEl.innerText = '\u2014 \u2014';
+            try {
+                var resp = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=' + binanceSymbols[type]);
+                if (!resp.ok) throw new Error('Network error');
+                var data = await resp.json();
+                var rate = parseFloat(data.price);
+                if (!rate) throw new Error('No rate');
+                currentCryptoAmount = (getOrderTotal() / rate).toFixed(cryptoDecimals[type]);
+                amountEl.innerText = currentCryptoAmount + ' ' + cryptoSymbols[type];
+                loadingEl.classList.add('hidden');
+            } catch(e) {
+                msgEl.innerText = 'Could not fetch rate \u2014 please try again';
+                amountEl.innerText = '\u2014 \u2014';
+                currentCryptoAmount = null;
+            }
+        }
+
+        function startCryptoTimer() {
+            if (cryptoTimerStarted) return;
+            cryptoTimerStarted = true;
+            cryptoTimerSeconds = 300;
+            function tick() {
+                var m = Math.floor(cryptoTimerSeconds / 60);
+                var s = cryptoTimerSeconds % 60;
+                var el = document.getElementById('crypto-countdown');
+                if (el) el.innerText = m + ':' + (s < 10 ? '0' : '') + s;
+                if (cryptoTimerSeconds <= 0) {
+                    clearInterval(cryptoTimerInterval);
+                    cryptoTimerStarted = false;
+                    fetchCryptoRate(currentCryptoType);
+                    startCryptoTimer();
+                    return;
+                }
+                cryptoTimerSeconds--;
+            }
+            tick();
+            cryptoTimerInterval = setInterval(tick, 1000);
+        }
+
+        // ============================================================
         // ORDER TRACKING
         // ============================================================
         var ORDER_STATUSES = [
-            { key: 'pending',           label: 'Order Received',     icon: '\u2713', desc: 'We have received your order and are awaiting payment confirmation.' },
-            { key: 'payment_confirmed', label: 'Payment Confirmed',   icon: '\u20BF', desc: 'Your payment has been verified on the blockchain.' },
-            { key: 'processing',        label: 'Processing Order',    icon: '\u2697', desc: 'Your peptides are being prepared and quality checked.' },
+            { key: 'pending',           label: 'Order Received',      icon: '\u2713', desc: 'We have received your order and are awaiting payment confirmation.' },
+            { key: 'payment_confirmed', label: 'Payment Confirmed',    icon: '\u20BF', desc: 'Your payment has been verified on the blockchain.' },
+            { key: 'processing',        label: 'Processing Order',     icon: '\u2697', desc: 'Your peptides are being prepared and quality checked.' },
             { key: 'shipped',           label: 'Shipped / In Transit', icon: '\u2708', desc: 'Your package is on its way.' },
-            { key: 'arrived',           label: 'Arrived',             icon: '\u2605', desc: 'Your order has been delivered.' }
+            { key: 'arrived',           label: 'Arrived',              icon: '\u2605', desc: 'Your order has been delivered.' }
         ];
-        // Map legacy 'fulfilled' to 'arrived'
+
         function normaliseStatus(s) {
             if (s === 'fulfilled') return 'arrived';
             return s || 'pending';
@@ -3549,29 +3378,18 @@
             var resultEl = document.getElementById('tracking-result');
             errEl.classList.add('hidden');
             resultEl.classList.add('hidden');
-
             if (!code) { errEl.innerText = 'Please enter an order code.'; errEl.classList.remove('hidden'); return; }
-
             try {
                 var r = await supabaseClient.from('orders').select('*').eq('order_id', code).single();
-                if (r.error || !r.data) {
-                    errEl.innerText = 'No order found with that code. Please check and try again.';
-                    errEl.classList.remove('hidden');
-                    return;
-                }
+                if (r.error || !r.data) { errEl.innerText = 'No order found with that code. Please check and try again.'; errEl.classList.remove('hidden'); return; }
                 renderTrackingResult(r.data);
-            } catch(e) {
-                errEl.innerText = 'Could not connect. Please try again.';
-                errEl.classList.remove('hidden');
-            }
+            } catch(e) { errEl.innerText = 'Could not connect. Please try again.'; errEl.classList.remove('hidden'); }
         }
 
         function renderTrackingResult(o) {
             var status = normaliseStatus(o.status);
             var statusIdx = ORDER_STATUSES.findIndex(function(s) { return s.key === status; });
             if (statusIdx < 0) statusIdx = 0;
-
-            // ── Pipeline ──────────────────────────────────────────
             var pipelineEl = document.getElementById('tracking-pipeline');
             var pipeHtml = '<div class="flex items-start gap-0">';
             ORDER_STATUSES.forEach(function(s, i) {
@@ -3579,47 +3397,27 @@
                 var active = i === statusIdx;
                 var last = i === ORDER_STATUSES.length - 1;
                 pipeHtml += '<div class="flex flex-col items-center flex-1 min-w-0">'
-                    // Circle
-                    + '<div class="relative flex items-center justify-center w-10 h-10 border-3 font-black pixel-font text-lg flex-shrink-0 '
-                    + (active ? 'bg-beige-950 dark:bg-beige-100 text-beige-50 dark:text-beige-950 border-beige-950 dark:border-beige-100 ring-4 ring-beige-950/20 dark:ring-beige-100/20'
+                    + '<div class="relative flex items-center justify-center w-10 h-10 font-black pixel-font text-lg flex-shrink-0 '
+                    + (active ? 'bg-beige-950 dark:bg-beige-100 text-beige-50 dark:text-beige-950 border-beige-950 dark:border-beige-100 ring-4 ring-beige-950/20'
                               : done ? 'bg-green-500 text-white border-green-500'
                               : 'bg-white dark:bg-zinc-900 text-beige-950/20 dark:text-beige-100/20 border-beige-950/20 dark:border-beige-100/20')
                     + '" style="border-width:2px;">'
                     + (done && !active ? '\u2713' : (active ? s.icon : ''))
                     + '</div>';
-                // Connector line
-                if (!last) {
-                    pipeHtml += '</div>'
-                        + '<div class="flex-1 h-0.5 mt-5 flex-shrink-0 '
-                        + (i < statusIdx ? 'bg-green-500' : 'bg-beige-950/15 dark:bg-beige-100/15')
-                        + '"></div>';
-                } else {
-                    pipeHtml += '</div>';
-                }
+                if (!last) { pipeHtml += '</div><div class="flex-1 h-0.5 mt-5 flex-shrink-0 ' + (i < statusIdx ? 'bg-green-500' : 'bg-beige-950/15 dark:bg-beige-100/15') + '"></div>'; }
+                else { pipeHtml += '</div>'; }
             });
-            pipeHtml += '</div>';
-            // Labels row
-            pipeHtml += '<div class="flex items-start gap-0 mt-3">';
+            pipeHtml += '</div><div class="flex items-start gap-0 mt-3">';
             ORDER_STATUSES.forEach(function(s, i) {
-                var done = i <= statusIdx;
-                var active = i === statusIdx;
-                pipeHtml += '<div class="flex-1 flex flex-col items-center min-w-0 px-1">'
-                    + '<p class="pixel-font text-xs text-center leading-tight uppercase font-bold '
-                    + (active ? 'text-beige-950 dark:text-beige-100' : done ? 'text-green-600' : 'opacity-25')
-                    + '">' + s.label + '</p>'
-                    + '</div>';
+                var done = i <= statusIdx; var active = i === statusIdx;
+                pipeHtml += '<div class="flex-1 flex flex-col items-center min-w-0 px-1"><p class="pixel-font text-xs text-center leading-tight uppercase font-bold ' + (active ? 'text-beige-950 dark:text-beige-100' : done ? 'text-green-600' : 'opacity-25') + '">' + s.label + '</p></div>';
                 if (i < ORDER_STATUSES.length - 1) pipeHtml += '<div class="flex-1"></div>';
             });
             pipeHtml += '</div>';
-            // Active step description
             var cur = ORDER_STATUSES[statusIdx];
-            pipeHtml += '<div class="mt-6 px-5 py-3 bg-beige-50 dark:bg-zinc-800 border-l-4 border-beige-950 dark:border-beige-100">'
-                + '<p class="pixel-font text-sm uppercase font-bold mb-0.5">' + cur.label + '</p>'
-                + '<p class="pixel-font text-xs opacity-60">' + cur.desc + '</p>'
-                + '</div>';
+            pipeHtml += '<div class="mt-6 px-5 py-3 bg-beige-50 dark:bg-zinc-800 border-l-4 border-beige-950 dark:border-beige-100"><p class="pixel-font text-sm uppercase font-bold mb-0.5">' + cur.label + '</p><p class="pixel-font text-xs opacity-60">' + cur.desc + '</p></div>';
             pipelineEl.innerHTML = pipeHtml;
 
-            // ── Receipt ───────────────────────────────────────────
             document.getElementById('receipt-order-id').innerText = o.order_id || '—';
             document.getElementById('receipt-date').innerText = o.created_at ? new Date(o.created_at).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) : '—';
             document.getElementById('receipt-name').innerText = o.customer_name || '—';
@@ -3629,69 +3427,33 @@
             document.getElementById('receipt-shipping-cost').innerText = '$' + parseFloat(o.shipping_cost || 0).toFixed(2);
             document.getElementById('receipt-total').innerText = '$' + parseFloat(o.total_price || 0).toFixed(2);
             document.getElementById('receipt-payment').innerText = (o.payment_method || '—').toUpperCase();
-            // Crypto row
-            if (o.crypto_amount) {
-                document.getElementById('receipt-crypto').innerText = o.crypto_amount;
-                document.getElementById('receipt-crypto-row').style.display = '';
-            } else {
-                document.getElementById('receipt-crypto-row').style.display = 'none';
-            }
-            // Items
-            var itemsEl = document.getElementById('receipt-items');
+            if (o.crypto_amount) { document.getElementById('receipt-crypto').innerText = o.crypto_amount; document.getElementById('receipt-crypto-row').style.display = ''; }
+            else { document.getElementById('receipt-crypto-row').style.display = 'none'; }
+
             var manifest = o.order_manifest;
             if (typeof manifest === 'string') { try { manifest = JSON.parse(manifest); } catch(e) { manifest = []; } }
+            var itemsEl = document.getElementById('receipt-items');
             if (Array.isArray(manifest) && manifest.length) {
                 var grouped = {};
-                manifest.forEach(function(item) {
-                    var k = item.name || 'Unknown';
-                    if (!grouped[k]) grouped[k] = { count: 0, price: item.price || 0 };
-                    grouped[k].count++;
-                });
-                itemsEl.innerHTML = Object.keys(grouped).map(function(name) {
-                    var g = grouped[name];
-                    return '<div class="flex justify-between pixel-font text-base border-b border-beige-950/5 dark:border-beige-100/5 pb-2">'
-                        + '<span class="uppercase font-bold">' + name + ' <span class="opacity-40">x' + g.count + '</span></span>'
-                        + '<span class="opacity-70">$' + (g.price * g.count).toFixed(2) + '</span>'
-                        + '</div>';
-                }).join('');
-            } else {
-                itemsEl.innerHTML = '<p class="pixel-font text-sm opacity-40">No items found</p>';
-            }
+                manifest.forEach(function(item) { var k = item.name || 'Unknown'; if (!grouped[k]) grouped[k] = { count: 0, price: item.price || 0 }; grouped[k].count++; });
+                itemsEl.innerHTML = Object.keys(grouped).map(function(name) { var g = grouped[name]; return '<div class="flex justify-between pixel-font text-base border-b border-beige-950/5 pb-2"><span class="uppercase font-bold">' + name + ' <span class="opacity-40">x' + g.count + '</span></span><span class="opacity-70">$' + (g.price * g.count).toFixed(2) + '</span></div>'; }).join('');
+            } else { itemsEl.innerHTML = '<p class="pixel-font text-sm opacity-40">No items found</p>'; }
 
-            // ── Status history ────────────────────────────────────
             var historyEl = document.getElementById('tracking-history');
             var history = o.status_history;
             if (typeof history === 'string') { try { history = JSON.parse(history); } catch(e) { history = null; } }
-            if (!Array.isArray(history) || !history.length) {
-                // Synthesise a basic history from created_at + current status
-                history = [{ status: 'pending', timestamp: o.created_at }];
-                if (status !== 'pending') history.push({ status: status, timestamp: o.updated_at || o.created_at });
-            }
-            var statusLabels = {};
-            ORDER_STATUSES.forEach(function(s) { statusLabels[s.key] = s.label; });
-            var histHtml = '';
-            var reversedHistory = history.slice().reverse();
-            reversedHistory.forEach(function(entry, i) {
+            if (!Array.isArray(history) || !history.length) { history = [{ status: 'pending', timestamp: o.created_at }]; if (status !== 'pending') history.push({ status: status, timestamp: o.updated_at || o.created_at }); }
+            var statusLabels = {}; ORDER_STATUSES.forEach(function(s) { statusLabels[s.key] = s.label; });
+            var rev = history.slice().reverse();
+            historyEl.innerHTML = rev.map(function(entry, i) {
                 var sKey = normaliseStatus(entry.status);
                 var label = statusLabels[sKey] || entry.status;
                 var ts = entry.timestamp ? new Date(entry.timestamp).toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
                 var isLatest = i === 0;
-                histHtml += '<div class="flex gap-4 items-start">'
-                    + '<div class="flex flex-col items-center">'
-                    + '<div class="w-3 h-3 rounded-full mt-1 flex-shrink-0 ' + (isLatest ? 'bg-beige-950 dark:bg-beige-100' : 'bg-green-500') + '"></div>'
-                    + (i < reversedHistory.length - 1 ? '<div class="w-0.5 flex-1 bg-beige-950/10 dark:bg-beige-100/10 mt-1 mb-1" style="min-height:24px;"></div>' : '')
-                    + '</div>'
-                    + '<div class="pb-4">'
-                    + '<p class="pixel-font text-sm font-black uppercase ' + (isLatest ? '' : 'opacity-60') + '">' + label + '</p>'
-                    + '<p class="pixel-font text-xs opacity-40">' + ts + '</p>'
-                    + '</div>'
-                    + '</div>';
-            });
-            historyEl.innerHTML = histHtml;
-
+                return '<div class="flex gap-4 items-start"><div class="flex flex-col items-center"><div class="w-3 h-3 rounded-full mt-1 flex-shrink-0 ' + (isLatest ? 'bg-beige-950 dark:bg-beige-100' : 'bg-green-500') + '"></div>' + (i < rev.length - 1 ? '<div class="w-0.5 flex-1 bg-beige-950/10 dark:bg-beige-100/10 mt-1 mb-1" style="min-height:24px;"></div>' : '') + '</div><div class="pb-4"><p class="pixel-font text-sm font-black uppercase ' + (isLatest ? '' : 'opacity-60') + '">' + label + '</p><p class="pixel-font text-xs opacity-40">' + ts + '</p></div></div>';
+            }).join('');
             document.getElementById('tracking-result').classList.remove('hidden');
         }
-
 
         // ============================================================
         // VISITOR LOGGING + ANALYTICS
@@ -3703,17 +3465,13 @@
         var analyticsLastFingerprint = null;
         var analyticsFirstLoad = true;
 
-        // Generate or retrieve session ID
         var analyticsSessionId = sessionStorage.getItem('fpSessionId');
         if (!analyticsSessionId) {
             analyticsSessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
             sessionStorage.setItem('fpSessionId', analyticsSessionId);
         }
 
-        function detectDevice() {
-            return /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
-        }
-
+        function detectDevice() { return /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) ? 'mobile' : 'desktop'; }
         function detectBrowser() {
             var ua = navigator.userAgent;
             if (ua.includes('Chrome') && !ua.includes('Edg')) return 'Chrome';
@@ -3722,7 +3480,6 @@
             if (ua.includes('Edg')) return 'Edge';
             return 'Other';
         }
-
         function detectReferrer() {
             var ref = document.referrer;
             if (!ref) return 'Direct';
@@ -3742,275 +3499,120 @@
                 var geo = await resp.json();
                 if (!geo.latitude || !geo.longitude) return;
                 await supabaseClient.from('visitor_logs').insert([{
-                    ip: geo.ip,
-                    country: geo.country_name || '',
-                    city: geo.city || '',
-                    latitude: geo.latitude,
-                    longitude: geo.longitude,
-                    session_id: analyticsSessionId,
-                    landing_page: window.location.pathname,
-                    referrer: detectReferrer(),
-                    device: detectDevice(),
-                    browser: detectBrowser()
+                    ip: geo.ip, country: geo.country_name || '', city: geo.city || '',
+                    latitude: geo.latitude, longitude: geo.longitude,
+                    session_id: analyticsSessionId, landing_page: window.location.pathname,
+                    referrer: detectReferrer(), device: detectDevice(), browser: detectBrowser()
                 }]);
-            } catch(e) { /* silent fail */ }
+            } catch(e) {}
         }
 
         async function logPageView(page) {
-            try {
-                await supabaseClient.from('page_views').insert([{
-                    session_id: analyticsSessionId,
-                    page: page
-                }]);
-            } catch(e) { /* silent fail */ }
+            try { await supabaseClient.from('page_views').insert([{ session_id: analyticsSessionId, page: page }]); } catch(e) {}
         }
 
-        // Log visitor on page load once per session
-        if (!sessionStorage.getItem('visitorLogged')) {
-            logVisitor();
-            sessionStorage.setItem('visitorLogged', '1');
-        }
+        if (!sessionStorage.getItem('visitorLogged')) { logVisitor(); sessionStorage.setItem('visitorLogged', '1'); }
 
-        function destroyChart(id) {
-            if (analyticsCharts[id]) {
-                analyticsCharts[id].destroy();
-                delete analyticsCharts[id];
-            }
-        }
+        function destroyChart(id) { if (analyticsCharts[id]) { analyticsCharts[id].destroy(); delete analyticsCharts[id]; } }
 
         function makeBarChart(id, labels, data, color) {
             destroyChart(id);
-            var ctx = document.getElementById(id);
-            if (!ctx) return;
-            analyticsCharts[id] = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{ data: data, backgroundColor: color || '#1C1C16', borderRadius: 2 }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: true, ticks: { stepSize: 1, font: { family: 'VT323', size: 13 } }, grid: { color: 'rgba(28,28,22,0.06)' } },
-                        x: { ticks: { font: { family: 'VT323', size: 13 } }, grid: { display: false } }
-                    }
-                }
-            });
+            var ctx = document.getElementById(id); if (!ctx) return;
+            analyticsCharts[id] = new Chart(ctx, { type: 'bar', data: { labels: labels, datasets: [{ data: data, backgroundColor: color || '#1C1C16', borderRadius: 2 }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, font: { family: 'VT323', size: 13 } }, grid: { color: 'rgba(28,28,22,0.06)' } }, x: { ticks: { font: { family: 'VT323', size: 13 } }, grid: { display: false } } } } });
         }
 
         function makeLineChart(id, labels, data) {
             destroyChart(id);
-            var ctx = document.getElementById(id);
-            if (!ctx) return;
-            analyticsCharts[id] = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        borderColor: '#1C1C16',
-                        backgroundColor: 'rgba(28,28,22,0.07)',
-                        fill: true,
-                        tension: 0.3,
-                        pointRadius: 3,
-                        pointBackgroundColor: '#1C1C16'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: true, ticks: { stepSize: 1, font: { family: 'VT323', size: 13 } }, grid: { color: 'rgba(28,28,22,0.06)' } },
-                        x: { ticks: { font: { family: 'VT323', size: 13 }, maxRotation: 45 }, grid: { display: false } }
-                    }
-                }
-            });
+            var ctx = document.getElementById(id); if (!ctx) return;
+            analyticsCharts[id] = new Chart(ctx, { type: 'line', data: { labels: labels, datasets: [{ data: data, borderColor: '#1C1C16', backgroundColor: 'rgba(28,28,22,0.07)', fill: true, tension: 0.3, pointRadius: 3, pointBackgroundColor: '#1C1C16' }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, font: { family: 'VT323', size: 13 } }, grid: { color: 'rgba(28,28,22,0.06)' } }, x: { ticks: { font: { family: 'VT323', size: 13 }, maxRotation: 45 }, grid: { display: false } } } } });
         }
 
         function makeDoughnutChart(id, labels, data) {
             destroyChart(id);
-            var ctx = document.getElementById(id);
-            if (!ctx) return;
+            var ctx = document.getElementById(id); if (!ctx) return;
             var colors = ['#1C1C16','#5DADE2','#EB984E','#52BE80','#AF7AC5','#E74C3C','#F4D03F'];
-            analyticsCharts[id] = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{ data: data, backgroundColor: colors.slice(0, data.length), borderWidth: 2 }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { position: 'right', labels: { font: { family: 'VT323', size: 13 }, padding: 10 } }
-                    }
-                }
-            });
+            analyticsCharts[id] = new Chart(ctx, { type: 'doughnut', data: { labels: labels, datasets: [{ data: data, backgroundColor: colors.slice(0, data.length), borderWidth: 2 }] }, options: { responsive: true, plugins: { legend: { position: 'right', labels: { font: { family: 'VT323', size: 13 }, padding: 10 } } } } });
         }
 
         function refreshMapPins() {
             if (!visitorMap) return;
-            // Remove existing circle markers
-            visitorMap.eachLayer(function(layer) {
-                if (layer instanceof L.CircleMarker) visitorMap.removeLayer(layer);
+            visitorMap.eachLayer(function(layer) { if (layer instanceof L.CircleMarker) visitorMap.removeLayer(layer); });
+            var showV = document.getElementById('map-show-visitors') && document.getElementById('map-show-visitors').checked;
+            var showO = document.getElementById('map-show-orders') && document.getElementById('map-show-orders').checked;
+            if (showV) visitorMapData.visitors.forEach(function(v) {
+                if (!v.latitude || !v.longitude) return;
+                L.circleMarker([v.latitude, v.longitude], { radius: 5, fillColor: '#1C1C16', color: '#F5F5DC', weight: 1.5, opacity: 1, fillOpacity: 0.8 })
+                .bindPopup('<div style="font-family:VT323,monospace;font-size:14px;text-transform:uppercase;"><strong>' + (v.city || 'Unknown') + '</strong><br>' + (v.country || '') + ' &bull; ' + (v.device || '') + '<br><span style="opacity:0.5;">' + new Date(v.visited_at).toLocaleDateString() + '</span></div>').addTo(visitorMap);
             });
-            var showVisitors = document.getElementById('map-show-visitors') && document.getElementById('map-show-visitors').checked;
-            var showOrders = document.getElementById('map-show-orders') && document.getElementById('map-show-orders').checked;
-
-            if (showVisitors) {
-                visitorMapData.visitors.forEach(function(v) {
-                    if (!v.latitude || !v.longitude) return;
-                    L.circleMarker([v.latitude, v.longitude], {
-                        radius: 5, fillColor: '#1C1C16', color: '#F5F5DC', weight: 1.5, opacity: 1, fillOpacity: 0.8
-                    }).bindPopup(
-                        '<div style="font-family:VT323,monospace;font-size:14px;text-transform:uppercase;">'
-                        + '<strong>' + (v.city || 'Unknown') + '</strong><br>'
-                        + (v.country || '') + ' &bull; ' + (v.device || '') + '<br>'
-                        + '<span style="opacity:0.5;">' + new Date(v.visited_at).toLocaleDateString() + '</span>'
-                        + '</div>'
-                    ).addTo(visitorMap);
-                });
-            }
-            if (showOrders) {
-                visitorMapData.orders.forEach(function(o) {
-                    if (!o.latitude || !o.longitude) return;
-                    L.circleMarker([o.latitude, o.longitude], {
-                        radius: 7, fillColor: '#5DADE2', color: '#fff', weight: 2, opacity: 1, fillOpacity: 0.9
-                    }).bindPopup(
-                        '<div style="font-family:VT323,monospace;font-size:14px;text-transform:uppercase;">'
-                        + '<strong>ORDER: ' + (o.order_id || '') + '</strong><br>'
-                        + '$' + parseFloat(o.total_price || 0).toFixed(2) + '<br>'
-                        + '<span style="opacity:0.5;">' + new Date(o.created_at).toLocaleDateString() + '</span>'
-                        + '</div>'
-                    ).addTo(visitorMap);
-                });
-            }
+            if (showO) visitorMapData.orders.forEach(function(o) {
+                if (!o.latitude || !o.longitude) return;
+                L.circleMarker([o.latitude, o.longitude], { radius: 7, fillColor: '#5DADE2', color: '#fff', weight: 2, opacity: 1, fillOpacity: 0.9 })
+                .bindPopup('<div style="font-family:VT323,monospace;font-size:14px;text-transform:uppercase;"><strong>ORDER: ' + (o.order_id || '') + '</strong><br>$' + parseFloat(o.total_price || 0).toFixed(2) + '</div>').addTo(visitorMap);
+            });
         }
 
         async function loadVisitorMap() {
             var tableEl = document.getElementById('visitor-table');
-            if (analyticsFirstLoad) {
-                tableEl.innerHTML = '<p class="pixel-font text-sm opacity-40 uppercase px-5 py-4">Loading...</p>';
-            }
-
+            if (analyticsFirstLoad) tableEl.innerHTML = '<p class="pixel-font text-sm opacity-40 uppercase px-5 py-4">Loading...</p>';
             try {
-                var [visitorResult, pageViewResult, orderResult] = await Promise.all([
+                var [vr, pvr, or_] = await Promise.all([
                     supabaseClient.from('visitor_logs').select('*').order('visited_at', { ascending: false }).limit(1000),
                     supabaseClient.from('page_views').select('*').order('viewed_at', { ascending: false }).limit(2000),
-                    supabaseClient.from('orders').select('id, order_id, total_price, created_at, customer_name, shipping_address').order('created_at', { ascending: false }).limit(200)
+                    supabaseClient.from('orders').select('id,order_id,total_price,created_at').order('created_at', { ascending: false }).limit(200)
                 ]);
+                var visitors = vr.data || [], pageViews = pvr.data || [], orders = or_.data || [];
+                var fp = visitors.length + '_' + pageViews.length + '_' + orders.length + '_' + (visitors[0] ? visitors[0].id : '');
+                var changed = fp !== analyticsLastFingerprint;
+                analyticsLastFingerprint = fp;
 
-                var visitors = visitorResult.data || [];
-                var pageViews = pageViewResult.data || [];
-                var orders = orderResult.data || [];
-
-                // Generate a fingerprint to detect if data changed
-                var fingerprint = visitors.length + '_' + pageViews.length + '_' + orders.length
-                    + '_' + (visitors[0] ? visitors[0].id : '') 
-                    + '_' + (pageViews[0] ? pageViews[0].id : '');
-                var dataChanged = fingerprint !== analyticsLastFingerprint;
-                analyticsLastFingerprint = fingerprint;
-
-                // ── Key stats — always update these (no flicker, just text) ──
                 var today = new Date().toDateString();
-                var todayCount = visitors.filter(function(v) { return new Date(v.visited_at).toDateString() === today; }).length;
-                var countries = [...new Set(visitors.map(function(v) { return v.country; }).filter(Boolean))].length;
-                var convRate = visitors.length > 0 ? ((orders.length / visitors.length) * 100).toFixed(1) + '%' : '—';
-
                 document.getElementById('visitor-stat-total').innerText = visitors.length;
-                document.getElementById('visitor-stat-today').innerText = todayCount;
-                document.getElementById('visitor-stat-countries').innerText = countries;
+                document.getElementById('visitor-stat-today').innerText = visitors.filter(function(v) { return new Date(v.visited_at).toDateString() === today; }).length;
+                document.getElementById('visitor-stat-countries').innerText = [...new Set(visitors.map(function(v) { return v.country; }).filter(Boolean))].length;
                 document.getElementById('visitor-stat-pageviews').innerText = pageViews.length;
-                document.getElementById('visitor-stat-conversion').innerText = convRate;
+                document.getElementById('visitor-stat-conversion').innerText = visitors.length > 0 ? ((orders.length / visitors.length) * 100).toFixed(1) + '%' : '—';
 
-                // ── Only rebuild charts + map if data actually changed ────
-                if (dataChanged || analyticsFirstLoad) {
+                if (changed || analyticsFirstLoad) {
                     analyticsFirstLoad = false;
                     visitorMapData.visitors = visitors;
                     visitorMapData.orders = orders.filter(function(o) { return o.latitude && o.longitude; });
 
-                    // Visits over last 30 days
                     var days = [], dayCounts = [];
-                    for (var i = 29; i >= 0; i--) {
-                        var d = new Date();
-                        d.setDate(d.getDate() - i);
-                        var label = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
-                        var ds = d.toDateString();
-                        days.push(label);
-                        dayCounts.push(visitors.filter(function(v) { return new Date(v.visited_at).toDateString() === ds; }).length);
-                    }
+                    for (var i = 29; i >= 0; i--) { var d = new Date(); d.setDate(d.getDate() - i); days.push(d.toLocaleDateString('en-GB', { day:'2-digit', month:'short' })); var ds = d.toDateString(); dayCounts.push(visitors.filter(function(v) { return new Date(v.visited_at).toDateString() === ds; }).length); }
                     makeLineChart('chart-visits', days, dayCounts);
 
-                    // Top pages
-                    var pageCounts = {};
-                    pageViews.forEach(function(pv) {
-                        var p = pv.page || 'Unknown';
-                        pageCounts[p] = (pageCounts[p] || 0) + 1;
-                    });
-                    var sortedPages = Object.entries(pageCounts).sort(function(a,b) { return b[1]-a[1]; }).slice(0, 7);
-                    makeBarChart('chart-pages', sortedPages.map(function(x){return x[0];}), sortedPages.map(function(x){return x[1];}), '#1C1C16');
+                    var pc = {}; pageViews.forEach(function(pv) { var p = pv.page || 'Unknown'; pc[p] = (pc[p]||0)+1; });
+                    var sp = Object.entries(pc).sort(function(a,b){return b[1]-a[1];}).slice(0,7);
+                    makeBarChart('chart-pages', sp.map(function(x){return x[0];}), sp.map(function(x){return x[1];}), '#1C1C16');
 
-                    // Top countries
-                    var countryCounts = {};
-                    visitors.forEach(function(v) {
-                        if (!v.country) return;
-                        countryCounts[v.country] = (countryCounts[v.country] || 0) + 1;
-                    });
-                    var sortedCountries = Object.entries(countryCounts).sort(function(a,b) { return b[1]-a[1]; }).slice(0, 7);
-                    makeBarChart('chart-countries', sortedCountries.map(function(x){return x[0];}), sortedCountries.map(function(x){return x[1];}), '#5DADE2');
+                    var cc = {}; visitors.forEach(function(v) { if (!v.country) return; cc[v.country]=(cc[v.country]||0)+1; });
+                    var sc = Object.entries(cc).sort(function(a,b){return b[1]-a[1];}).slice(0,7);
+                    makeBarChart('chart-countries', sc.map(function(x){return x[0];}), sc.map(function(x){return x[1];}), '#5DADE2');
 
-                    // Device breakdown
-                    var deviceCounts = {};
-                    visitors.forEach(function(v) {
-                        var d = v.device || 'Unknown';
-                        deviceCounts[d] = (deviceCounts[d] || 0) + 1;
-                    });
-                    makeDoughnutChart('chart-devices', Object.keys(deviceCounts), Object.values(deviceCounts));
+                    var dc = {}; visitors.forEach(function(v) { var d=v.device||'Unknown'; dc[d]=(dc[d]||0)+1; });
+                    makeDoughnutChart('chart-devices', Object.keys(dc), Object.values(dc));
 
-                    // Traffic sources
-                    var refCounts = {};
-                    visitors.forEach(function(v) {
-                        var r = v.referrer || 'Direct';
-                        refCounts[r] = (refCounts[r] || 0) + 1;
-                    });
-                    makeDoughnutChart('chart-referrers', Object.keys(refCounts), Object.values(refCounts));
+                    var rc = {}; visitors.forEach(function(v) { var r=v.referrer||'Direct'; rc[r]=(rc[r]||0)+1; });
+                    makeDoughnutChart('chart-referrers', Object.keys(rc), Object.values(rc));
 
-                    // Map
                     if (!visitorMap) {
-                        visitorMap = L.map('visitor-map').setView([20, 0], 2);
-                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                            attribution: '© OpenStreetMap'
-                        }).addTo(visitorMap);
+                        visitorMap = L.map('visitor-map').setView([20,0],2);
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(visitorMap);
                     }
                     refreshMapPins();
                     setTimeout(function() { visitorMap.invalidateSize(); }, 150);
 
-                    // Recent visitors table — only rebuild if data changed
-                    if (!visitors.length) {
-                        tableEl.innerHTML = '<p class="pixel-font text-sm opacity-40 uppercase px-5 py-4">No visitors yet</p>';
-                    } else {
-                        tableEl.innerHTML = visitors.slice(0, 50).map(function(v) {
-                            var ts = v.visited_at ? new Date(v.visited_at).toLocaleString('en-GB', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }) : '—';
-                            return '<div class="flex justify-between items-center px-5 py-3 hover:bg-beige-50 dark:hover:bg-zinc-800 transition-colors">'
-                                + '<div>'
-                                + '<p class="pixel-font text-sm font-bold uppercase">' + (v.city || '—') + ', ' + (v.country || '—') + '</p>'
-                                + '<p class="pixel-font text-xs opacity-40">' + (v.device || '') + ' &bull; ' + (v.browser || '') + ' &bull; ' + (v.referrer || 'Direct') + '</p>'
-                                + '</div>'
-                                + '<div class="text-right">'
-                                + '<p class="pixel-font text-xs opacity-40">' + ts + '</p>'
-                                + '<p class="pixel-font text-xs opacity-30">' + (v.ip || '') + '</p>'
-                                + '</div>'
-                                + '</div>';
-                        }).join('');
-                    }
+                    tableEl.innerHTML = visitors.length ? visitors.slice(0,50).map(function(v) {
+                        var ts = v.visited_at ? new Date(v.visited_at).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : '—';
+                        return '<div class="flex justify-between items-center px-5 py-3 hover:bg-beige-50 dark:hover:bg-zinc-800 transition-colors"><div><p class="pixel-font text-sm font-bold uppercase">'+(v.city||'—')+', '+(v.country||'—')+'</p><p class="pixel-font text-xs opacity-40">'+(v.device||'')+' &bull; '+(v.browser||'')+' &bull; '+(v.referrer||'Direct')+'</p></div><div class="text-right"><p class="pixel-font text-xs opacity-40">'+ts+'</p><p class="pixel-font text-xs opacity-30">'+(v.ip||'')+'</p></div></div>';
+                    }).join('') : '<p class="pixel-font text-sm opacity-40 uppercase px-5 py-4">No visitors yet</p>';
                 }
-
             } catch(err) {
-                if (analyticsFirstLoad) {
-                    tableEl.innerHTML = '<p class="pixel-font text-sm text-red-500 uppercase px-5 py-4">Failed: ' + err.message + '</p>';
-                }
+                if (analyticsFirstLoad) tableEl.innerHTML = '<p class="pixel-font text-sm text-red-500 uppercase px-5 py-4">Failed: ' + err.message + '</p>';
             }
         }
+
+        updateMobileNav('home');
     </script>
 </body>
 </html>
