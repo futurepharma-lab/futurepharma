@@ -2036,14 +2036,15 @@
         // Builds the price + volume table + qty + add-to-cart section for a selected size variant
         function buildSizeDetailHTML(p, si, id) {
             var sv = p.sizeVariants[si];
+if (!localCounts[id]) localCounts[id] = 0;
             var pricingHTML = (sv.scaledPricing && sv.scaledPricing.length)
                 ? buildPricingTableHTML(p, null, sv.scaledPricing)
                 : '';
-            return '<p class="text-5xl font-black mb-2">$' + sv.price.toFixed(2) + '</p>'
+            return '<p class="text-5xl font-black mb-2" id="size-price-' + id + '">$' + sv.price.toFixed(2) + '</p>'
                 + pricingHTML
                 + '<div class="flex items-center gap-4 mt-6 mb-8">'
                 + '<button onclick="updateLocalCount(' + id + ', -1)" class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 font-bold text-2xl hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950">-</button>'
-                + '<span class="pixel-font text-3xl font-bold" id="detail-count-' + id + '">' + (localCounts[id] || 0) + '</span>'
+                + '<span class="pixel-font text-3xl font-bold" id="detail-count-' + id + '">' + localCounts[id] + '</span>'
                 + '<button onclick="updateLocalCount(' + id + ', 1)" class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 font-bold text-2xl hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950">+</button>'
                 + '</div>'
                 + '<button onclick="commitToCartSizeVariant(' + id + ')" class="w-full bg-beige-950 text-white dark:bg-beige-100 dark:text-beige-950 py-6 font-bold uppercase tracking-widest hover:invert transition-all pixel-font text-2xl">Add to Request</button>';
@@ -2051,6 +2052,7 @@
 
         function selectSizeVariant(id, si) {
             selectedSizeVariants[id] = si;
+if (!localCounts[id]) localCounts[id] = 0;
             var p = products.find(function(x) { return x.id === id; });
             // Update button styles
             var group = document.getElementById('size-btn-group-' + id);
@@ -2066,7 +2068,11 @@
             }
             // Update price + table + qty section
             var detail = document.getElementById('size-detail-' + id);
-            if (detail) detail.innerHTML = buildSizeDetailHTML(p, si, id);
+            if (detail) {
+                detail.innerHTML = buildSizeDetailHTML(p, si, id);
+                lucide.createIcons();
+            }
+
         }
 
         // Commit size variant to cart with correct pricing
@@ -3636,3 +3642,4 @@
     </script>
 </body>
 </html>
+
