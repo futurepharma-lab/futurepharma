@@ -3639,6 +3639,20 @@ if (!localCounts[id]) localCounts[id] = 0;
         }
 
         updateMobileNav('home');
+// Auto-fill tracking from URL param
+(function() {
+    var params = new URLSearchParams(window.location.search);
+    var orderId = params.get('order');
+    if (orderId) {
+        var input = document.getElementById('tracking-input');
+        if (input) input.value = orderId.toUpperCase();
+        showPage('order-tracking');
+        updateMobileNav('order-tracking');
+        // Wait for products to load then trigger lookup
+        setTimeout(lookupOrder, 800);
+    }
+})();
+
     </script>
 </body>
 </html>
