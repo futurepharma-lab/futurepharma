@@ -1255,6 +1255,50 @@
         .dark .hero-vial-spec {
             color: #d9e1e8;
         }
+        .dark #contact .premium-note,
+        .dark #contact .text-beige-800,
+        .dark #contact p,
+        .dark #contact a {
+            color: #e2e8ee !important;
+        }
+        .dark #contact .opacity-60,
+        .dark #home .opacity-50,
+        .dark #home .opacity-55 {
+            opacity: 0.8 !important;
+        }
+        .dark #contact .contact-card,
+        .dark #contact .contact-card.reveal {
+            background:
+                linear-gradient(180deg, rgba(23,26,29,0.98), rgba(28,31,35,0.96)),
+                var(--surface) !important;
+            box-shadow: 0 22px 44px rgba(0,0,0,0.28) !important;
+        }
+        .dark #contact .contact-card .bg-beige-50,
+        .dark #home .editorial-panel .bg-beige-50 {
+            background: rgba(23, 26, 29, 0.82) !important;
+            border-color: rgba(223, 230, 238, 0.12) !important;
+        }
+        .dark #contact input,
+        .dark #contact textarea {
+            color: #f2f5f8 !important;
+        }
+        .dark #contact input::placeholder,
+        .dark #contact textarea::placeholder {
+            color: rgba(223, 230, 238, 0.6) !important;
+        }
+        .dark #home .editorial-panel > .pixel-font,
+        .dark #home .editorial-panel .pixel-font {
+            color: #dfe6ee;
+        }
+        .dark #home .editorial-panel h2,
+        .dark #home .editorial-panel h3,
+        .dark #home .editorial-panel .font-semibold {
+            color: #f3f6f9 !important;
+        }
+        .dark #home .editorial-panel .premium-note,
+        .dark #home .editorial-panel .text-beige-800 {
+            color: #dce4eb !important;
+        }
 
         @media (max-width: 767px) {
             .dark .hero-copy-block {
@@ -1417,11 +1461,25 @@
     <div id="age-gate" class="fixed inset-0 z-[999] flex items-center justify-center bg-beige-100" style="background-color:#F5F5DC;">
         <div class="max-w-md w-full mx-6 text-center">
             <div class="mb-8 flex justify-center">
-                <svg viewBox="0 0 16 20" class="w-16 h-16" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="6" y="4" width="4" height="2" fill="#DDD" stroke="#1C1C16" stroke-width="0.3"/>
-                    <rect x="4" y="6" width="8" height="11" fill="#FFF" stroke="#1C1C16" stroke-width="0.3"/>
-                    <rect x="6" y="13" width="4" height="3" fill="#5DADE2"/>
-                    <rect x="5" y="1" width="6" height="3" fill="#1C1C16" stroke="#1C1C16" stroke-width="0.3"/>
+                <svg viewBox="0 0 48 48" class="w-16 h-16" xmlns="http://www.w3.org/2000/svg" fill="none">
+                    <defs>
+                        <linearGradient id="fpAgeGlass" x1="24" y1="10" x2="24" y2="38" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#FFFFFF"/>
+                            <stop offset="1" stop-color="#E8EEF2"/>
+                        </linearGradient>
+                        <linearGradient id="fpAgeLiquid" x1="24" y1="25" x2="24" y2="35" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#8FB6CC"/>
+                            <stop offset="1" stop-color="#5D7C91"/>
+                        </linearGradient>
+                    </defs>
+                    <rect x="17" y="8" width="14" height="5" rx="2.5" fill="#20262B"/>
+                    <rect x="20" y="13" width="8" height="4" rx="1.6" fill="#C9D4DB"/>
+                    <rect x="14.5" y="17" width="19" height="23" rx="6" fill="url(#fpAgeGlass)" stroke="#2D3740" stroke-width="1.4"/>
+                    <path d="M18.2 20H20.4V36.5H18.2Z" fill="rgba(255,255,255,0.72)"/>
+                    <rect x="17.5" y="28" width="13" height="8" rx="3" fill="url(#fpAgeLiquid)"/>
+                    <rect x="18.8" y="21.3" width="10.4" height="5.6" rx="2.2" fill="#F7F5F0" stroke="#A8B7C1" stroke-width="0.8"/>
+                    <path d="M21.2 23.7H26.8" stroke="#5D7C91" stroke-width="1.1" stroke-linecap="round"/>
+                    <circle cx="24" cy="24.1" r="0.8" fill="#5D7C91"/>
                 </svg>
             </div>
             <h1 class="text-5xl font-black tracking-tight mb-2">FuturePharma</h1>
@@ -1566,7 +1624,6 @@
                                         </div>
                                         <div class="hero-vial-liquid" style="--liquid-height: 31%; --liquid-top:#8eb8d0; --liquid-bottom:#5d7c91;"></div>
                                     </div>
-                                    <div class="hero-vial-spec">Cu batch</div>
                                 </div>
                             </div>
                             <div class="hero-vial-card center">
@@ -1581,7 +1638,6 @@
                                         </div>
                                         <div class="hero-vial-liquid" style="--liquid-height: 38%; --liquid-top:#9ad6c1; --liquid-bottom:#4d8d73;"></div>
                                     </div>
-                                    <div class="hero-vial-spec">Green vial</div>
                                 </div>
                             </div>
                             <div class="hero-vial-card right">
@@ -1596,13 +1652,8 @@
                                         </div>
                                         <div class="hero-vial-liquid" style="--liquid-height: 28%; --liquid-top:#d8a6a1; --liquid-bottom:#b86f68;"></div>
                                     </div>
-                                    <div class="hero-vial-spec">Rose batch</div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="hero-badge glow-chip">
-                            <p class="pixel-font text-[11px] uppercase tracking-[0.18em] opacity-55 mb-2">Why buyers return</p>
-                            <p class="text-lg font-semibold leading-snug" data-edit-key="hero_side_note" data-edit-label="Hero side note">Independent batch reporting, discreet fulfillment, and responsive support for research buyers.</p>
                         </div>
                     </div>
                     <div class="absolute opacity-0 pointer-events-none">.</div>
@@ -2346,12 +2397,25 @@
             <!-- Brand -->
             <div class="md:col-span-1">
                 <div class="flex items-center gap-3 mb-4">
-                    <svg viewBox="0 0 16 20" class="w-8 h-8" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="5" y="1" width="6" height="3" fill="#F5F5DC" stroke="#F5F5DC" stroke-width="0.3"/>
-                        <rect x="6" y="4" width="4" height="2" fill="#999" stroke="#F5F5DC" stroke-width="0.3"/>
-                        <rect x="4" y="6" width="8" height="11" fill="#FFF" stroke="#F5F5DC" stroke-width="0.3"/>
-                        <rect x="6" y="13" width="4" height="3" fill="#5DADE2"/>
-                        <rect x="5" y="8" width="6" height="4" fill="#E8E8C8"/>
+                    <svg viewBox="0 0 48 48" class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none">
+                        <defs>
+                            <linearGradient id="fpFooterGlass" x1="24" y1="10" x2="24" y2="38" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#FFFFFF"/>
+                                <stop offset="1" stop-color="#E8EEF2"/>
+                            </linearGradient>
+                            <linearGradient id="fpFooterLiquid" x1="24" y1="25" x2="24" y2="35" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#8FB6CC"/>
+                                <stop offset="1" stop-color="#5D7C91"/>
+                            </linearGradient>
+                        </defs>
+                        <rect x="17" y="8" width="14" height="5" rx="2.5" fill="#F5F5DC"/>
+                        <rect x="20" y="13" width="8" height="4" rx="1.6" fill="#D6DEE4"/>
+                        <rect x="14.5" y="17" width="19" height="23" rx="6" fill="url(#fpFooterGlass)" stroke="#F5F5DC" stroke-width="1.4"/>
+                        <path d="M18.2 20H20.4V36.5H18.2Z" fill="rgba(255,255,255,0.78)"/>
+                        <rect x="17.5" y="28" width="13" height="8" rx="3" fill="url(#fpFooterLiquid)"/>
+                        <rect x="18.8" y="21.3" width="10.4" height="5.6" rx="2.2" fill="#F7F5F0" stroke="#DCE6EC" stroke-width="0.8"/>
+                        <path d="M21.2 23.7H26.8" stroke="#5D7C91" stroke-width="1.1" stroke-linecap="round"/>
+                        <circle cx="24" cy="24.1" r="0.8" fill="#5D7C91"/>
                     </svg>
                     <span class="text-2xl font-black tracking-tight">FuturePharma</span>
                 </div>
@@ -4774,6 +4838,11 @@ if (!localCounts[id]) localCounts[id] = 0;
         // --- Product Graphic SVG Helpers ---
         function getVialSVG(color, abbrev, size) {
             var cls = size === 'lg' ? 'w-64 h-64' : size === 'xs' ? 'w-10 h-10' : 'w-32 h-32';
+            var label = String(abbrev || '');
+            var compactLabel = label.replace(/\s+/g, '');
+            var labelSize = compactLabel.length >= 8 ? '1.38' : compactLabel.length >= 6 ? '1.68' : '2.05';
+            var labelY = compactLabel.length >= 8 ? '10.45' : '10.7';
+            var labelSpacing = compactLabel.length >= 8 ? '0.01' : compactLabel.length >= 6 ? '0.03' : '0.06';
             return '<svg viewBox="0 0 16 20" class="' + cls + '" xmlns="http://www.w3.org/2000/svg">'
                 + '<defs>'
                 + '<linearGradient id="glass-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="42%" stop-color="#faf7f1"/><stop offset="100%" stop-color="#ddd6ca"/></linearGradient>'
@@ -4799,7 +4868,7 @@ if (!localCounts[id]) localCounts[id] = 0;
                 + '<path d="M5.55 11.46h4.9" stroke="#d3cbc0" stroke-width="0.14"/>'
                 + '<ellipse cx="7.7" cy="7.28" rx="2.95" ry="1.8" fill="url(#shine-' + abbrev + size + ')" opacity="0.78"/>'
                 + '<path d="M11.15 7.1c-0.45 3.4-0.5 5.9-0.08 8.3" stroke="#fff" stroke-width="0.22" opacity="0.34" stroke-linecap="round"/>'
-                + (size !== 'xs' ? '<text x="8" y="10.7" font-family="IBM Plex Mono, monospace" font-size="2.05" font-weight="600" fill="#1a1a1a" text-anchor="middle" letter-spacing="0.06">' + abbrev + '</text><text x="8" y="9.05" font-family="IBM Plex Mono, monospace" font-size="0.66" fill="#6f7c86" text-anchor="middle" letter-spacing="0.22">FP</text>' : '')
+                + (size !== 'xs' ? '<text x="8" y="' + labelY + '" font-family="IBM Plex Mono, monospace" font-size="' + labelSize + '" font-weight="600" fill="#1a1a1a" text-anchor="middle" lengthAdjust="spacingAndGlyphs" textLength="4.7" letter-spacing="' + labelSpacing + '">' + label + '</text><text x="8" y="9.05" font-family="IBM Plex Mono, monospace" font-size="0.66" fill="#6f7c86" text-anchor="middle" letter-spacing="0.22">FP</text>' : '')
                 + '</svg>';
         }
 
@@ -4848,7 +4917,7 @@ if (!localCounts[id]) localCounts[id] = 0;
         function getProductCategory(p) {
             if (p.graphic === 'pill') return 'tablet';
             if ((p.name || '').toLowerCase().includes('water')) return 'support';
-            return 'injectable';
+            return 'powder';
         }
 
         function setCatalogSearch(term) {
