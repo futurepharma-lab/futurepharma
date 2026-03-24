@@ -2205,6 +2205,9 @@
                                 <option value="order-tracking">Tracking</option>
                             </select>
                         </div>
+                        <div class="mb-4">
+                            <input id="admin-edit-search" oninput="syncSiteEditSearch(); renderEditableContentList()" type="text" placeholder="Search editable text" class="w-full rounded-[16px] border border-beige-950/15 dark:border-beige-100/15 bg-beige-50 dark:bg-zinc-800/50 px-4 py-3 text-sm font-semibold text-beige-950 dark:text-beige-100 outline-none">
+                        </div>
                         <div id="admin-editable-list" class="space-y-3 max-h-[26rem] overflow-y-auto pr-1">
                             <p class="text-sm text-beige-800 dark:text-beige-200">Loading editable text blocks…</p>
                         </div>
@@ -2236,13 +2239,16 @@
                         <option value="crypto-checkout">Checkout</option>
                         <option value="order-tracking">Tracking</option>
                     </select>
+                    <button onclick="selectPreviousEditableText()" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold">Previous</button>
+                    <button onclick="selectNextEditableText()" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold">Next</button>
                     <button onclick="returnToAdminEditTab()" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold">Admin</button>
                     <button onclick="stopSiteEditMode()" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold">Close</button>
                 </div>
             </div>
+            <input id="site-edit-search" oninput="syncSiteEditSearch(); renderEditableContentList()" type="text" placeholder="Search current page text" class="w-full rounded-[16px] border border-beige-950/15 dark:border-beige-100/15 bg-white dark:bg-zinc-900 px-4 py-3 outline-none text-sm text-beige-950 dark:text-beige-100 mb-4">
             <textarea id="site-edit-input" class="w-full rounded-[20px] border border-beige-950/15 dark:border-beige-100/15 bg-white dark:bg-zinc-900 px-4 py-4 outline-none text-base text-beige-950 dark:text-beige-100" placeholder="Click a highlighted text block to edit it."></textarea>
             <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
-                <p id="site-edit-message" class="text-sm text-beige-800 dark:text-beige-200">Changes are saved as plain text for safety.</p>
+                <p id="site-edit-message" class="text-sm text-beige-800 dark:text-beige-200">Click text on the page or use search and next/previous to move through copy quickly.</p>
                 <div class="flex flex-wrap gap-2">
                     <button id="site-edit-reset-btn" onclick="resetActiveSiteText()" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold" disabled>Reset</button>
                     <button id="site-edit-save-btn" onclick="saveActiveSiteText()" class="bg-beige-950 dark:bg-beige-100 text-beige-50 dark:text-beige-950 px-5 py-2.5 rounded-full text-sm font-semibold" disabled>Save for everyone</button>
@@ -2377,6 +2383,7 @@
         var activeSiteEditKey = null;
         var siteContentStorageMode = 'checking';
         var currentSiteEditPage = 'all';
+        var siteEditSearchTerm = '';
         var SITE_BUILDER_STORAGE_KEY = 'futurePharmaBuilderStateFallback';
         var builderState = {};
         var builderOriginalInlineStyles = {};
@@ -2401,7 +2408,6 @@
         };
         var SITE_EDIT_SELECTORS = [
             'nav strong',
-            'nav span',
             'nav button',
             '.page-section h1',
             '.page-section h2',
@@ -2411,13 +2417,14 @@
             '.page-section li',
             '.page-section button',
             '.page-section label',
+            '.page-section a',
             'footer span',
             'footer p',
             'footer li',
             'footer button',
-            '#mobile-menu span',
             '#mobile-menu p',
-            '#mobile-menu button'
+            '#mobile-menu button',
+            '[data-edit-key]'
         ].join(',');
         var SITE_EDIT_EXCLUDED_CONTAINERS = [
             '#admin-panel',
@@ -2475,8 +2482,23 @@
             if (!node || !node.isConnected) return false;
             if (node.closest(SITE_EDIT_EXCLUDED_CONTAINERS.join(','))) return false;
             if (node.hasAttribute('data-edit-ignore')) return false;
+            if (!['P','H1','H2','H3','H4','LI','BUTTON','LABEL','A','SPAN','STRONG'].includes(node.tagName) && !node.hasAttribute('data-edit-key')) return false;
             if (!getEditableText(node)) return false;
             return true;
+        }
+
+        function resolveEditableTarget(startNode) {
+            if (!startNode) return null;
+            var current = startNode.nodeType === Node.TEXT_NODE ? startNode.parentElement : startNode;
+            var best = null;
+            while (current && current !== document.body) {
+                if (isEditEligibleNode(current)) {
+                    best = current;
+                    if (current.hasAttribute('data-edit-key') || current.childElementCount === 0) break;
+                }
+                current = current.parentElement;
+            }
+            return best;
         }
 
         function isBuilderEligibleNode(node) {
@@ -2584,8 +2606,12 @@
         function syncSiteEditPageControls() {
             var toolbarSelect = document.getElementById('site-edit-page-select');
             var adminSelect = document.getElementById('admin-edit-page-select');
+            var toolbarSearch = document.getElementById('site-edit-search');
+            var adminSearch = document.getElementById('admin-edit-search');
             if (toolbarSelect && currentSiteEditPage !== 'all') toolbarSelect.value = currentSiteEditPage;
             if (adminSelect) adminSelect.value = currentSiteEditPage;
+            if (toolbarSearch && toolbarSearch.value !== siteEditSearchTerm) toolbarSearch.value = siteEditSearchTerm;
+            if (adminSearch && adminSearch.value !== siteEditSearchTerm) adminSearch.value = siteEditSearchTerm;
         }
 
         function setSiteEditPage(pageId, options) {
@@ -2599,6 +2625,38 @@
             }
             if (options.clearTarget) setActiveSiteEditTarget(null);
             renderEditableContentList();
+        }
+
+        function syncSiteEditSearch() {
+            var toolbarSearch = document.getElementById('site-edit-search');
+            var adminSearch = document.getElementById('admin-edit-search');
+            siteEditSearchTerm = (toolbarSearch && toolbarSearch === document.activeElement ? toolbarSearch.value :
+                adminSearch && adminSearch === document.activeElement ? adminSearch.value :
+                toolbarSearch ? toolbarSearch.value :
+                adminSearch ? adminSearch.value : '').trim().toLowerCase();
+            syncSiteEditPageControls();
+        }
+
+        function getFilteredEditableItems() {
+            syncSiteEditSearch();
+            return getEditableNodes().map(function(node) {
+                var key = getEditableKey(node);
+                return {
+                    node: node,
+                    key: key,
+                    pageId: getEditablePageId(node),
+                    pageLabel: getEditablePageLabel(getEditablePageId(node)),
+                    label: node.getAttribute('data-edit-label') || getEditableText(node).slice(0, 48) || key,
+                    value: siteContentValues[key] || siteContentDefaults[key] || ''
+                };
+            }).filter(function(item, index, arr) {
+                return item.key && arr.findIndex(function(x) { return x.key === item.key; }) === index;
+            }).filter(function(item) {
+                if (!(currentSiteEditPage === 'all' || item.pageId === currentSiteEditPage)) return false;
+                if (!siteEditSearchTerm) return true;
+                var haystack = (item.pageLabel + ' ' + item.label + ' ' + item.value).toLowerCase();
+                return haystack.includes(siteEditSearchTerm);
+            });
         }
 
         function captureSiteContentDefaults() {
@@ -2788,8 +2846,9 @@
             var keyEl = document.getElementById('site-edit-current-key');
             var saveBtn = document.getElementById('site-edit-save-btn');
             var resetBtn = document.getElementById('site-edit-reset-btn');
+            var node = key ? getEditableNodes().find(function(el) { return getEditableKey(el) === key; }) : null;
             if (label) label.innerText = key ? getEditableLabel(key) : 'Select text';
-            if (keyEl) keyEl.innerText = key ? 'Key: ' + key : '';
+            if (keyEl) keyEl.innerText = key ? 'Key: ' + key + (node ? ' • ' + getEditablePageLabel(getEditablePageId(node)) : '') : '';
             if (input) input.value = key ? (siteContentValues[key] || siteContentDefaults[key] || '') : '';
             if (saveBtn) saveBtn.disabled = !key;
             if (resetBtn) resetBtn.disabled = !key;
@@ -3072,25 +3131,12 @@
         function renderEditableContentList() {
             var container = document.getElementById('admin-editable-list');
             if (!container) return;
-            var items = getEditableNodes().map(function(node) {
-                var key = getEditableKey(node);
-                return {
-                    key: key,
-                    pageId: getEditablePageId(node),
-                    pageLabel: getEditablePageLabel(getEditablePageId(node)),
-                    label: node.getAttribute('data-edit-label') || getEditableText(node).slice(0, 48) || key,
-                    value: siteContentValues[key] || siteContentDefaults[key] || ''
-                };
-            }).filter(function(item, index, arr) {
-                return item.key && arr.findIndex(function(x) { return x.key === item.key; }) === index;
-            }).filter(function(item) {
-                return currentSiteEditPage === 'all' || item.pageId === currentSiteEditPage;
-            });
+            var items = getFilteredEditableItems();
             function esc(text) {
                 return (text || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
             }
             container.innerHTML = items.map(function(item) {
-                return '<button onclick="openAdminEditTarget(\'' + item.key.replace(/'/g, "\\'") + '\')" class="w-full text-left rounded-[20px] border border-beige-950/10 dark:border-beige-100/10 bg-beige-50 dark:bg-zinc-800/50 p-4 hover:border-beige-950/30 dark:hover:border-beige-100/30 transition">'
+                return '<button onclick="openAdminEditTarget(\'' + item.key.replace(/'/g, "\\'") + '\')" class="w-full text-left rounded-[20px] border ' + (item.key === activeSiteEditKey ? 'border-[#5d7c91] bg-[#dce6ec]/50 dark:bg-[#22303a]/40' : 'border-beige-950/10 dark:border-beige-100/10 bg-beige-50 dark:bg-zinc-800/50') + ' p-4 hover:border-beige-950/30 dark:hover:border-beige-100/30 transition">'
                     + '<p class="pixel-font text-[11px] uppercase tracking-[0.18em] opacity-50 mb-2">' + item.pageLabel + ' • ' + item.label + '</p>'
                     + '<p class="text-sm font-medium leading-relaxed text-beige-950 dark:text-beige-100">' + esc(item.value) + '</p>'
                     + '</button>';
@@ -3110,12 +3156,22 @@
             }, 80);
         }
 
+        function selectEditableByOffset(offset) {
+            var items = getFilteredEditableItems();
+            if (!items.length) return;
+            var idx = items.findIndex(function(item) { return item.key === activeSiteEditKey; });
+            var nextIdx = idx < 0 ? 0 : (idx + offset + items.length) % items.length;
+            openAdminEditTarget(items[nextIdx].key);
+        }
+
+        function selectPreviousEditableText() { selectEditableByOffset(-1); }
+        function selectNextEditableText() { selectEditableByOffset(1); }
+
         document.addEventListener('click', function(e) {
             if (!siteEditModeEnabled) return;
-            var editable = e.target.closest(SITE_EDIT_SELECTORS);
+            var editable = resolveEditableTarget(e.target);
             var toolbar = e.target.closest('#site-edit-toolbar');
             if (toolbar) return;
-            if (!isEditEligibleNode(editable)) return;
             if (!editable) return;
             e.preventDefault();
             e.stopPropagation();
@@ -3186,6 +3242,11 @@
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && siteEditModeEnabled) stopSiteEditMode();
             if (e.key === 'Escape' && builderModeEnabled) stopVisualBuilderMode();
+            if (siteEditModeEnabled && (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'f') {
+                e.preventDefault();
+                var search = document.getElementById('site-edit-search');
+                if (search) search.focus();
+            }
         });
 
         // --- Shipping State ---
