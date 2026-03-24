@@ -96,6 +96,13 @@
             transition: background-color 0.3s, color 0.3s;
             letter-spacing: -0.01em;
         }
+        .dark body {
+            background:
+                radial-gradient(circle at top left, rgba(143, 175, 192, 0.16), transparent 26%),
+                radial-gradient(circle at 14% 10%, rgba(255, 255, 255, 0.03), transparent 12%),
+                linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 18%),
+                var(--bg);
+        }
         .pixel-font {
             font-family: 'IBM Plex Mono', monospace;
             letter-spacing: 0.02em;
@@ -724,7 +731,15 @@
         .dark #cart-items,
         .dark #admin-panel,
         .dark #admin-gate {
-            color: #d8dee6 !important;
+            color: #e0e6ed !important;
+        }
+        .dark .text-sm.text-beige-800,
+        .dark .text-base.text-beige-800,
+        .dark .text-lg.text-beige-800,
+        .dark .text-sm.text-beige-200,
+        .dark .text-base.text-beige-200,
+        .dark .text-lg.text-beige-200 {
+            color: #dfe6ee !important;
         }
         .dark .opacity-30 { opacity: 0.58 !important; }
         .dark .opacity-40 { opacity: 0.68 !important; }
@@ -820,6 +835,13 @@
             background:
                 radial-gradient(circle at 80% 20%, rgba(93, 124, 145, 0.10), transparent 26%),
                 linear-gradient(180deg, rgba(255,255,255,0.66), rgba(255,255,255,0.24)),
+                transparent;
+        }
+        .dark #home section:first-child {
+            background:
+                radial-gradient(circle at 80% 20%, rgba(143, 175, 192, 0.14), transparent 24%),
+                radial-gradient(circle at 12% 10%, rgba(11, 13, 15, 0.72), transparent 33%),
+                linear-gradient(180deg, rgba(7, 9, 10, 0.34), rgba(23,26,29,0.08)),
                 transparent;
         }
 
@@ -980,6 +1002,16 @@
             background:
                 linear-gradient(135deg, rgba(23,26,29,0.98), rgba(30,34,38,0.9)),
                 var(--surface);
+        }
+        .dark .hero-cinema::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 22% 16%, rgba(0,0,0,0.34), transparent 28%),
+                linear-gradient(180deg, rgba(0,0,0,0.05), rgba(0,0,0,0.12));
+            pointer-events: none;
+            z-index: 0;
         }
         .hero-vial-scene {
             position: absolute;
@@ -1174,6 +1206,61 @@
             backdrop-filter: blur(14px);
         }
         .dark .hero-cinema .hero-badge { background: rgba(23,26,29,0.82); }
+        .hero-copy-block {
+            position: relative;
+            z-index: 2;
+        }
+        .dark .hero-copy-block {
+            background: linear-gradient(180deg, rgba(10,12,14,0.32), rgba(10,12,14,0.08));
+            border-radius: 30px;
+            padding: 1.2rem 1.1rem 1.25rem;
+            box-shadow: 0 22px 44px rgba(0,0,0,0.12);
+        }
+        .dark .hero-copy-block h1,
+        .dark .hero-copy-block .hero-kicker,
+        .dark .hero-copy-block p,
+        .dark .hero-copy-block span,
+        .dark .hero-copy-block .premium-note {
+            color: #f2f5f8;
+        }
+        .dark .hero-copy-block .premium-note {
+            color: #dde5ec !important;
+        }
+        .dark .hero-copy-block .inline-flex.items-center.gap-2 {
+            background: rgba(23, 26, 29, 0.74) !important;
+            border-color: rgba(223, 230, 238, 0.28) !important;
+        }
+        .dark .hero-copy-block .bg-white\/80 {
+            background: rgba(23, 26, 29, 0.78) !important;
+            border-color: rgba(223, 230, 238, 0.14) !important;
+        }
+        .dark .hero-copy-block .text-2xl.font-bold {
+            color: #f3f6f9 !important;
+        }
+        .dark .hero-copy-block .flex.flex-wrap.gap-3.text-sm.text-beige-800 {
+            color: #e0e6ed !important;
+        }
+        .dark .hero-copy-block .flex.flex-wrap.gap-3.text-sm.text-beige-800 > span {
+            background: rgba(23, 26, 29, 0.72) !important;
+            border-color: rgba(223, 230, 238, 0.14) !important;
+            color: #e5ebf1 !important;
+        }
+        .dark .hero-badge .pixel-font,
+        .dark .hero-badge p {
+            color: #edf2f6 !important;
+        }
+        .dark .hero-badge .opacity-55 {
+            opacity: 0.76 !important;
+        }
+        .dark .hero-vial-spec {
+            color: #d9e1e8;
+        }
+
+        @media (max-width: 767px) {
+            .dark .hero-copy-block {
+                padding: 1rem 0.9rem 1.1rem;
+            }
+        }
 
         .editorial-panel {
             border-radius: 30px;
@@ -1360,13 +1447,25 @@
             <div class="flex justify-between h-24 items-center">
                 <div class="brand-lockup cursor-pointer group" onclick="handleLogoClick(event)">
                     <div class="brand-mark">
-                        <svg viewBox="0 0 24 24" class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none">
-                            <path d="M8 4.5h8v2.5H8z" fill="currentColor" opacity="0.92"/>
-                            <path d="M9.2 7h5.6v2H9.2z" fill="#bcc9d1"/>
-                            <rect x="7" y="9" width="10" height="10" rx="2.5" fill="white" stroke="currentColor" stroke-width="1.1"/>
-                            <rect x="9" y="14" width="6" height="3.2" rx="0.8" fill="#5d7c91"/>
-                            <path d="M8.5 10.4h1v7.4h-1z" fill="#edf2f5"/>
-                            <path d="M10 11.3h4.4" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" opacity="0.55"/>
+                        <svg viewBox="0 0 48 48" class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none">
+                            <defs>
+                                <linearGradient id="fpMarkGlass" x1="24" y1="10" x2="24" y2="38" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#FFFFFF"/>
+                                    <stop offset="1" stop-color="#E8EEF2"/>
+                                </linearGradient>
+                                <linearGradient id="fpMarkLiquid" x1="24" y1="25" x2="24" y2="35" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#8FB6CC"/>
+                                    <stop offset="1" stop-color="#5D7C91"/>
+                                </linearGradient>
+                            </defs>
+                            <rect x="17" y="8" width="14" height="5" rx="2.5" fill="#20262B"/>
+                            <rect x="20" y="13" width="8" height="4" rx="1.6" fill="#C9D4DB"/>
+                            <rect x="14.5" y="17" width="19" height="23" rx="6" fill="url(#fpMarkGlass)" stroke="#2D3740" stroke-width="1.4"/>
+                            <path d="M18.2 20H20.4V36.5H18.2Z" fill="rgba(255,255,255,0.72)"/>
+                            <rect x="17.5" y="28" width="13" height="8" rx="3" fill="url(#fpMarkLiquid)"/>
+                            <rect x="18.8" y="21.3" width="10.4" height="5.6" rx="2.2" fill="#F7F5F0" stroke="#A8B7C1" stroke-width="0.8"/>
+                            <path d="M21.2 23.7H26.8" stroke="#5D7C91" stroke-width="1.1" stroke-linecap="round"/>
+                            <circle cx="24" cy="24.1" r="0.8" fill="#5D7C91"/>
                         </svg>
                     </div>
                     <div class="brand-wordmark">
@@ -2204,14 +2303,25 @@
         <div class="max-w-lg w-full mx-auto text-center px-6 py-12">
             <!-- Animated vial -->
             <div class="flex justify-center mb-8" id="success-vial">
-                <svg viewBox="0 0 16 20" class="w-24 h-24" xmlns="http://www.w3.org/2000/svg" style="animation:vialSway 2.5s ease-in-out infinite;">
-                    <rect x="5" y="1" width="6" height="3" fill="#333" stroke="#1C1C16" stroke-width="0.3"/>
-                    <rect x="6" y="4" width="4" height="2" fill="#DDD" stroke="#1C1C16" stroke-width="0.3"/>
-                    <rect x="4" y="6" width="8" height="11" fill="#FFF" stroke="#1C1C16" stroke-width="0.3"/>
-                    <rect x="5" y="7" width="1" height="9" fill="#EEE"/>
-                    <rect x="6" y="13" width="4" height="3" fill="#5DADE2"/>
-                    <rect x="5" y="8" width="6" height="4" fill="#E8E8C8"/>
-                    <text x="8" y="11" font-family="VT323, monospace" font-size="2.8" fill="#1C1C16" text-anchor="middle">FP</text>
+                <svg viewBox="0 0 48 48" class="w-24 h-24" xmlns="http://www.w3.org/2000/svg" fill="none" style="animation:vialSway 2.5s ease-in-out infinite;">
+                    <defs>
+                        <linearGradient id="fpSuccessGlass" x1="24" y1="10" x2="24" y2="38" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#FFFFFF"/>
+                            <stop offset="1" stop-color="#E8EEF2"/>
+                        </linearGradient>
+                        <linearGradient id="fpSuccessLiquid" x1="24" y1="25" x2="24" y2="35" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#8FB6CC"/>
+                            <stop offset="1" stop-color="#5D7C91"/>
+                        </linearGradient>
+                    </defs>
+                    <rect x="17" y="8" width="14" height="5" rx="2.5" fill="#20262B"/>
+                    <rect x="20" y="13" width="8" height="4" rx="1.6" fill="#C9D4DB"/>
+                    <rect x="14.5" y="17" width="19" height="23" rx="6" fill="url(#fpSuccessGlass)" stroke="#2D3740" stroke-width="1.4"/>
+                    <path d="M18.2 20H20.4V36.5H18.2Z" fill="rgba(255,255,255,0.72)"/>
+                    <rect x="17.5" y="28" width="13" height="8" rx="3" fill="url(#fpSuccessLiquid)"/>
+                    <rect x="18.8" y="21.3" width="10.4" height="5.6" rx="2.2" fill="#F7F5F0" stroke="#A8B7C1" stroke-width="0.8"/>
+                    <path d="M21.2 23.7H26.8" stroke="#5D7C91" stroke-width="1.1" stroke-linecap="round"/>
+                    <circle cx="24" cy="24.1" r="0.8" fill="#5D7C91"/>
                 </svg>
             </div>
             <div class="border-4 border-beige-950 dark:border-beige-100 p-10 bg-white dark:bg-zinc-900 shadow-[12px_12px_0px_0px_rgba(28,28,22,1)]">
