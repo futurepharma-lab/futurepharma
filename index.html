@@ -249,6 +249,97 @@
             letter-spacing: 0.08em;
             text-transform: uppercase;
         }
+        .site-builder-mode-active [data-builder-key] {
+            outline: 1px dashed rgba(93, 124, 145, 0.28);
+            outline-offset: 3px;
+        }
+        .site-builder-selected {
+            outline: 2px solid var(--accent) !important;
+            outline-offset: 4px !important;
+        }
+        #site-builder-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 970;
+            pointer-events: none;
+        }
+        #site-builder-box {
+            position: fixed;
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 0 9999px rgba(17, 19, 21, 0.04);
+            display: none;
+            pointer-events: none;
+        }
+        #site-builder-drag-surface {
+            position: absolute;
+            inset: 0;
+            cursor: move;
+            pointer-events: auto;
+        }
+        #site-builder-resize-handle {
+            position: absolute;
+            right: -8px;
+            bottom: -8px;
+            width: 16px;
+            height: 16px;
+            border-radius: 999px;
+            background: var(--accent);
+            border: 2px solid white;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+            cursor: nwse-resize;
+            pointer-events: auto;
+        }
+        #site-builder-toolbar {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            width: min(92vw, 360px);
+            max-height: calc(100vh - 48px);
+            overflow-y: auto;
+            z-index: 980;
+            border: 1px solid var(--line);
+            background: color-mix(in srgb, var(--surface) 94%, white 6%);
+            box-shadow: var(--shadow-soft);
+            border-radius: 28px;
+            backdrop-filter: blur(14px);
+        }
+        .dark #site-builder-toolbar {
+            background: rgba(23, 26, 29, 0.96);
+        }
+        .builder-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+        .builder-grid label,
+        .builder-stack label {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+        .builder-grid input,
+        .builder-stack input,
+        .builder-stack select,
+        .builder-stack textarea {
+            border: 1px solid var(--line);
+            background: var(--surface);
+            color: var(--text);
+            border-radius: 14px;
+            padding: 10px 12px;
+            font-size: 14px;
+            outline: none;
+        }
+        .dark .builder-grid input,
+        .dark .builder-stack input,
+        .dark .builder-stack select,
+        .dark .builder-stack textarea {
+            background: #111315;
+        }
 
         .email-suggestion-box { display: none; position: absolute; z-index: 110; width: 100%; background: #fff; border: 2px solid #1C1C16; margin-top: -1px; }
         .dark .email-suggestion-box { background: #1A1A1A; border-color: #F5F5DC; }
@@ -2077,6 +2168,7 @@
                         <div class="flex flex-wrap gap-3 mb-6">
                             <button onclick="startSiteEditMode()" class="bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 px-6 py-3 font-semibold tracking-wide rounded-full">Start edit mode</button>
                             <button onclick="stopSiteEditMode(true)" class="border-2 border-beige-950 dark:border-beige-100 text-beige-950 dark:text-beige-100 px-6 py-3 font-semibold tracking-wide rounded-full">Stop edit mode</button>
+                            <button onclick="startVisualBuilderMode()" class="bg-[#5d7c91] text-white px-6 py-3 font-semibold tracking-wide rounded-full">Start builder</button>
                         </div>
                         <div class="grid sm:grid-cols-2 gap-4">
                             <div class="rounded-2xl border border-beige-950/10 dark:border-beige-100/10 bg-beige-50 dark:bg-zinc-800/50 p-4">
@@ -2086,6 +2178,14 @@
                             <div class="rounded-2xl border border-beige-950/10 dark:border-beige-100/10 bg-beige-50 dark:bg-zinc-800/50 p-4">
                                 <p class="pixel-font text-[11px] uppercase tracking-[0.18em] opacity-50 mb-2">Storage</p>
                                 <p id="site-edit-storage-status" class="font-semibold text-sm">Checking shared storage…</p>
+                            </div>
+                            <div class="rounded-2xl border border-beige-950/10 dark:border-beige-100/10 bg-beige-50 dark:bg-zinc-800/50 p-4">
+                                <p class="pixel-font text-[11px] uppercase tracking-[0.18em] opacity-50 mb-2">Builder</p>
+                                <p id="site-builder-status" class="font-semibold text-sm">Idle</p>
+                            </div>
+                            <div class="rounded-2xl border border-beige-950/10 dark:border-beige-100/10 bg-beige-50 dark:bg-zinc-800/50 p-4">
+                                <p class="pixel-font text-[11px] uppercase tracking-[0.18em] opacity-50 mb-2">Builder storage</p>
+                                <p id="site-builder-storage-status" class="font-semibold text-sm">Checking shared storage…</p>
                             </div>
                         </div>
                     </div>
@@ -2151,6 +2251,88 @@
         </div>
     </div>
 
+    <div id="site-builder-overlay" class="hidden">
+        <div id="site-builder-box">
+            <div id="site-builder-drag-surface"></div>
+            <div id="site-builder-resize-handle"></div>
+        </div>
+    </div>
+
+    <div id="site-builder-toolbar" class="hidden">
+        <div class="p-5 builder-stack">
+            <div class="flex items-start justify-between gap-3 mb-4">
+                <div>
+                    <div class="site-edit-pill pixel-font">
+                        <span>Builder</span>
+                        <span id="site-builder-current-label" class="opacity-70">Select element</span>
+                    </div>
+                    <p id="site-builder-current-key" class="text-xs mt-3 text-beige-800 dark:text-beige-200"></p>
+                </div>
+                <button onclick="stopVisualBuilderMode()" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold">Close</button>
+            </div>
+            <div class="builder-stack space-y-4">
+                <label>Page
+                    <select id="site-builder-page-select" onchange="setBuilderPage(this.value)">
+                        <option value="home">Home</option>
+                        <option value="peptides">Catalog</option>
+                        <option value="lab-testing">Lab</option>
+                        <option value="bespoke">Custom</option>
+                        <option value="contact">Contact</option>
+                        <option value="order-page">Order details</option>
+                        <option value="crypto-checkout">Checkout</option>
+                        <option value="order-tracking">Tracking</option>
+                    </select>
+                </label>
+                <label>Text
+                    <textarea id="builder-text-input" rows="3" placeholder="Selected text content"></textarea>
+                </label>
+                <div class="builder-grid">
+                    <label>X
+                        <input id="builder-x-input" type="number" step="1">
+                    </label>
+                    <label>Y
+                        <input id="builder-y-input" type="number" step="1">
+                    </label>
+                    <label>Width
+                        <input id="builder-width-input" type="number" step="1" min="0">
+                    </label>
+                    <label>Height
+                        <input id="builder-height-input" type="number" step="1" min="0">
+                    </label>
+                    <label>Font size
+                        <input id="builder-font-size-input" type="number" step="1" min="0">
+                    </label>
+                    <label>Padding
+                        <input id="builder-padding-input" type="number" step="1" min="0">
+                    </label>
+                    <label>Radius
+                        <input id="builder-radius-input" type="number" step="1" min="0">
+                    </label>
+                    <label>Opacity
+                        <input id="builder-opacity-input" type="number" step="0.05" min="0" max="1">
+                    </label>
+                    <label>Text color
+                        <input id="builder-color-input" type="color">
+                    </label>
+                    <label>Background
+                        <input id="builder-bg-input" type="color">
+                    </label>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="applyBuilderInspectorChanges()" class="bg-[#5d7c91] text-white px-4 py-2 rounded-full text-sm font-semibold">Apply</button>
+                    <button onclick="undoBuilderChange()" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold">Undo</button>
+                    <button onclick="redoBuilderChange()" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold">Redo</button>
+                    <button onclick="resetActiveBuilderElement()" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold">Reset element</button>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="saveBuilderStateForEveryone()" class="bg-beige-950 dark:bg-beige-100 text-beige-50 dark:text-beige-950 px-4 py-2 rounded-full text-sm font-semibold">Save for everyone</button>
+                    <button onclick="returnToAdminEditTab()" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold">Admin</button>
+                </div>
+                <p id="site-builder-message" class="text-sm text-beige-800 dark:text-beige-200">Select an element, then drag, resize, or change values here.</p>
+            </div>
+        </div>
+    </div>
+
     <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         lucide.createIcons();
 
@@ -2195,6 +2377,16 @@
         var activeSiteEditKey = null;
         var siteContentStorageMode = 'checking';
         var currentSiteEditPage = 'all';
+        var SITE_BUILDER_STORAGE_KEY = 'futurePharmaBuilderStateFallback';
+        var builderState = {};
+        var builderOriginalInlineStyles = {};
+        var builderModeEnabled = false;
+        var activeBuilderKey = null;
+        var builderStorageMode = 'checking';
+        var currentBuilderPage = 'home';
+        var builderHistory = [];
+        var builderRedoStack = [];
+        var builderDragSession = null;
         var SITE_EDIT_PAGE_LABELS = {
             global: 'Global',
             home: 'Home',
@@ -2246,9 +2438,37 @@
             '#admin-product-list',
             '.lucide'
         ];
+        var SITE_BUILDER_SELECTORS = [
+            'nav .brand-lockup',
+            'nav button',
+            'nav span',
+            '.page-section section',
+            '.page-section > div',
+            '.page-section h1',
+            '.page-section h2',
+            '.page-section h3',
+            '.page-section h4',
+            '.page-section p',
+            '.page-section button',
+            '.page-section li',
+            '.page-section img',
+            '.page-section .editorial-panel',
+            '.page-section .hero-copy-block',
+            '.page-section .hero-cinema',
+            'footer div',
+            'footer p',
+            'footer li',
+            'footer button',
+            '#mobile-menu div',
+            '#mobile-menu button'
+        ].join(',');
 
         function getEditableNodes() {
             return Array.prototype.slice.call(document.querySelectorAll(SITE_EDIT_SELECTORS)).filter(isEditEligibleNode);
+        }
+
+        function getBuilderNodes() {
+            return Array.prototype.slice.call(document.querySelectorAll(SITE_BUILDER_SELECTORS)).filter(isBuilderEligibleNode);
         }
 
         function isEditEligibleNode(node) {
@@ -2256,6 +2476,15 @@
             if (node.closest(SITE_EDIT_EXCLUDED_CONTAINERS.join(','))) return false;
             if (node.hasAttribute('data-edit-ignore')) return false;
             if (!getEditableText(node)) return false;
+            return true;
+        }
+
+        function isBuilderEligibleNode(node) {
+            if (!node || !node.isConnected) return false;
+            if (node.closest(SITE_EDIT_EXCLUDED_CONTAINERS.join(','))) return false;
+            if (node.hasAttribute('data-builder-ignore')) return false;
+            if (['SCRIPT', 'STYLE', 'INPUT', 'TEXTAREA', 'SELECT', 'OPTION', 'CANVAS', 'SVG', 'PATH'].includes(node.tagName)) return false;
+            if (!node.getBoundingClientRect || node.getBoundingClientRect().width === 0 && node.getBoundingClientRect().height === 0) return false;
             return true;
         }
 
@@ -2283,6 +2512,28 @@
 
         function getEditableKey(node) {
             return node.getAttribute('data-edit-key') || getAutoEditableKey(node);
+        }
+
+        function getBuilderKey(node) {
+            if (!node || !node.parentElement) return null;
+            if (node.dataset.builderKey) return node.dataset.builderKey;
+            var pageId = getEditablePageId(node);
+            var segments = [];
+            var current = node;
+            while (current && current !== document.body) {
+                var tag = current.tagName ? current.tagName.toLowerCase() : 'node';
+                var siblings = current.parentElement
+                    ? Array.prototype.slice.call(current.parentElement.children).filter(function(child) {
+                        return child.tagName === current.tagName;
+                    })
+                    : [];
+                var index = siblings.indexOf(current);
+                segments.unshift(tag + '-' + (index < 0 ? 0 : index));
+                if (current.classList && current.classList.contains('page-section')) break;
+                current = current.parentElement;
+            }
+            node.dataset.builderKey = 'builder_' + pageId + '_' + segments.join('_');
+            return node.dataset.builderKey;
         }
 
         function getEditableText(node) {
@@ -2323,6 +2574,11 @@
 
         function getEditablePageLabel(pageId) {
             return SITE_EDIT_PAGE_LABELS[pageId] || pageId;
+        }
+
+        function syncBuilderPageControl() {
+            var select = document.getElementById('site-builder-page-select');
+            if (select) select.value = currentBuilderPage;
         }
 
         function syncSiteEditPageControls() {
@@ -2366,6 +2622,18 @@
             localStorage.setItem(SITE_CONTENT_STORAGE_KEY, JSON.stringify(map));
         }
 
+        function readBuilderFallback() {
+            try {
+                return JSON.parse(localStorage.getItem(SITE_BUILDER_STORAGE_KEY) || '{}') || {};
+            } catch (e) {
+                return {};
+            }
+        }
+
+        function writeBuilderFallback(map) {
+            localStorage.setItem(SITE_BUILDER_STORAGE_KEY, JSON.stringify(map));
+        }
+
         function applySiteContentValues() {
             getEditableNodes().forEach(function(node) {
                 var key = getEditableKey(node);
@@ -2381,6 +2649,8 @@
         function updateSiteEditStatusUi() {
             var status = document.getElementById('site-edit-status');
             var storage = document.getElementById('site-edit-storage-status');
+            var builderStatus = document.getElementById('site-builder-status');
+            var builderStorage = document.getElementById('site-builder-storage-status');
             if (status) {
                 status.innerText = siteEditModeEnabled
                     ? 'Live. Click highlighted text on the storefront to edit it.'
@@ -2390,6 +2660,18 @@
                 storage.innerText = siteContentStorageMode === 'shared'
                     ? 'Shared Supabase storage connected'
                     : siteContentStorageMode === 'fallback'
+                        ? 'Local fallback only. Create the shared table to publish for everyone.'
+                        : 'Checking shared storage…';
+            }
+            if (builderStatus) {
+                builderStatus.innerText = builderModeEnabled
+                    ? 'Live. Click, drag, resize, and style elements on the page.'
+                    : 'Idle';
+            }
+            if (builderStorage) {
+                builderStorage.innerText = builderStorageMode === 'shared'
+                    ? 'Shared layout storage connected'
+                    : builderStorageMode === 'fallback'
                         ? 'Local fallback only. Create the shared table to publish for everyone.'
                         : 'Checking shared storage…';
             }
@@ -2412,6 +2694,82 @@
             }
             applySiteContentValues();
             updateSiteEditStatusUi();
+        }
+
+        function captureBuilderDefaults() {
+            getBuilderNodes().forEach(function(node) {
+                var key = getBuilderKey(node);
+                if (!(key in builderOriginalInlineStyles)) {
+                    builderOriginalInlineStyles[key] = node.getAttribute('style') || '';
+                }
+            });
+        }
+
+        async function loadBuilderState() {
+            captureBuilderDefaults();
+            try {
+                var result = await supabaseClient.from('site_builder_state').select('element_key, style_json');
+                if (result.error) throw result.error;
+                builderState = {};
+                (result.data || []).forEach(function(row) {
+                    builderState[row.element_key] = row.style_json || {};
+                });
+                builderStorageMode = 'shared';
+            } catch (err) {
+                builderState = readBuilderFallback();
+                builderStorageMode = 'fallback';
+                console.warn('Shared site_builder_state table unavailable, using local fallback:', err.message);
+            }
+            applyBuilderState();
+            updateSiteEditStatusUi();
+        }
+
+        function applyBuilderOverridesToNode(node, overrides) {
+            if (!node) return;
+            var key = getBuilderKey(node);
+            if (!(key in builderOriginalInlineStyles)) builderOriginalInlineStyles[key] = node.getAttribute('style') || '';
+            var original = builderOriginalInlineStyles[key];
+            if (original) node.setAttribute('style', original); else node.removeAttribute('style');
+            if (!overrides) return;
+            if (overrides.x != null || overrides.y != null) node.style.translate = (overrides.x || 0) + 'px ' + (overrides.y || 0) + 'px';
+            if (overrides.width != null) node.style.width = overrides.width + 'px';
+            if (overrides.height != null) node.style.height = overrides.height + 'px';
+            if (overrides.fontSize != null) node.style.fontSize = overrides.fontSize + 'px';
+            if (overrides.padding != null) node.style.padding = overrides.padding + 'px';
+            if (overrides.borderRadius != null) node.style.borderRadius = overrides.borderRadius + 'px';
+            if (overrides.opacity != null) node.style.opacity = String(overrides.opacity);
+            if (overrides.color) node.style.color = overrides.color;
+            if (overrides.backgroundColor) node.style.backgroundColor = overrides.backgroundColor;
+            if (overrides.text != null) setEditableText(node, overrides.text);
+        }
+
+        function applyBuilderState() {
+            captureBuilderDefaults();
+            getBuilderNodes().forEach(function(node) {
+                var key = getBuilderKey(node);
+                applyBuilderOverridesToNode(node, builderState[key]);
+            });
+            if (builderModeEnabled) refreshBuilderSelectionOverlay();
+        }
+
+        function cloneBuilderState() {
+            return JSON.parse(JSON.stringify(builderState));
+        }
+
+        function pushBuilderHistory() {
+            builderHistory.push(cloneBuilderState());
+            if (builderHistory.length > 80) builderHistory.shift();
+            builderRedoStack = [];
+        }
+
+        function setBuilderProperty(key, field, value) {
+            if (!builderState[key]) builderState[key] = {};
+            if (value === '' || value == null || Number.isNaN(value)) delete builderState[key][field];
+            else builderState[key][field] = value;
+        }
+
+        function getBuilderNodeByKey(key) {
+            return getBuilderNodes().find(function(node) { return getBuilderKey(node) === key; });
         }
 
         function getEditableLabel(key) {
@@ -2462,8 +2820,177 @@
 
         function returnToAdminEditTab() {
             stopSiteEditMode(true);
+            stopVisualBuilderMode(true);
             openAdminPanel();
             switchAdminTab('edit');
+        }
+
+        function updateBuilderInspector() {
+            var node = activeBuilderKey ? getBuilderNodeByKey(activeBuilderKey) : null;
+            var labelEl = document.getElementById('site-builder-current-label');
+            var keyEl = document.getElementById('site-builder-current-key');
+            var msgEl = document.getElementById('site-builder-message');
+            if (labelEl) labelEl.innerText = node ? (getEditableLabel(activeBuilderKey) || node.tagName.toLowerCase()) : 'Select element';
+            if (keyEl) keyEl.innerText = activeBuilderKey ? 'Key: ' + activeBuilderKey : '';
+            if (!node) return;
+            var overrides = builderState[activeBuilderKey] || {};
+            var rect = node.getBoundingClientRect();
+            document.getElementById('builder-text-input').value = overrides.text != null ? overrides.text : getEditableText(node);
+            document.getElementById('builder-x-input').value = overrides.x != null ? overrides.x : 0;
+            document.getElementById('builder-y-input').value = overrides.y != null ? overrides.y : 0;
+            document.getElementById('builder-width-input').value = overrides.width != null ? overrides.width : Math.round(rect.width);
+            document.getElementById('builder-height-input').value = overrides.height != null ? overrides.height : Math.round(rect.height);
+            document.getElementById('builder-font-size-input').value = overrides.fontSize != null ? overrides.fontSize : parseInt(getComputedStyle(node).fontSize, 10) || '';
+            document.getElementById('builder-padding-input').value = overrides.padding != null ? overrides.padding : parseInt(getComputedStyle(node).paddingTop, 10) || '';
+            document.getElementById('builder-radius-input').value = overrides.borderRadius != null ? overrides.borderRadius : parseInt(getComputedStyle(node).borderRadius, 10) || '';
+            document.getElementById('builder-opacity-input').value = overrides.opacity != null ? overrides.opacity : (parseFloat(getComputedStyle(node).opacity) || 1);
+            document.getElementById('builder-color-input').value = rgbToHex(overrides.color || getComputedStyle(node).color);
+            document.getElementById('builder-bg-input').value = rgbToHex(overrides.backgroundColor || getComputedStyle(node).backgroundColor);
+            if (msgEl) msgEl.innerText = 'Drag the selected element, resize from the handle, or edit values here.';
+        }
+
+        function rgbToHex(color) {
+            if (!color || color === 'transparent' || color === 'rgba(0, 0, 0, 0)') return '#ffffff';
+            if (color[0] === '#') {
+                return color.length === 4
+                    ? '#' + color[1] + color[1] + color[2] + color[2] + color[3] + color[3]
+                    : color;
+            }
+            var match = color.match(/\d+/g);
+            if (!match) return '#ffffff';
+            return '#' + match.slice(0, 3).map(function(part) {
+                return Number(part).toString(16).padStart(2, '0');
+            }).join('');
+        }
+
+        function setActiveBuilderTarget(key) {
+            activeBuilderKey = key;
+            getBuilderNodes().forEach(function(node) {
+                node.classList.toggle('site-builder-selected', getBuilderKey(node) === key);
+            });
+            refreshBuilderSelectionOverlay();
+            updateBuilderInspector();
+        }
+
+        function refreshBuilderSelectionOverlay() {
+            var overlay = document.getElementById('site-builder-overlay');
+            var box = document.getElementById('site-builder-box');
+            var node = activeBuilderKey ? getBuilderNodeByKey(activeBuilderKey) : null;
+            if (!builderModeEnabled || !node) {
+                overlay.classList.add('hidden');
+                box.style.display = 'none';
+                return;
+            }
+            var rect = node.getBoundingClientRect();
+            overlay.classList.remove('hidden');
+            box.style.display = 'block';
+            box.style.left = rect.left + 'px';
+            box.style.top = rect.top + 'px';
+            box.style.width = rect.width + 'px';
+            box.style.height = rect.height + 'px';
+        }
+
+        function setBuilderPage(pageId) {
+            currentBuilderPage = pageId || 'home';
+            syncBuilderPageControl();
+            showPage(currentBuilderPage);
+            setTimeout(refreshBuilderSelectionOverlay, 60);
+        }
+
+        function startVisualBuilderMode() {
+            builderModeEnabled = true;
+            stopSiteEditMode(true);
+            document.body.classList.add('site-builder-mode-active');
+            document.getElementById('site-builder-toolbar').classList.remove('hidden');
+            currentBuilderPage = currentBuilderPage || 'home';
+            syncBuilderPageControl();
+            showPage(currentBuilderPage);
+            updateSiteEditStatusUi();
+            refreshBuilderSelectionOverlay();
+            closeAdmin();
+            showToast('Builder mode is live. Click any element to move, resize, or restyle it.');
+        }
+
+        function stopVisualBuilderMode(skipToast) {
+            builderModeEnabled = false;
+            activeBuilderKey = null;
+            builderDragSession = null;
+            document.body.classList.remove('site-builder-mode-active');
+            document.getElementById('site-builder-toolbar').classList.add('hidden');
+            document.getElementById('site-builder-overlay').classList.add('hidden');
+            document.getElementById('site-builder-box').style.display = 'none';
+            getBuilderNodes().forEach(function(node) { node.classList.remove('site-builder-selected'); });
+            updateSiteEditStatusUi();
+            if (!skipToast) showToast('Builder mode closed.');
+        }
+
+        function applyBuilderInspectorChanges() {
+            if (!activeBuilderKey) return;
+            pushBuilderHistory();
+            setBuilderProperty(activeBuilderKey, 'text', document.getElementById('builder-text-input').value.trim());
+            setBuilderProperty(activeBuilderKey, 'x', parseFloat(document.getElementById('builder-x-input').value) || 0);
+            setBuilderProperty(activeBuilderKey, 'y', parseFloat(document.getElementById('builder-y-input').value) || 0);
+            setBuilderProperty(activeBuilderKey, 'width', parseFloat(document.getElementById('builder-width-input').value) || null);
+            setBuilderProperty(activeBuilderKey, 'height', parseFloat(document.getElementById('builder-height-input').value) || null);
+            setBuilderProperty(activeBuilderKey, 'fontSize', parseFloat(document.getElementById('builder-font-size-input').value) || null);
+            setBuilderProperty(activeBuilderKey, 'padding', parseFloat(document.getElementById('builder-padding-input').value) || null);
+            setBuilderProperty(activeBuilderKey, 'borderRadius', parseFloat(document.getElementById('builder-radius-input').value) || null);
+            setBuilderProperty(activeBuilderKey, 'opacity', parseFloat(document.getElementById('builder-opacity-input').value));
+            setBuilderProperty(activeBuilderKey, 'color', document.getElementById('builder-color-input').value);
+            setBuilderProperty(activeBuilderKey, 'backgroundColor', document.getElementById('builder-bg-input').value);
+            applyBuilderState();
+            updateBuilderInspector();
+        }
+
+        function undoBuilderChange() {
+            if (!builderHistory.length) return;
+            builderRedoStack.push(cloneBuilderState());
+            builderState = builderHistory.pop();
+            applyBuilderState();
+            updateBuilderInspector();
+        }
+
+        function redoBuilderChange() {
+            if (!builderRedoStack.length) return;
+            builderHistory.push(cloneBuilderState());
+            builderState = builderRedoStack.pop();
+            applyBuilderState();
+            updateBuilderInspector();
+        }
+
+        async function saveBuilderStateForEveryone() {
+            var messageEl = document.getElementById('site-builder-message');
+            try {
+                if (builderStorageMode === 'shared') {
+                    var rows = Object.keys(builderState).map(function(key) {
+                        return { element_key: key, style_json: builderState[key], page_id: key.split('_')[1] || 'global' };
+                    });
+                    if (rows.length) {
+                        var result = await supabaseClient.from('site_builder_state').upsert(rows, { onConflict: 'element_key' });
+                        if (result.error) throw result.error;
+                    }
+                } else {
+                    writeBuilderFallback(builderState);
+                }
+                if (messageEl) messageEl.innerText = builderStorageMode === 'shared' ? 'Builder changes saved for everyone.' : 'Builder changes saved locally only.';
+                showAdminToast(builderStorageMode === 'shared' ? 'Builder changes saved' : 'Builder saved locally', builderStorageMode !== 'shared');
+            } catch (err) {
+                if (messageEl) messageEl.innerText = 'Save failed: ' + err.message;
+                showAdminToast('Builder save failed: ' + err.message, true);
+            }
+        }
+
+        async function resetActiveBuilderElement() {
+            if (!activeBuilderKey) return;
+            pushBuilderHistory();
+            delete builderState[activeBuilderKey];
+            if (builderStorageMode === 'shared') {
+                try { await supabaseClient.from('site_builder_state').delete().eq('element_key', activeBuilderKey); } catch (e) {}
+            } else {
+                writeBuilderFallback(builderState);
+            }
+            applyBuilderState();
+            updateBuilderInspector();
         }
 
         async function persistSiteContentKey(key, value) {
@@ -2595,8 +3122,70 @@
             setActiveSiteEditTarget(getEditableKey(editable));
         }, true);
 
+        document.addEventListener('click', function(e) {
+            if (!builderModeEnabled) return;
+            var toolbar = e.target.closest('#site-builder-toolbar');
+            var overlay = e.target.closest('#site-builder-overlay');
+            if (toolbar || overlay) return;
+            var target = e.target.closest(SITE_BUILDER_SELECTORS);
+            if (!isBuilderEligibleNode(target)) return;
+            e.preventDefault();
+            e.stopPropagation();
+            setActiveBuilderTarget(getBuilderKey(target));
+        }, true);
+
+        document.getElementById('site-builder-drag-surface').addEventListener('mousedown', function(e) {
+            if (!builderModeEnabled || !activeBuilderKey) return;
+            var current = builderState[activeBuilderKey] || {};
+            builderDragSession = {
+                mode: 'move',
+                startX: e.clientX,
+                startY: e.clientY,
+                baseX: current.x || 0,
+                baseY: current.y || 0
+            };
+            pushBuilderHistory();
+            e.preventDefault();
+        });
+
+        document.getElementById('site-builder-resize-handle').addEventListener('mousedown', function(e) {
+            if (!builderModeEnabled || !activeBuilderKey) return;
+            var node = getBuilderNodeByKey(activeBuilderKey);
+            var current = builderState[activeBuilderKey] || {};
+            builderDragSession = {
+                mode: 'resize',
+                startX: e.clientX,
+                startY: e.clientY,
+                baseWidth: current.width || Math.round(node.getBoundingClientRect().width),
+                baseHeight: current.height || Math.round(node.getBoundingClientRect().height)
+            };
+            pushBuilderHistory();
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (!builderDragSession || !activeBuilderKey) return;
+            var dx = e.clientX - builderDragSession.startX;
+            var dy = e.clientY - builderDragSession.startY;
+            if (builderDragSession.mode === 'move') {
+                setBuilderProperty(activeBuilderKey, 'x', Math.round(builderDragSession.baseX + dx));
+                setBuilderProperty(activeBuilderKey, 'y', Math.round(builderDragSession.baseY + dy));
+            } else if (builderDragSession.mode === 'resize') {
+                setBuilderProperty(activeBuilderKey, 'width', Math.max(24, Math.round(builderDragSession.baseWidth + dx)));
+                setBuilderProperty(activeBuilderKey, 'height', Math.max(24, Math.round(builderDragSession.baseHeight + dy)));
+            }
+            applyBuilderState();
+            updateBuilderInspector();
+        });
+
+        document.addEventListener('mouseup', function() {
+            builderDragSession = null;
+        });
+
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && siteEditModeEnabled) stopSiteEditMode();
+            if (e.key === 'Escape' && builderModeEnabled) stopVisualBuilderMode();
         });
 
         // --- Shipping State ---
@@ -3176,6 +3765,8 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
             updateOrderSummary();
             lucide.createIcons();
+            captureBuilderDefaults();
+            applyBuilderState();
             // 12. Update page title
             document.title = PAGE_TITLES[id] || 'FuturePharma';
             // Active nav indicator
@@ -3183,6 +3774,11 @@
             document.querySelectorAll('.nav-link').forEach(function(btn) {
                 if (btn.getAttribute('data-nav-page') === id) btn.classList.add('nav-active');
             });
+            if (builderModeEnabled) {
+                currentBuilderPage = id;
+                syncBuilderPageControl();
+                setTimeout(refreshBuilderSelectionOverlay, 80);
+            }
             if (typeof logPageView === 'function') logPageView(id);
         }
 
@@ -3946,6 +4542,7 @@ if (!localCounts[id]) localCounts[id] = 0;
 
         function openAdminPanel() {
             if (siteEditModeEnabled) stopSiteEditMode(true);
+            if (builderModeEnabled) stopVisualBuilderMode(true);
             document.getElementById('admin-panel').classList.remove('hidden');
             document.getElementById('admin-panel').classList.add('flex');
             renderAdminProductList();
@@ -4266,6 +4863,7 @@ if (!localCounts[id]) localCounts[id] = 0;
         // Load products from Supabase, then init the rest of the UI
         loadProducts();
         loadSiteContent();
+        loadBuilderState();
         // updateCartUI is called inside loadProducts after products are ready
 
         function adminAddProduct() {
