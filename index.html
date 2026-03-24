@@ -199,6 +199,57 @@
 
         svg { image-rendering: auto; shape-rendering: geometricPrecision; }
 
+        .site-edit-mode-active [data-edit-key] {
+            outline: 2px dashed rgba(93, 124, 145, 0.45);
+            outline-offset: 6px;
+            transition: outline-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .site-edit-mode-active [data-edit-key]:hover {
+            outline-color: var(--accent);
+            box-shadow: 0 0 0 6px rgba(93, 124, 145, 0.12);
+        }
+        .site-edit-target-active {
+            outline: 2px solid var(--accent) !important;
+            outline-offset: 6px !important;
+            box-shadow: 0 0 0 8px rgba(93, 124, 145, 0.16) !important;
+        }
+        #site-edit-toolbar {
+            position: fixed;
+            left: 50%;
+            bottom: 24px;
+            transform: translateX(-50%);
+            width: min(92vw, 760px);
+            z-index: 950;
+            border: 1px solid var(--line);
+            background: color-mix(in srgb, var(--surface) 92%, white 8%);
+            box-shadow: var(--shadow-soft);
+            border-radius: 26px;
+            backdrop-filter: blur(14px);
+        }
+        .dark #site-edit-toolbar {
+            background: rgba(23, 26, 29, 0.96);
+        }
+        #site-edit-toolbar textarea {
+            min-height: 132px;
+            resize: vertical;
+        }
+        #site-edit-toolbar button:disabled {
+            opacity: 0.45;
+            cursor: not-allowed !important;
+        }
+        .site-edit-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid var(--line);
+            background: var(--surface-alt);
+            border-radius: 999px;
+            padding: 8px 12px;
+            font-size: 12px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
         .email-suggestion-box { display: none; position: absolute; z-index: 110; width: 100%; background: #fff; border: 2px solid #1C1C16; margin-top: -1px; }
         .dark .email-suggestion-box { background: #1A1A1A; border-color: #F5F5DC; }
         .suggestion-item { padding: 8px 12px; cursor: pointer; color: #1C1C16; }
@@ -487,6 +538,41 @@
         .text-beige-200,
         .dark .text-beige-200 {
             color: var(--muted) !important;
+        }
+        .dark .text-gray-400,
+        .dark .text-gray-600,
+        .dark .text-zinc-400,
+        .dark .text-zinc-500,
+        .dark .text-zinc-600 {
+            color: #c2cad3 !important;
+        }
+        .dark .premium-note,
+        .dark .text-beige-800,
+        .dark .text-beige-200,
+        .dark #catalog-feedback,
+        .dark #shipping-eligibility-message,
+        .dark #order-summary-meta,
+        .dark #tracking-next-step,
+        .dark #receipt-address,
+        .dark #receipt-email,
+        .dark #tracking-history,
+        .dark #success-order-summary,
+        .dark #cart-items,
+        .dark #admin-panel,
+        .dark #admin-gate {
+            color: #d8dee6 !important;
+        }
+        .dark .opacity-30 { opacity: 0.58 !important; }
+        .dark .opacity-40 { opacity: 0.68 !important; }
+        .dark .opacity-50 { opacity: 0.78 !important; }
+        .dark .opacity-60 { opacity: 0.86 !important; }
+        .dark .opacity-70 { opacity: 0.92 !important; }
+        .dark p,
+        .dark span,
+        .dark li,
+        .dark label,
+        .dark small {
+            text-shadow: none;
         }
 
         .product-card,
@@ -828,6 +914,99 @@
         .section-shell i {
             stroke-width: 1.75 !important;
         }
+
+        .brand-lockup {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+        }
+        .brand-mark {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            display: grid;
+            place-items: center;
+            background:
+                radial-gradient(circle at 30% 25%, rgba(255,255,255,0.95), transparent 34%),
+                linear-gradient(135deg, rgba(93,124,145,0.22), rgba(93,124,145,0.06)),
+                var(--surface);
+            border: 1px solid rgba(93,124,145,0.2);
+            box-shadow: var(--shadow-card);
+        }
+        .brand-wordmark {
+            display: flex;
+            flex-direction: column;
+            gap: 0.08rem;
+            line-height: 1;
+        }
+        .brand-wordmark strong {
+            font-size: 1.85rem;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+        }
+        .brand-wordmark span {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            color: var(--muted);
+        }
+        .nav-utility {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.4rem;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.56);
+            border: 1px solid rgba(93,124,145,0.16);
+        }
+        .dark .nav-utility { background: rgba(255,255,255,0.03); }
+        .nav-icon-btn {
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+        .nav-icon-btn:hover {
+            background: rgba(93,124,145,0.12);
+            transform: translateY(-1px);
+        }
+        .hero-copy-block {
+            max-width: 36rem;
+        }
+        .hero-kicker {
+            font-family: 'IBM Plex Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            font-size: 0.72rem;
+            color: var(--muted);
+        }
+        #admin-panel,
+        #admin-gate > div {
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.82), rgba(255,255,255,0.96)),
+                var(--bg) !important;
+            color: var(--text) !important;
+        }
+        .dark #admin-panel,
+        .dark #admin-gate > div {
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)),
+                var(--surface) !important;
+        }
+        #admin-panel .border-4,
+        #admin-panel .border-2,
+        #admin-panel .border-b-4,
+        #admin-panel .border-b-2,
+        #admin-panel .border-t-2,
+        #admin-panel .border-r-2,
+        #admin-gate .border-4,
+        #admin-gate .border-2 {
+            border-color: var(--line) !important;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -864,32 +1043,33 @@
     <nav class="fixed w-full z-50 bg-[#F5F5DC]/90 backdrop-blur-md border-b border-beige-950/10">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
             <div class="flex justify-between h-24 items-center">
-                <div class="flex items-center gap-3 cursor-pointer group" onclick="handleLogoClick(event)">
-                    <div class="relative overflow-visible">
-                        <svg viewBox="0 0 16 20" class="w-10 h-10" xmlns="http://www.w3.org/2000/svg">
-                            <rect x="6" y="4" width="4" height="2" fill="#DDD" stroke="#1C1C16" stroke-width="0.3"/>
-                            <rect x="4" y="6" width="8" height="11" fill="#FFF" stroke="#1C1C16" stroke-width="0.3" class="dark:fill-beige-950" />
-                            <rect x="6" y="13" width="4" height="3" fill="#5DADE2" />
-                            <rect x="5" y="1" width="6" height="3" fill="#1C1C16" stroke="#1C1C16" stroke-width="0.3" class="dark:fill-beige-100 group-hover:animate-capLift origin-bottom-left" />
+                <div class="brand-lockup cursor-pointer group" onclick="handleLogoClick(event)">
+                    <div class="brand-mark">
+                        <svg viewBox="0 0 24 24" class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none">
+                            <path d="M8 4.5h8v2.5H8z" fill="currentColor" opacity="0.92"/>
+                            <path d="M9.2 7h5.6v2H9.2z" fill="#bcc9d1"/>
+                            <rect x="7" y="9" width="10" height="10" rx="2.5" fill="white" stroke="currentColor" stroke-width="1.1"/>
+                            <rect x="9" y="14" width="6" height="3.2" rx="0.8" fill="#5d7c91"/>
+                            <path d="M8.5 10.4h1v7.4h-1z" fill="#edf2f5"/>
+                            <path d="M10 11.3h4.4" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" opacity="0.55"/>
                         </svg>
                     </div>
-                    <div>
-                        <span class="text-4xl font-extrabold tracking-tight">FuturePharma</span>
-                        <p class="pixel-font text-[11px] uppercase opacity-50 tracking-[0.24em]">Research Supply Atelier</p>
+                    <div class="brand-wordmark">
+                        <strong data-edit-key="brand_name" data-edit-label="Brand name">FuturePharma</strong>
+                        <span data-edit-key="brand_tagline" data-edit-label="Brand tagline">Verified research supply</span>
                     </div>
                 </div>
                
-                <div class="hidden lg:flex space-x-8 items-center pixel-font">
-                    <button onclick="showPage('home')" class="nav-link">Home</button>
-                    <button onclick="showPage('peptides')" class="nav-link">Catalog</button>
-                    <button onclick="showPage('lab-testing')" class="nav-link">Lab Reports</button>
-                    <button onclick="showPage('bespoke')" class="nav-link">Custom Projects</button>
-                    <button onclick="showPage('contact')" class="nav-link">Support</button>
-                    <button onclick="if(cart&&cart.length>0){showPage('order-page')}else{showCartEmptyNotice()}" class="bg-beige-950 text-beige-100 px-6 py-3 rounded-full transition-all pixel-font text-xs tracking-[0.18em] uppercase">Start Order</button>
+                <div class="hidden lg:flex space-x-6 items-center pixel-font">
+                    <button onclick="showPage('home')" class="nav-link" data-nav-page="home" data-edit-key="nav_home" data-edit-label="Navigation: Home">Home</button>
+                    <button onclick="showPage('peptides')" class="nav-link" data-nav-page="peptides" data-edit-key="nav_catalog" data-edit-label="Navigation: Catalog">Catalog</button>
+                    <button onclick="showPage('lab-testing')" class="nav-link" data-nav-page="lab-testing" data-edit-key="nav_lab" data-edit-label="Navigation: Lab">Lab</button>
+                    <button onclick="showPage('bespoke')" class="nav-link" data-nav-page="bespoke" data-edit-key="nav_custom" data-edit-label="Navigation: Custom">Custom</button>
+                    <button onclick="if(cart&&cart.length>0){showPage('order-page')}else{showCartEmptyNotice()}" class="bg-beige-950 text-beige-100 px-5 py-3 rounded-full transition-all pixel-font text-[11px] tracking-[0.18em] uppercase" data-edit-key="nav_order" data-edit-label="Navigation: Order button">Order</button>
                 </div>
 
-                <div class="flex items-center gap-6">
-                    <div class="flex items-center gap-2">
+                <div class="nav-utility">
+                    <div class="hidden xl:flex items-center gap-2 px-2">
                         <i data-lucide="sun" class="w-4 h-4"></i>
                         <label class="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" id="theme-toggle" class="sr-only peer" onclick="toggleTheme()">
@@ -897,10 +1077,13 @@
                         </label>
                         <i data-lucide="moon" class="w-4 h-4"></i>
                     </div>
-                    <button onclick="showPage('order-tracking')" class="relative p-2 hover:bg-beige-200 dark:hover:bg-beige-950/30 transition-colors" title="Track your order">
+                    <button onclick="showPage('contact')" class="nav-icon-btn hidden md:inline-flex" title="Support">
+                        <i data-lucide="message-circle" class="w-5 h-5"></i>
+                    </button>
+                    <button onclick="showPage('order-tracking')" class="nav-icon-btn relative" title="Track your order">
                         <i data-lucide="package-search" class="w-5 h-5"></i>
                     </button>
-                    <button onclick="toggleCart()" class="relative p-2 hover:bg-beige-200 transition-colors">
+                    <button onclick="toggleCart()" class="nav-icon-btn relative" title="Open cart">
                         <i data-lucide="shopping-cart" class="w-5 h-5"></i>
                         <span id="cart-count" class="absolute -top-1 -right-1 bg-beige-950 text-beige-100 text-[12px] rounded-full h-4 w-4 flex items-center justify-center pixel-font">0</span>
                     </button>
@@ -919,48 +1102,37 @@
                 <div class="absolute inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(28,28,22,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(28,28,22,0.04) 1px, transparent 1px); background-size: 40px 40px;"></div>
 
                 <div class="max-w-7xl mx-auto px-6 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center relative z-10">
-                    <div>
+                    <div class="hero-copy-block">
                         <div class="inline-flex items-center gap-2 border-2 border-beige-950 dark:border-beige-100 px-4 py-2 mb-6 rounded-full bg-white/70">
                             <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                            <span class="pixel-font text-xs uppercase tracking-[0.22em]">Batch verified and ready to dispatch worldwide</span>
+                            <span class="pixel-font text-xs uppercase tracking-[0.22em]" data-edit-key="hero_badge" data-edit-label="Hero badge">Batch verified and ready to dispatch</span>
                         </div>
-                        <h1 class="text-6xl md:text-8xl font-extrabold mb-6 tracking-tighter leading-none">Precision peptides for exacting research programs.</h1>
-                        <p class="text-lg text-beige-800 dark:text-beige-200 max-w-xl mb-10 leading-relaxed premium-note">FuturePharma pairs boutique presentation with disciplined lab standards: third-party purity verification, documented handling, global delivery options, and support built for repeat institutional workflows.</p>
+                        <p class="hero-kicker mb-4" data-edit-key="hero_kicker" data-edit-label="Hero kicker">Luxury clinical presentation</p>
+                        <h1 class="text-6xl md:text-[5.5rem] font-extrabold mb-5 tracking-tighter leading-[0.92]" data-edit-key="hero_title" data-edit-label="Hero title">Research compounds, composed with more restraint.</h1>
+                        <p class="text-lg text-beige-800 dark:text-beige-200 max-w-lg mb-8 leading-relaxed premium-note" data-edit-key="hero_copy" data-edit-label="Hero paragraph">A quieter storefront for verified peptide sourcing, built around purity data, measured delivery options, and a smoother order path.</p>
                         <div class="flex flex-col sm:flex-row gap-3">
-                            <button onclick="showPage('peptides')" class="bg-beige-950 dark:bg-beige-100 text-beige-50 dark:text-beige-950 px-10 py-4 font-semibold tracking-wide transition text-base rounded-full">Browse catalog</button>
-                            <button onclick="showPage('lab-testing')" class="bg-transparent border-2 border-beige-950 dark:border-beige-100 px-10 py-4 font-semibold tracking-wide transition text-base rounded-full">Review lab reports</button>
+                            <button onclick="showPage('peptides')" class="bg-beige-950 dark:bg-beige-100 text-beige-50 dark:text-beige-950 px-10 py-4 font-semibold tracking-wide transition text-base rounded-full" data-edit-key="hero_primary_cta" data-edit-label="Hero primary button">Browse catalog</button>
+                            <button onclick="showPage('lab-testing')" class="bg-transparent border-2 border-beige-950 dark:border-beige-100 px-10 py-4 font-semibold tracking-wide transition text-base rounded-full" data-edit-key="hero_secondary_cta" data-edit-label="Hero secondary button">Review lab reports</button>
                         </div>
                         <div class="grid sm:grid-cols-3 gap-4 mt-10">
                             <div class="bg-white/80 p-4 rounded-2xl border border-beige-950/10">
-                                <p class="pixel-font text-[11px] uppercase tracking-[0.2em] opacity-55 mb-2">Purity standard</p>
-                                <p class="text-2xl font-bold">99%+ HPLC verified</p>
+                                <p class="pixel-font text-[11px] uppercase tracking-[0.2em] opacity-55 mb-2">Purity</p>
+                                <p class="text-2xl font-bold" data-edit-key="hero_metric_purity" data-edit-label="Hero metric: Purity">99%+ HPLC verified</p>
                             </div>
                             <div class="bg-white/80 p-4 rounded-2xl border border-beige-950/10">
-                                <p class="pixel-font text-[11px] uppercase tracking-[0.2em] opacity-55 mb-2">Dispatch options</p>
-                                <p class="text-2xl font-bold">Standard and express</p>
+                                <p class="pixel-font text-[11px] uppercase tracking-[0.2em] opacity-55 mb-2">Shipping</p>
+                                <p class="text-2xl font-bold" data-edit-key="hero_metric_shipping" data-edit-label="Hero metric: Shipping">Standard and express</p>
                             </div>
                             <div class="bg-white/80 p-4 rounded-2xl border border-beige-950/10">
-                                <p class="pixel-font text-[11px] uppercase tracking-[0.2em] opacity-55 mb-2">Support cadence</p>
-                                <p class="text-2xl font-bold">Clear post-order updates</p>
+                                <p class="pixel-font text-[11px] uppercase tracking-[0.2em] opacity-55 mb-2">Tracking</p>
+                                <p class="text-2xl font-bold" data-edit-key="hero_metric_tracking" data-edit-label="Hero metric: Tracking">Live order updates</p>
                             </div>
                         </div>
-                        <div class="grid sm:grid-cols-4 gap-3 mt-4">
-                            <div class="bg-white/80 p-4 rounded-2xl border border-beige-950/10 text-left">
-                                <p class="pixel-font text-[11px] uppercase tracking-[0.2em] opacity-55 mb-2">What</p>
-                                <p class="text-sm font-semibold">Research compounds, support items, and custom sourcing.</p>
-                            </div>
-                            <div class="bg-white/80 p-4 rounded-2xl border border-beige-950/10 text-left">
-                                <p class="pixel-font text-[11px] uppercase tracking-[0.2em] opacity-55 mb-2">Who</p>
-                                <p class="text-sm font-semibold">Built for lab-style procurement and repeat ordering workflows.</p>
-                            </div>
-                            <div class="bg-white/80 p-4 rounded-2xl border border-beige-950/10 text-left">
-                                <p class="pixel-font text-[11px] uppercase tracking-[0.2em] opacity-55 mb-2">Quality</p>
-                                <p class="text-sm font-semibold">Purity reporting and handling details surfaced throughout the journey.</p>
-                            </div>
-                            <div class="bg-white/80 p-4 rounded-2xl border border-beige-950/10 text-left">
-                                <p class="pixel-font text-[11px] uppercase tracking-[0.2em] opacity-55 mb-2">Flow</p>
-                                <p class="text-sm font-semibold">Browse, inspect, order, pay, then track from one reference code.</p>
-                            </div>
+                        <div class="mt-5 flex flex-wrap gap-3 text-sm text-beige-800">
+                            <span class="px-4 py-2 rounded-full bg-white/80 border border-beige-950/10">Research-grade peptides</span>
+                            <span class="px-4 py-2 rounded-full bg-white/80 border border-beige-950/10">Third-party reporting</span>
+                            <span class="px-4 py-2 rounded-full bg-white/80 border border-beige-950/10">Worldwide fulfillment</span>
+                            <span class="px-4 py-2 rounded-full bg-white/80 border border-beige-950/10">Custom sourcing</span>
                         </div>
                     </div>
 
@@ -971,7 +1143,7 @@
                         <div class="hero-glass"></div>
                         <div class="hero-badge glow-chip">
                             <p class="pixel-font text-[11px] uppercase tracking-[0.18em] opacity-55 mb-2">Current release language</p>
-                            <p class="text-lg font-semibold leading-snug">Boutique research supply, presented with a more editorial and technical visual rhythm.</p>
+                            <p class="text-lg font-semibold leading-snug" data-edit-key="hero_side_note" data-edit-label="Hero side note">Boutique research supply, presented with a more editorial and technical visual rhythm.</p>
                         </div>
                     </div>
                     <div class="absolute opacity-0 pointer-events-none">.</div>
@@ -1080,7 +1252,7 @@
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                         <div>
                             <p class="pixel-font text-xs uppercase tracking-[0.2em] opacity-50 mb-2">Recommended path</p>
-                            <h3 class="text-2xl md:text-3xl font-black tracking-tight">Browse the catalog, inspect the product sheet, build your order, confirm payment, then monitor delivery from one reference.</h3>
+                            <h3 class="text-2xl md:text-3xl font-black tracking-tight" data-edit-key="home_journey_title" data-edit-label="Homepage journey title">Browse the catalog, inspect the product sheet, build your order, confirm payment, then monitor delivery from one reference.</h3>
                         </div>
                         <div class="grid grid-cols-2 md:grid-cols-5 gap-3 text-sm">
                             <div class="p-4 rounded-2xl bg-beige-50 border border-beige-950/10"><span class="pixel-font text-[11px] uppercase opacity-50">1</span><p class="font-semibold mt-1">Browse</p></div>
@@ -1146,8 +1318,8 @@
                 <div class="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 items-start">
                     <div class="bg-white p-10 rounded-[28px] border border-beige-950/10 shadow-[0_18px_38px_rgba(23,23,23,0.08)] editorial-panel signature-frame reveal">
                         <p class="pixel-font text-xs uppercase tracking-[0.22em] opacity-50 mb-4">Support and assurance</p>
-                        <h2 class="text-4xl md:text-5xl font-black tracking-tight mb-5">A calmer research storefront, backed by clearer operating detail.</h2>
-                        <p class="premium-note mb-8">We redesigned the experience around trust cues that serious buyers actually care about: cleaner reading rhythm, transparent shipping choices, softer form flows, documented verification, and an order journey that feels monitored rather than improvised.</p>
+                        <h2 class="text-4xl md:text-5xl font-black tracking-tight mb-5" data-edit-key="home_support_title" data-edit-label="Support panel title">A calmer research storefront, backed by clearer operating detail.</h2>
+                        <p class="premium-note mb-8" data-edit-key="home_support_copy" data-edit-label="Support panel paragraph">We redesigned the experience around trust cues that serious buyers actually care about: cleaner reading rhythm, transparent shipping choices, softer form flows, documented verification, and an order journey that feels monitored rather than improvised.</p>
                         <div class="grid sm:grid-cols-2 gap-4">
                             <div class="p-5 rounded-2xl bg-beige-50 border border-beige-950/10">
                                 <p class="pixel-font text-xs uppercase tracking-[0.2em] opacity-50 mb-2">FAQ</p>
@@ -1195,12 +1367,12 @@
             <div class="border-t-4 border-beige-950 dark:border-beige-100 bg-beige-950 dark:bg-beige-100">
                 <div class="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
                     <div>
-                        <h2 class="text-4xl md:text-5xl font-black tracking-tighter text-beige-50 dark:text-beige-950 mb-2">Review the full research catalog.</h2>
-                        <p class="text-base text-beige-100/70 dark:text-beige-950/60 max-w-xl">Explore current compounds, compare sizing and pricing structures, or start a custom sourcing conversation for something not yet listed.</p>
+                        <h2 class="text-4xl md:text-5xl font-black tracking-tighter text-beige-50 dark:text-beige-950 mb-2" data-edit-key="home_cta_title" data-edit-label="Homepage CTA title">Review the full research catalog.</h2>
+                        <p class="text-base text-beige-100/70 dark:text-beige-950/60 max-w-xl" data-edit-key="home_cta_copy" data-edit-label="Homepage CTA paragraph">Explore current compounds, compare sizing and pricing structures, or start a custom sourcing conversation for something not yet listed.</p>
                     </div>
                     <div class="flex gap-3 shrink-0">
-                        <button onclick="showPage('peptides')" class="bg-beige-50 dark:bg-beige-950 text-beige-950 dark:text-beige-50 px-8 py-4 font-semibold tracking-wide rounded-full transition-all">Browse catalog</button>
-                        <button onclick="showPage('contact')" class="border-2 border-beige-50/40 dark:border-beige-950/40 text-beige-50 dark:text-beige-950 px-8 py-4 font-semibold tracking-wide rounded-full transition-all">Contact support</button>
+                        <button onclick="showPage('peptides')" class="bg-beige-50 dark:bg-beige-950 text-beige-950 dark:text-beige-50 px-8 py-4 font-semibold tracking-wide rounded-full transition-all" data-edit-key="home_cta_primary" data-edit-label="Homepage CTA primary button">Browse catalog</button>
+                        <button onclick="showPage('contact')" class="border-2 border-beige-50/40 dark:border-beige-950/40 text-beige-50 dark:text-beige-950 px-8 py-4 font-semibold tracking-wide rounded-full transition-all" data-edit-key="home_cta_secondary" data-edit-label="Homepage CTA secondary button">Contact support</button>
                     </div>
                 </div>
             </div>
@@ -1798,15 +1970,15 @@
 
     <!-- Admin Password Gate -->
     <div id="admin-gate" class="fixed inset-0 z-[500] hidden items-center justify-center bg-black/70 backdrop-blur-sm">
-        <div class="bg-[#F5F5DC] dark:bg-[#1A1A1A] border-4 border-beige-950 dark:border-beige-100 shadow-[12px_12px_0px_0px_rgba(28,28,22,1)] p-10 w-full max-w-sm mx-6">
-            <h2 class="pixel-font text-4xl font-black uppercase mb-1 text-beige-950 dark:text-beige-100">Admin Access</h2>
-            <p class="pixel-font text-lg opacity-50 uppercase mb-6 text-beige-950 dark:text-beige-100">Enter password to continue</p>
+        <div class="border-4 border-beige-950 dark:border-beige-100 shadow-[12px_12px_0px_0px_rgba(28,28,22,1)] p-10 w-full max-w-sm mx-6 rounded-[28px]">
+            <h2 class="text-4xl font-black tracking-tight mb-1 text-beige-950 dark:text-beige-100">Admin access</h2>
+            <p class="pixel-font text-sm opacity-50 uppercase mb-6 text-beige-950 dark:text-beige-100 tracking-[0.18em]">Enter password to continue</p>
             <input type="password" id="admin-password-input" placeholder="Password" onkeydown="if(event.key==='Enter')checkAdminPassword()"
-                class="w-full p-4 border-2 border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-800 text-beige-950 dark:text-beige-100 outline-none pixel-font text-2xl mb-3">
-            <p id="admin-pw-error" class="pixel-font text-red-500 text-lg mb-3 hidden uppercase font-bold">Incorrect password.</p>
+                class="w-full p-4 border-2 border-beige-950 dark:border-beige-100 bg-white dark:bg-zinc-800 text-beige-950 dark:text-beige-100 outline-none text-base mb-3 rounded-2xl">
+            <p id="admin-pw-error" class="pixel-font text-red-500 text-sm mb-3 hidden uppercase font-bold tracking-[0.16em]">Incorrect password.</p>
             <div class="flex gap-3">
-                <button onclick="checkAdminPassword()" class="flex-1 bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 py-4 pixel-font text-xl font-black uppercase hover:invert transition-all">Enter</button>
-                <button onclick="closeAdmin()" class="flex-1 border-2 border-beige-950 dark:border-beige-100 text-beige-950 dark:text-beige-100 py-4 pixel-font text-xl font-bold uppercase hover:bg-beige-200 dark:hover:bg-zinc-700 transition-all">Cancel</button>
+                <button onclick="checkAdminPassword()" class="flex-1 bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 py-4 font-semibold tracking-wide rounded-full transition-all">Enter</button>
+                <button onclick="closeAdmin()" class="flex-1 border-2 border-beige-950 dark:border-beige-100 text-beige-950 dark:text-beige-100 py-4 font-semibold tracking-wide rounded-full transition-all">Cancel</button>
             </div>
         </div>
     </div>
@@ -1815,10 +1987,10 @@
     <div id="admin-panel" class="fixed inset-0 z-[500] hidden flex-col bg-[#F5F5DC] dark:bg-[#0F0F0F] overflow-y-auto">
         <div class="sticky top-0 z-10 bg-[#F5F5DC] dark:bg-[#0F0F0F] border-b-4 border-beige-950 dark:border-beige-100 px-8 py-5 flex justify-between items-center">
             <div>
-                <h1 class="pixel-font text-4xl font-black uppercase tracking-tight text-beige-950 dark:text-beige-100">&#9881; Admin Panel</h1>
-                <p id="admin-status-line" class="pixel-font text-lg opacity-50 uppercase text-beige-950 dark:text-beige-100">FuturePharma Product Manager</p>
+                <h1 class="text-4xl font-black tracking-tight text-beige-950 dark:text-beige-100">Operations console</h1>
+                <p id="admin-status-line" class="pixel-font text-sm opacity-50 uppercase text-beige-950 dark:text-beige-100 tracking-[0.18em]">FuturePharma Product Manager</p>
             </div>
-            <button onclick="closeAdmin()" class="bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 px-6 py-3 pixel-font text-xl font-black uppercase hover:invert transition-all flex items-center gap-2">
+            <button onclick="closeAdmin()" class="bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 px-6 py-3 font-semibold tracking-wide rounded-full transition-all flex items-center gap-2">
                 <i data-lucide="x" class="w-4 h-4"></i> Close
             </button>
         </div>
@@ -1830,6 +2002,7 @@
                 <button id="admin-tab-products" onclick="switchAdminTab('products')" class="px-6 py-3 pixel-font text-xl font-black uppercase border-b-4 border-beige-950 dark:border-beige-100 -mb-1 text-beige-950 dark:text-beige-100">Products</button>
                 <button id="admin-tab-orders" onclick="switchAdminTab('orders')" class="px-6 py-3 pixel-font text-xl font-bold uppercase -mb-1 opacity-40 text-beige-950 dark:text-beige-100 hover:opacity-70 transition-opacity">Orders</button>
                 <button id="admin-tab-visitors" onclick="switchAdminTab('visitors')" class="px-6 py-3 pixel-font text-xl font-bold uppercase -mb-1 opacity-40 text-beige-950 dark:text-beige-100 hover:opacity-70 transition-opacity">Visitors</button>
+                <button id="admin-tab-edit" onclick="switchAdminTab('edit')" class="px-6 py-3 pixel-font text-xl font-bold uppercase -mb-1 opacity-40 text-beige-950 dark:text-beige-100 hover:opacity-70 transition-opacity">Edit Mode</button>
             </div>
 
             <!-- Products tab -->
@@ -1893,6 +2066,62 @@
                 </div>
             </div>
 
+            <div id="admin-section-edit" style="display:none;">
+                <div class="grid lg:grid-cols-[1.15fr_0.85fr] gap-6">
+                    <div class="bg-white dark:bg-zinc-900 border-2 border-beige-950 dark:border-beige-100 rounded-[28px] p-8">
+                        <p class="pixel-font text-xs uppercase tracking-[0.2em] opacity-50 mb-3">Edit mode</p>
+                        <h2 class="text-3xl font-black tracking-tight mb-4 text-beige-950 dark:text-beige-100">Click text on the site, rewrite it, and publish the update.</h2>
+                        <p class="text-sm text-beige-800 dark:text-beige-200 leading-relaxed mb-6">This mode edits marked text blocks only. Changes are saved to shared content storage when the `site_content` table is available, so everyone loading the site sees the updated copy.</p>
+                        <div class="flex flex-wrap gap-3 mb-6">
+                            <button onclick="startSiteEditMode()" class="bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 px-6 py-3 font-semibold tracking-wide rounded-full">Start edit mode</button>
+                            <button onclick="stopSiteEditMode(true)" class="border-2 border-beige-950 dark:border-beige-100 text-beige-950 dark:text-beige-100 px-6 py-3 font-semibold tracking-wide rounded-full">Stop edit mode</button>
+                        </div>
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div class="rounded-2xl border border-beige-950/10 dark:border-beige-100/10 bg-beige-50 dark:bg-zinc-800/50 p-4">
+                                <p class="pixel-font text-[11px] uppercase tracking-[0.18em] opacity-50 mb-2">Status</p>
+                                <p id="site-edit-status" class="font-semibold text-sm">Idle</p>
+                            </div>
+                            <div class="rounded-2xl border border-beige-950/10 dark:border-beige-100/10 bg-beige-50 dark:bg-zinc-800/50 p-4">
+                                <p class="pixel-font text-[11px] uppercase tracking-[0.18em] opacity-50 mb-2">Storage</p>
+                                <p id="site-edit-storage-status" class="font-semibold text-sm">Checking shared storage…</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-zinc-900 border-2 border-beige-950 dark:border-beige-100 rounded-[28px] p-8">
+                        <p class="pixel-font text-xs uppercase tracking-[0.2em] opacity-50 mb-3">Editable copy</p>
+                        <div id="admin-editable-list" class="space-y-3 max-h-[26rem] overflow-y-auto pr-1">
+                            <p class="text-sm text-beige-800 dark:text-beige-200">Loading editable text blocks…</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="site-edit-toolbar" class="hidden">
+        <div class="p-5 md:p-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+                <div>
+                    <div class="site-edit-pill pixel-font">
+                        <span>Edit Mode</span>
+                        <span id="site-edit-current-label" class="opacity-70">Select text</span>
+                    </div>
+                    <p id="site-edit-current-key" class="text-xs mt-3 text-beige-800 dark:text-beige-200"></p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="returnToAdminEditTab()" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold">Admin</button>
+                    <button onclick="stopSiteEditMode()" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold">Close</button>
+                </div>
+            </div>
+            <textarea id="site-edit-input" class="w-full rounded-[20px] border border-beige-950/15 dark:border-beige-100/15 bg-white dark:bg-zinc-900 px-4 py-4 outline-none text-base text-beige-950 dark:text-beige-100" placeholder="Click a highlighted text block to edit it."></textarea>
+            <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+                <p id="site-edit-message" class="text-sm text-beige-800 dark:text-beige-200">Changes are saved as plain text for safety.</p>
+                <div class="flex flex-wrap gap-2">
+                    <button id="site-edit-reset-btn" onclick="resetActiveSiteText()" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold" disabled>Reset</button>
+                    <button id="site-edit-save-btn" onclick="saveActiveSiteText()" class="bg-beige-950 dark:bg-beige-100 text-beige-50 dark:text-beige-950 px-5 py-2.5 rounded-full text-sm font-semibold" disabled>Save for everyone</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1932,6 +2161,258 @@
             document.body.appendChild(toast);
             setTimeout(function() { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.25s ease'; setTimeout(function() { toast.remove(); }, 280); }, 2600);
         }
+
+        var SITE_CONTENT_STORAGE_KEY = 'futurePharmaSiteContentFallback';
+        var siteContentDefaults = {};
+        var siteContentValues = {};
+        var siteEditModeEnabled = false;
+        var activeSiteEditKey = null;
+        var siteContentStorageMode = 'checking';
+
+        function getEditableNodes() {
+            return Array.prototype.slice.call(document.querySelectorAll('[data-edit-key]'));
+        }
+
+        function captureSiteContentDefaults() {
+            getEditableNodes().forEach(function(node) {
+                var key = node.getAttribute('data-edit-key');
+                if (key && !(key in siteContentDefaults)) {
+                    siteContentDefaults[key] = node.textContent.trim();
+                }
+            });
+        }
+
+        function readSiteContentFallback() {
+            try {
+                return JSON.parse(localStorage.getItem(SITE_CONTENT_STORAGE_KEY) || '{}') || {};
+            } catch (e) {
+                return {};
+            }
+        }
+
+        function writeSiteContentFallback(map) {
+            localStorage.setItem(SITE_CONTENT_STORAGE_KEY, JSON.stringify(map));
+        }
+
+        function applySiteContentValues() {
+            getEditableNodes().forEach(function(node) {
+                var key = node.getAttribute('data-edit-key');
+                if (!key) return;
+                var value = Object.prototype.hasOwnProperty.call(siteContentValues, key)
+                    ? siteContentValues[key]
+                    : siteContentDefaults[key];
+                if (typeof value === 'string') node.textContent = value;
+            });
+            renderEditableContentList();
+        }
+
+        function updateSiteEditStatusUi() {
+            var status = document.getElementById('site-edit-status');
+            var storage = document.getElementById('site-edit-storage-status');
+            if (status) {
+                status.innerText = siteEditModeEnabled
+                    ? 'Live. Click highlighted text on the storefront to edit it.'
+                    : 'Idle';
+            }
+            if (storage) {
+                storage.innerText = siteContentStorageMode === 'shared'
+                    ? 'Shared Supabase storage connected'
+                    : siteContentStorageMode === 'fallback'
+                        ? 'Local fallback only. Create the shared table to publish for everyone.'
+                        : 'Checking shared storage…';
+            }
+        }
+
+        async function loadSiteContent() {
+            captureSiteContentDefaults();
+            try {
+                var result = await supabaseClient.from('site_content').select('content_key, content_value');
+                if (result.error) throw result.error;
+                siteContentValues = {};
+                (result.data || []).forEach(function(row) {
+                    siteContentValues[row.content_key] = row.content_value;
+                });
+                siteContentStorageMode = 'shared';
+            } catch (err) {
+                siteContentValues = readSiteContentFallback();
+                siteContentStorageMode = 'fallback';
+                console.warn('Shared site_content table unavailable, using local fallback:', err.message);
+            }
+            applySiteContentValues();
+            updateSiteEditStatusUi();
+        }
+
+        function getEditableLabel(key) {
+            var node = document.querySelector('[data-edit-key="' + key + '"]');
+            if (!node) return key;
+            return node.getAttribute('data-edit-label') || key;
+        }
+
+        function setActiveSiteEditTarget(key) {
+            activeSiteEditKey = key;
+            getEditableNodes().forEach(function(node) {
+                node.classList.toggle('site-edit-target-active', node.getAttribute('data-edit-key') === key);
+            });
+            var input = document.getElementById('site-edit-input');
+            var label = document.getElementById('site-edit-current-label');
+            var keyEl = document.getElementById('site-edit-current-key');
+            var saveBtn = document.getElementById('site-edit-save-btn');
+            var resetBtn = document.getElementById('site-edit-reset-btn');
+            if (label) label.innerText = key ? getEditableLabel(key) : 'Select text';
+            if (keyEl) keyEl.innerText = key ? 'Key: ' + key : '';
+            if (input) input.value = key ? (siteContentValues[key] || siteContentDefaults[key] || '') : '';
+            if (saveBtn) saveBtn.disabled = !key;
+            if (resetBtn) resetBtn.disabled = !key;
+        }
+
+        function startSiteEditMode() {
+            siteEditModeEnabled = true;
+            document.body.classList.add('site-edit-mode-active');
+            document.getElementById('site-edit-toolbar').classList.remove('hidden');
+            updateSiteEditStatusUi();
+            setActiveSiteEditTarget(activeSiteEditKey);
+            closeAdmin();
+            showToast('Edit mode is live. Click any highlighted text block to change it.');
+        }
+
+        function stopSiteEditMode(skipToast) {
+            siteEditModeEnabled = false;
+            activeSiteEditKey = null;
+            document.body.classList.remove('site-edit-mode-active');
+            document.getElementById('site-edit-toolbar').classList.add('hidden');
+            getEditableNodes().forEach(function(node) { node.classList.remove('site-edit-target-active'); });
+            updateSiteEditStatusUi();
+            if (!skipToast) showToast('Edit mode closed.');
+        }
+
+        function returnToAdminEditTab() {
+            stopSiteEditMode(true);
+            openAdminPanel();
+            switchAdminTab('edit');
+        }
+
+        async function persistSiteContentKey(key, value) {
+            siteContentValues[key] = value;
+            if (siteContentStorageMode === 'shared') {
+                var upsertResult = await supabaseClient.from('site_content').upsert([{
+                    content_key: key,
+                    content_value: value
+                }], { onConflict: 'content_key' });
+                if (upsertResult.error) throw upsertResult.error;
+                return 'shared';
+            }
+            var fallbackMap = readSiteContentFallback();
+            fallbackMap[key] = value;
+            writeSiteContentFallback(fallbackMap);
+            return 'fallback';
+        }
+
+        async function removeSiteContentKey(key) {
+            delete siteContentValues[key];
+            if (siteContentStorageMode === 'shared') {
+                var deleteResult = await supabaseClient.from('site_content').delete().eq('content_key', key);
+                if (deleteResult.error) throw deleteResult.error;
+                return 'shared';
+            }
+            var fallbackMap = readSiteContentFallback();
+            delete fallbackMap[key];
+            writeSiteContentFallback(fallbackMap);
+            return 'fallback';
+        }
+
+        async function saveActiveSiteText() {
+            if (!activeSiteEditKey) return;
+            var input = document.getElementById('site-edit-input');
+            var message = document.getElementById('site-edit-message');
+            var saveBtn = document.getElementById('site-edit-save-btn');
+            var nextValue = input.value.trim();
+            if (!nextValue) {
+                message.innerText = 'Text cannot be empty. Use reset if you want the original copy back.';
+                return;
+            }
+            saveBtn.disabled = true;
+            saveBtn.innerText = 'Saving…';
+            try {
+                var mode = await persistSiteContentKey(activeSiteEditKey, nextValue);
+                applySiteContentValues();
+                message.innerText = mode === 'shared'
+                    ? 'Saved to shared content storage.'
+                    : 'Saved locally. Create the shared table to publish this for everyone.';
+                showAdminToast(mode === 'shared' ? 'Text updated for everyone' : 'Saved locally only', mode !== 'shared');
+            } catch (err) {
+                message.innerText = 'Save failed: ' + err.message;
+                showAdminToast('Text save failed: ' + err.message, true);
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerText = 'Save for everyone';
+                updateSiteEditStatusUi();
+                renderEditableContentList();
+            }
+        }
+
+        async function resetActiveSiteText() {
+            if (!activeSiteEditKey) return;
+            var message = document.getElementById('site-edit-message');
+            try {
+                var mode = await removeSiteContentKey(activeSiteEditKey);
+                applySiteContentValues();
+                setActiveSiteEditTarget(activeSiteEditKey);
+                message.innerText = mode === 'shared'
+                    ? 'Reset to the built-in default and removed the shared override.'
+                    : 'Reset to the built-in default.';
+                showAdminToast('Text reset');
+            } catch (err) {
+                message.innerText = 'Reset failed: ' + err.message;
+                showAdminToast('Text reset failed: ' + err.message, true);
+            }
+        }
+
+        function renderEditableContentList() {
+            var container = document.getElementById('admin-editable-list');
+            if (!container) return;
+            var items = getEditableNodes().map(function(node) {
+                var key = node.getAttribute('data-edit-key');
+                return {
+                    key: key,
+                    label: node.getAttribute('data-edit-label') || key,
+                    value: siteContentValues[key] || siteContentDefaults[key] || ''
+                };
+            }).filter(function(item, index, arr) {
+                return item.key && arr.findIndex(function(x) { return x.key === item.key; }) === index;
+            });
+            function esc(text) {
+                return (text || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            }
+            container.innerHTML = items.map(function(item) {
+                return '<button onclick="openAdminEditTarget(\'' + item.key.replace(/'/g, "\\'") + '\')" class="w-full text-left rounded-[20px] border border-beige-950/10 dark:border-beige-100/10 bg-beige-50 dark:bg-zinc-800/50 p-4 hover:border-beige-950/30 dark:hover:border-beige-100/30 transition">'
+                    + '<p class="pixel-font text-[11px] uppercase tracking-[0.18em] opacity-50 mb-2">' + item.label + '</p>'
+                    + '<p class="text-sm font-medium leading-relaxed text-beige-950 dark:text-beige-100">' + esc(item.value) + '</p>'
+                    + '</button>';
+            }).join('') || '<p class="text-sm text-beige-800 dark:text-beige-200">No editable text blocks were found.</p>';
+        }
+
+        function openAdminEditTarget(key) {
+            startSiteEditMode();
+            var node = document.querySelector('[data-edit-key="' + key + '"]');
+            if (!node) return;
+            setActiveSiteEditTarget(key);
+            node.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!siteEditModeEnabled) return;
+            var editable = e.target.closest('[data-edit-key]');
+            var toolbar = e.target.closest('#site-edit-toolbar');
+            if (toolbar) return;
+            if (!editable) return;
+            e.preventDefault();
+            e.stopPropagation();
+            setActiveSiteEditTarget(editable.getAttribute('data-edit-key'));
+        }, true);
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && siteEditModeEnabled) stopSiteEditMode();
+        });
 
         // --- Shipping State ---
         const SHIPPING_OPTIONS = {
@@ -2513,10 +2994,9 @@
             // 12. Update page title
             document.title = PAGE_TITLES[id] || 'FuturePharma';
             // Active nav indicator
-            var navMap = { home: 'Home', peptides: 'Catalog', 'lab-testing': 'Lab Reports', bespoke: 'Custom Projects', contact: 'Support' };
             document.querySelectorAll('.nav-link').forEach(function(btn) { btn.classList.remove('nav-active'); });
             document.querySelectorAll('.nav-link').forEach(function(btn) {
-                if (btn.innerText.trim() === (navMap[id] || '')) btn.classList.add('nav-active');
+                if (btn.getAttribute('data-nav-page') === id) btn.classList.add('nav-active');
             });
             if (typeof logPageView === 'function') logPageView(id);
         }
@@ -2839,36 +3319,61 @@ if (!localCounts[id]) localCounts[id] = 0;
         function getVialSVG(color, abbrev, size) {
             var cls = size === 'lg' ? 'w-64 h-64' : size === 'xs' ? 'w-10 h-10' : 'w-32 h-32';
             return '<svg viewBox="0 0 16 20" class="' + cls + '" xmlns="http://www.w3.org/2000/svg">'
-                + '<defs><linearGradient id="glass-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.96"/><stop offset="55%" stop-color="#f8f6f1" stop-opacity="0.98"/><stop offset="100%" stop-color="#e7e0d4" stop-opacity="1"/></linearGradient><linearGradient id="cap-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#3a4650"/><stop offset="100%" stop-color="#171717"/></linearGradient><linearGradient id="liquid-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="' + color + '" stop-opacity="0.96"/><stop offset="100%" stop-color="' + color + '" stop-opacity="0.72"/></linearGradient></defs>'
-                + '<rect x="5" y="1" width="6" height="3" rx="0.6" fill="url(#cap-' + abbrev + size + ')" stroke="#1C1C16" stroke-width="0.28"/>'
-                + '<rect x="6" y="4" width="4" height="2" rx="0.45" fill="#d5dde1" stroke="#1C1C16" stroke-width="0.26"/>'
-                + '<rect x="4" y="6" width="8" height="11" rx="1" fill="url(#glass-' + abbrev + size + ')" stroke="#1C1C16" stroke-width="0.3"/>'
-                + '<rect x="4.7" y="6.8" width="1" height="9" rx="0.4" fill="#ffffff" opacity="0.74"/>'
-                + '<rect x="6" y="12.8" width="4" height="3.2" rx="0.4" fill="url(#liquid-' + abbrev + size + ')"/>'
-                + '<rect x="5.2" y="8" width="5.6" height="4.2" rx="0.45" fill="#edf0eb"/>'
-                + '<path d="M4.4 9.2 L11.6 7.3" stroke="rgba(255,255,255,0.7)" stroke-width="0.35"/>'
-                + (size !== 'xs' ? '<text x="8" y="10.95" font-family="IBM Plex Mono, monospace" font-size="2.15" font-weight="600" fill="#1C1C16" text-anchor="middle" letter-spacing="0.08">' + abbrev + '</text>' : '')
+                + '<defs>'
+                + '<linearGradient id="glass-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="42%" stop-color="#faf7f1"/><stop offset="100%" stop-color="#ddd6ca"/></linearGradient>'
+                + '<linearGradient id="glassSide-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/><stop offset="35%" stop-color="#ffffff" stop-opacity="0.18"/><stop offset="100%" stop-color="#c8c1b6" stop-opacity="0.5"/></linearGradient>'
+                + '<linearGradient id="cap-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#53626e"/><stop offset="55%" stop-color="#2a333a"/><stop offset="100%" stop-color="#13181c"/></linearGradient>'
+                + '<linearGradient id="metal-' + abbrev + size + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#eff4f7"/><stop offset="50%" stop-color="#c7d0d6"/><stop offset="100%" stop-color="#9da8b0"/></linearGradient>'
+                + '<linearGradient id="label-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f3efe7"/><stop offset="100%" stop-color="#e3ddd2"/></linearGradient>'
+                + '<linearGradient id="liquid-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="' + color + '" stop-opacity="0.98"/><stop offset="70%" stop-color="' + color + '" stop-opacity="0.8"/><stop offset="100%" stop-color="#ffffff" stop-opacity="0.18"/></linearGradient>'
+                + '<radialGradient id="shine-' + abbrev + size + '" cx="0.2" cy="0.15" r="0.95"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/><stop offset="30%" stop-color="#ffffff" stop-opacity="0.36"/><stop offset="100%" stop-color="#ffffff" stop-opacity="0"/></radialGradient>'
+                + '</defs>'
+                + '<ellipse cx="8" cy="18.45" rx="4.95" ry="0.88" fill="#000" opacity="0.12"/>'
+                + '<rect x="5.1" y="1.1" width="5.8" height="3.15" rx="0.7" fill="url(#cap-' + abbrev + size + ')" stroke="#161616" stroke-width="0.3"/>'
+                + '<path d="M5.55 2.05h4.9" stroke="#92a2ae" stroke-width="0.24" opacity="0.55"/>'
+                + '<path d="M5.55 2.8h4.9" stroke="#0d1114" stroke-width="0.18" opacity="0.38"/>'
+                + '<rect x="6.02" y="4.08" width="3.96" height="2.14" rx="0.52" fill="url(#metal-' + abbrev + size + ')" stroke="#4b555d" stroke-width="0.24"/>'
+                + '<rect x="4.02" y="6.1" width="7.96" height="10.82" rx="1.18" fill="url(#glass-' + abbrev + size + ')" stroke="#1a1a1a" stroke-width="0.3"/>'
+                + '<rect x="4.18" y="6.22" width="7.64" height="10.58" rx="1.05" fill="url(#glassSide-' + abbrev + size + ')" opacity="0.72"/>'
+                + '<rect x="4.75" y="6.82" width="0.88" height="8.95" rx="0.4" fill="#ffffff" opacity="0.78"/>'
+                + '<rect x="6.04" y="12.45" width="3.92" height="3.72" rx="0.55" fill="url(#liquid-' + abbrev + size + ')"/>'
+                + '<ellipse cx="8" cy="12.48" rx="1.96" ry="0.44" fill="#ffffff" opacity="0.22"/>'
+                + '<rect x="5.18" y="8.02" width="5.64" height="4.25" rx="0.48" fill="url(#label-' + abbrev + size + ')" stroke="#c4bdae" stroke-width="0.12"/>'
+                + '<path d="M5.55 8.85h4.9" stroke="#d3cbc0" stroke-width="0.14"/>'
+                + '<path d="M5.55 11.46h4.9" stroke="#d3cbc0" stroke-width="0.14"/>'
+                + '<ellipse cx="7.7" cy="7.28" rx="2.95" ry="1.8" fill="url(#shine-' + abbrev + size + ')" opacity="0.78"/>'
+                + '<path d="M11.15 7.1c-0.45 3.4-0.5 5.9-0.08 8.3" stroke="#fff" stroke-width="0.22" opacity="0.34" stroke-linecap="round"/>'
+                + (size !== 'xs' ? '<text x="8" y="10.7" font-family="IBM Plex Mono, monospace" font-size="2.05" font-weight="600" fill="#1a1a1a" text-anchor="middle" letter-spacing="0.06">' + abbrev + '</text><text x="8" y="9.05" font-family="IBM Plex Mono, monospace" font-size="0.66" fill="#6f7c86" text-anchor="middle" letter-spacing="0.22">FP</text>' : '')
                 + '</svg>';
         }
 
         function getPillBottleSVG(color, abbrev, size) {
             var cls = size === 'lg' ? 'w-64 h-64' : size === 'xs' ? 'w-10 h-10' : 'w-32 h-32';
             return '<svg viewBox="0 0 20 24" class="' + cls + '" xmlns="http://www.w3.org/2000/svg">'
-                + '<defs><linearGradient id="bottle-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#e8e0d4"/></linearGradient><linearGradient id="pillcap-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#42505c"/><stop offset="100%" stop-color="#171717"/></linearGradient></defs>'
-                + '<rect x="4" y="1" width="12" height="4" rx="0.8" fill="url(#pillcap-' + abbrev + size + ')" stroke="#1C1C16" stroke-width="0.3"/>'
-                + '<rect x="5" y="1.4" width="1" height="3.2" fill="#64727d" opacity="0.65"/>'
-                + '<rect x="8" y="1.4" width="1" height="3.2" fill="#64727d" opacity="0.65"/>'
-                + '<rect x="11" y="1.4" width="1" height="3.2" fill="#64727d" opacity="0.65"/>'
-                + '<rect x="14" y="1.4" width="1" height="3.2" fill="#64727d" opacity="0.65"/>'
-                + '<rect x="6" y="5" width="8" height="2" rx="0.45" fill="#d6dde2" stroke="#1C1C16" stroke-width="0.3"/>'
-                + '<rect x="3" y="7" width="14" height="15" rx="1.2" fill="url(#bottle-' + abbrev + size + ')" stroke="#1C1C16" stroke-width="0.3"/>'
-                + '<rect x="4" y="9" width="12" height="8" rx="0.7" fill="#ece9e1"/>'
-                + '<rect x="3" y="19" width="14" height="3" rx="0.7" fill="' + color + '" opacity="0.88"/>'
-                + '<rect x="4" y="7.6" width="1" height="13.6" rx="0.5" fill="#fff" opacity="0.75"/>'
-                + (size !== 'xs' ? '<text x="10" y="13.85" font-family="IBM Plex Mono, monospace" font-size="2.7" font-weight="600" fill="#1C1C16" text-anchor="middle" letter-spacing="0.08">' + abbrev + '</text>' : '')
-                + '<rect x="6" y="10" width="2" height="1" rx="0.5" fill="' + color + '" opacity="0.65"/>'
-                + '<rect x="9" y="10" width="2" height="1" rx="0.5" fill="' + color + '" opacity="0.65"/>'
-                + '<rect x="12" y="10" width="2" height="1" rx="0.5" fill="' + color + '" opacity="0.65"/>'
+                + '<defs>'
+                + '<linearGradient id="bottle-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="70%" stop-color="#efe8db"/><stop offset="100%" stop-color="#ddd4c6"/></linearGradient>'
+                + '<linearGradient id="bottleSide-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.86"/><stop offset="36%" stop-color="#ffffff" stop-opacity="0.18"/><stop offset="100%" stop-color="#cfc6b9" stop-opacity="0.46"/></linearGradient>'
+                + '<linearGradient id="pillcap-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4f606d"/><stop offset="55%" stop-color="#2a333a"/><stop offset="100%" stop-color="#14181c"/></linearGradient>'
+                + '<linearGradient id="band-' + abbrev + size + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#edf3f6"/><stop offset="100%" stop-color="#a8b5bd"/></linearGradient>'
+                + '<linearGradient id="labelBand-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f5f0e8"/><stop offset="100%" stop-color="#e1dacc"/></linearGradient>'
+                + '</defs>'
+                + '<ellipse cx="10" cy="22.45" rx="6.5" ry="1.02" fill="#000" opacity="0.12"/>'
+                + '<rect x="4.05" y="1.05" width="11.9" height="4.1" rx="0.95" fill="url(#pillcap-' + abbrev + size + ')" stroke="#1a1a1a" stroke-width="0.3"/>'
+                + '<path d="M4.9 2.2h10.2" stroke="#8e9fab" stroke-width="0.2" opacity="0.62"/>'
+                + '<path d="M5.1 3.15h9.8" stroke="#0f1316" stroke-width="0.16" opacity="0.4"/>'
+                + '<rect x="5.95" y="5.02" width="8.1" height="2.08" rx="0.5" fill="url(#band-' + abbrev + size + ')" stroke="#4a555d" stroke-width="0.24"/>'
+                + '<rect x="3.02" y="7.02" width="13.96" height="14.1" rx="1.45" fill="url(#bottle-' + abbrev + size + ')" stroke="#1a1a1a" stroke-width="0.3"/>'
+                + '<rect x="3.2" y="7.18" width="13.6" height="13.74" rx="1.3" fill="url(#bottleSide-' + abbrev + size + ')" opacity="0.72"/>'
+                + '<rect x="4" y="8.95" width="12" height="8.65" rx="0.75" fill="url(#labelBand-' + abbrev + size + ')" stroke="#c8c0b2" stroke-width="0.12"/>'
+                + '<rect x="3.8" y="19.02" width="12.4" height="2.18" rx="0.7" fill="' + color + '" opacity="0.9"/>'
+                + '<rect x="4.05" y="7.7" width="0.95" height="12.8" rx="0.48" fill="#fff" opacity="0.78"/>'
+                + '<path d="M15.2 8.4c-0.52 4.3-0.4 7.4-0.02 10.6" stroke="#fff" stroke-width="0.22" opacity="0.28" stroke-linecap="round"/>'
+                + '<path d="M4.8 10.1h10.3" stroke="#d4ccbf" stroke-width="0.14"/>'
+                + '<path d="M4.8 15.8h10.3" stroke="#d4ccbf" stroke-width="0.14"/>'
+                + (size !== 'xs' ? '<text x="10" y="13.55" font-family="IBM Plex Mono, monospace" font-size="2.45" font-weight="600" fill="#1a1a1a" text-anchor="middle" letter-spacing="0.08">' + abbrev + '</text><text x="10" y="11.1" font-family="IBM Plex Mono, monospace" font-size="0.72" fill="#73808a" text-anchor="middle" letter-spacing="0.22">FP</text>' : '')
+                + '<rect x="6" y="18.3" width="2" height="1.05" rx="0.5" fill="' + color + '" opacity="0.62"/>'
+                + '<rect x="9" y="18.3" width="2" height="1.05" rx="0.5" fill="' + color + '" opacity="0.62"/>'
+                + '<rect x="12" y="18.3" width="2" height="1.05" rx="0.5" fill="' + color + '" opacity="0.62"/>'
                 + '</svg>';
         }
 
@@ -3255,9 +3760,12 @@ if (!localCounts[id]) localCounts[id] = 0;
         }
 
         function openAdminPanel() {
+            if (siteEditModeEnabled) stopSiteEditMode(true);
             document.getElementById('admin-panel').classList.remove('hidden');
             document.getElementById('admin-panel').classList.add('flex');
             renderAdminProductList();
+            renderEditableContentList();
+            updateSiteEditStatusUi();
             lucide.createIcons();
         }
 
@@ -3572,6 +4080,7 @@ if (!localCounts[id]) localCounts[id] = 0;
 
         // Load products from Supabase, then init the rest of the UI
         loadProducts();
+        loadSiteContent();
         // updateCartUI is called inside loadProducts after products are ready
 
         function adminAddProduct() {
@@ -3722,7 +4231,7 @@ if (!localCounts[id]) localCounts[id] = 0;
         // 10. Product reorder — move product up/down in sort_order
         // ---- Admin tab switching ----
         function switchAdminTab(tab) {
-            var tabs = ['products', 'orders', 'visitors'];
+            var tabs = ['products', 'orders', 'visitors', 'edit'];
             tabs.forEach(function(t) {
                 var btn = document.getElementById('admin-tab-' + t);
                 var section = document.getElementById('admin-section-' + t);
@@ -3735,6 +4244,10 @@ if (!localCounts[id]) localCounts[id] = 0;
                 if (section) section.style.display = isActive ? 'block' : 'none';
             });
             if (tab === 'orders') loadAdminOrders();
+            if (tab === 'edit') {
+                renderEditableContentList();
+                updateSiteEditStatusUi();
+            }
             if (tab === 'visitors') {
                 analyticsFirstLoad = true;
                 analyticsLastFingerprint = null;
