@@ -44,39 +44,62 @@
         }
     </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700;800&family=VT323&display=swap');
-       
-        * { cursor: cell !important; }
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --bg: #f7f5f0;
+            --surface: #fefcf8;
+            --surface-alt: #f2ede4;
+            --text: #171717;
+            --muted: #606773;
+            --line: #d9d4cb;
+            --accent: #5d7c91;
+            --accent-soft: #dce6ec;
+            --success: #2f6b4f;
+            --warning: #a56a2a;
+            --shadow-soft: 0 18px 38px rgba(23, 23, 23, 0.08);
+            --shadow-card: 0 12px 30px rgba(23, 23, 23, 0.07);
+            --radius-lg: 28px;
+            --radius-md: 20px;
+            --radius-sm: 14px;
+        }
+
+        .dark {
+            --bg: #111315;
+            --surface: #171a1d;
+            --surface-alt: #1e2226;
+            --text: #f3f1ec;
+            --muted: #a5acb5;
+            --line: #30343a;
+            --accent: #8fafc0;
+            --accent-soft: rgba(143, 175, 192, 0.18);
+            --success: #63a37e;
+            --warning: #c18a52;
+            --shadow-soft: 0 20px 44px rgba(0, 0, 0, 0.34);
+            --shadow-card: 0 14px 36px rgba(0, 0, 0, 0.32);
+        }
+
+        * { cursor: auto !important; }
         input, textarea, [contenteditable="true"] { cursor: text !important; }
         button, a, select, [onclick], .cursor-pointer { cursor: pointer !important; }
 
-        .scanlines {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.08) 50%),
-                linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 255, 0, 0.02));
-            background-size: 100% 4px, 3px 100%;
-            pointer-events: none; z-index: 100;
-        }
-        .dark .scanlines {
-            background: linear-gradient(rgba(245, 245, 220, 0) 50%, rgba(245, 245, 220, 0.03) 50%);
-            background-size: 100% 4px;
-        }
+        .scanlines { display: none; }
 
-        body { font-family: 'Space Grotesk', sans-serif; background-color: #F5F5DC; color: #1C1C16; transition: background-color 0.3s, color 0.3s; }
-        .dark body { background-color: #0F0F0F; color: #F5F5DC; }
-        .dark nav { background-color: #0F0F0F; border-color: rgba(245, 245, 220, 0.2); }
-        .dark .bg-white { background-color: #1A1A1A; color: #F5F5DC; border-color: #F5F5DC; }
-        .dark .product-card:hover { background-color: #252525; box-shadow: 8px 8px 0px 0px rgba(245, 245, 220, 0.25); }
-        .product-card { transition: box-shadow 0.15s ease, transform 0.15s ease, background-color 0.15s ease; }
-        .product-card:hover { box-shadow: 8px 8px 0px 0px rgba(28,28,22,1); transform: translate(-2px,-2px); }
-        .dark .text-beige-800 { color: #D1D1D1; }
-        .dark .nav-link::after { background: #F5F5DC; }
-        .dark .bg-beige-950 { background-color: #F5F5DC; color: #0F0F0F; }
-        .dark .bg-beige-100 { background-color: #1A1A1A; border-color: #F5F5DC; }
-        .dark footer { border-color: rgba(245, 245, 220, 0.2); }
-        .dark #cart-sidebar { background-color: #0F0F0F; border-left-color: #F5F5DC; }
-
-        .pixel-font { font-family: 'VT323', monospace; }
+        html { background: var(--bg); }
+        body {
+            font-family: 'Manrope', sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(220, 230, 236, 0.65), transparent 32%),
+                linear-gradient(180deg, rgba(255, 255, 255, 0.5), transparent 22%),
+                var(--bg);
+            color: var(--text);
+            transition: background-color 0.3s, color 0.3s;
+            letter-spacing: -0.01em;
+        }
+        .pixel-font {
+            font-family: 'IBM Plex Mono', monospace;
+            letter-spacing: 0.02em;
+        }
         .page-section { display: none; }
         .page-section.active { display: block; animation: pageEnter 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
         @keyframes pageEnter { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
@@ -162,11 +185,19 @@
             #mobile-search-sticky input { box-shadow: none !important; font-size: 1rem !important; padding: 0.6rem 1rem !important; }
         }
 
-        .nav-link { position: relative; font-weight: 700; letter-spacing: 0.1em; }
-        .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0%; height: 2px; background: #1C1C16; transition: width 0.3s; }
+        .nav-link {
+            position: relative;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            font-size: 0.76rem;
+            color: var(--muted);
+            transition: color 0.2s ease, opacity 0.2s ease;
+        }
+        .nav-link::after { content: ''; position: absolute; bottom: -6px; left: 0; width: 0%; height: 1px; background: var(--text); transition: width 0.24s ease; }
         .nav-link:hover::after { width: 100%; }
+        .nav-link:hover, .nav-link.nav-active { color: var(--text); opacity: 1; }
 
-        svg { image-rendering: pixelated; shape-rendering: crispEdges; }
+        svg { image-rendering: auto; shape-rendering: geometricPrecision; }
 
         .email-suggestion-box { display: none; position: absolute; z-index: 110; width: 100%; background: #fff; border: 2px solid #1C1C16; margin-top: -1px; }
         .dark .email-suggestion-box { background: #1A1A1A; border-color: #F5F5DC; }
@@ -399,6 +430,404 @@
         @media (max-width: 1023px) {
             #mobile-menu.open { display: flex; }
         }
+
+        nav,
+        footer,
+        #mobile-nav,
+        #mobile-menu,
+        #cart-sidebar,
+        #order-success > div > div,
+        #order-tracking .bg-white,
+        #crypto-checkout .bg-white,
+        #order-page .bg-white,
+        #product-detail .bg-white,
+        #peptides .bg-white,
+        #contact .bg-white,
+        #bespoke .bg-white,
+        #lab-testing .bg-white,
+        #admin-gate > div {
+            backdrop-filter: blur(18px);
+        }
+
+        nav {
+            background: rgba(247, 245, 240, 0.84) !important;
+            border-bottom: 1px solid var(--line) !important;
+        }
+        .dark nav { background: rgba(17, 19, 21, 0.86) !important; }
+        footer {
+            background: linear-gradient(180deg, rgba(93, 124, 145, 0.08), transparent 30%), var(--surface) !important;
+            color: var(--text) !important;
+            border-top: 1px solid var(--line) !important;
+        }
+        .dark footer { background: linear-gradient(180deg, rgba(143, 175, 192, 0.08), transparent 30%), var(--surface) !important; }
+
+        .bg-white,
+        .dark .bg-white,
+        .dark .bg-beige-100,
+        .dark .bg-zinc-900,
+        .dark .bg-zinc-800,
+        .dark .bg-zinc-800\/50 {
+            background: var(--surface) !important;
+            color: var(--text) !important;
+            border-color: var(--line) !important;
+        }
+
+        .bg-beige-950,
+        .dark .bg-beige-950 {
+            background: var(--text) !important;
+            color: var(--surface) !important;
+        }
+        .bg-beige-100 {
+            background: var(--surface-alt) !important;
+            color: var(--text) !important;
+            border-color: var(--line) !important;
+        }
+        .text-beige-800,
+        .dark .text-beige-800,
+        .text-beige-200,
+        .dark .text-beige-200 {
+            color: var(--muted) !important;
+        }
+
+        .product-card,
+        #order-tracking .bg-white,
+        #crypto-checkout .bg-white,
+        #order-page .bg-white,
+        #cart-sidebar,
+        .shipping-label,
+        #order-success > div > div {
+            border: 1px solid var(--line) !important;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-card) !important;
+        }
+
+        .product-card {
+            background: linear-gradient(180deg, rgba(255,255,255,0.75), rgba(255,255,255,0.9)), var(--surface) !important;
+            transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+        }
+        .dark .product-card {
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)), var(--surface) !important;
+        }
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 24px 48px rgba(23, 23, 23, 0.12) !important;
+            border-color: rgba(93, 124, 145, 0.5) !important;
+        }
+
+        button,
+        select,
+        input,
+        textarea {
+            border-radius: 14px;
+        }
+
+        input,
+        select,
+        textarea {
+            font-family: 'Manrope', sans-serif !important;
+            color: var(--text) !important;
+            border-color: var(--line) !important;
+        }
+
+        input::placeholder,
+        textarea::placeholder { color: var(--muted); opacity: 0.75; }
+
+        .shipping-label {
+            background: var(--surface);
+            padding: 1.1rem 1.2rem;
+        }
+        .shipping-label:hover { background: var(--surface-alt); }
+        .shipping-badge {
+            border-radius: 999px;
+            top: 12px;
+            right: 12px;
+            background: var(--accent);
+            font-size: 12px;
+        }
+
+        #home .inline-flex,
+        #home .border-2,
+        #home .border-b-4,
+        #home .border-t-4,
+        #home .border-r-2,
+        #home .border-t-2,
+        #home .border-b-2,
+        #peptides .border-2,
+        #product-detail .border-2,
+        #order-page .border-2,
+        #crypto-checkout .border-2,
+        #order-tracking .border-2,
+        #order-tracking .border-4,
+        #crypto-checkout .border-4,
+        #order-page .border-4,
+        #cart-sidebar .border-t-2 {
+            border-color: var(--line) !important;
+            border-width: 1px !important;
+        }
+
+        #home section:first-child {
+            border-bottom: 1px solid var(--line) !important;
+            background:
+                radial-gradient(circle at 80% 20%, rgba(93, 124, 145, 0.10), transparent 26%),
+                linear-gradient(180deg, rgba(255,255,255,0.66), rgba(255,255,255,0.24)),
+                transparent;
+        }
+
+        #home h1,
+        #peptides h2,
+        #product-detail h2,
+        #lab-testing h2,
+        #bespoke h2,
+        #contact h2,
+        #order-page h2,
+        #crypto-checkout h2,
+        #order-tracking h2 {
+            letter-spacing: -0.05em !important;
+            text-transform: none !important;
+        }
+
+        #home h3,
+        #peptides h3,
+        #order-tracking h3 {
+            text-transform: none !important;
+            letter-spacing: -0.03em !important;
+        }
+
+        #home .ticker-track {
+            font-size: 0.82rem !important;
+            letter-spacing: 0.12em;
+        }
+
+        #home .max-w-7xl .p-8.text-center,
+        #home .grid.md\:grid-cols-3 > div {
+            background: var(--surface);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-card);
+        }
+
+        #cart-sidebar {
+            background: rgba(254, 252, 248, 0.94) !important;
+            border-left: 1px solid var(--line) !important;
+        }
+        .dark #cart-sidebar { background: rgba(23, 26, 29, 0.96) !important; }
+
+        #mobile-nav {
+            background: rgba(254, 252, 248, 0.95) !important;
+            border-top: 1px solid var(--line) !important;
+            backdrop-filter: blur(18px);
+        }
+        .dark #mobile-nav { background: rgba(23, 26, 29, 0.96) !important; }
+        #mobile-nav button.active-nav {
+            background: transparent !important;
+            color: var(--text) !important;
+            box-shadow: inset 0 -2px 0 var(--accent);
+        }
+
+        .premium-note {
+            color: var(--muted);
+            font-size: 0.96rem;
+            line-height: 1.7;
+        }
+
+        @keyframes driftFloat {
+            0%, 100% { transform: translate3d(0, 0, 0); }
+            50% { transform: translate3d(0, -10px, 0); }
+        }
+        @keyframes fadeLift {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes sheenSweep {
+            0% { transform: translateX(-120%); opacity: 0; }
+            40% { opacity: 0.65; }
+            100% { transform: translateX(120%); opacity: 0; }
+        }
+
+        .section-shell {
+            position: relative;
+            overflow: hidden;
+        }
+        .section-shell::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0.9;
+        }
+        .section-shell > * { position: relative; z-index: 1; }
+        .section-home::before {
+            background:
+                radial-gradient(circle at 10% 20%, rgba(93,124,145,0.12), transparent 22%),
+                radial-gradient(circle at 88% 14%, rgba(255,255,255,0.78), transparent 24%),
+                linear-gradient(180deg, rgba(255,255,255,0.55), transparent 28%);
+        }
+        .section-catalog::before {
+            background:
+                linear-gradient(rgba(93,124,145,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(93,124,145,0.05) 1px, transparent 1px),
+                radial-gradient(circle at top right, rgba(220,230,236,0.55), transparent 28%);
+            background-size: 44px 44px, 44px 44px, auto;
+        }
+        .section-lab::before {
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.62), rgba(255,255,255,0.16)),
+                radial-gradient(circle at 90% 20%, rgba(93,124,145,0.1), transparent 25%);
+        }
+        .section-bespoke::before {
+            background:
+                radial-gradient(circle at 70% 15%, rgba(93,124,145,0.18), transparent 26%),
+                linear-gradient(135deg, rgba(23,23,23,0.03), transparent 40%);
+        }
+        .section-contact::before {
+            background:
+                radial-gradient(circle at 20% 20%, rgba(220,230,236,0.65), transparent 26%),
+                linear-gradient(180deg, rgba(255,255,255,0.46), transparent 32%);
+        }
+        .dark .section-home::before,
+        .dark .section-catalog::before,
+        .dark .section-lab::before,
+        .dark .section-bespoke::before,
+        .dark .section-contact::before {
+            opacity: 0.6;
+            filter: saturate(0.8);
+        }
+
+        .signature-frame {
+            position: relative;
+            overflow: hidden;
+        }
+        .signature-frame::before {
+            content: "";
+            position: absolute;
+            inset: 14px;
+            border: 1px solid rgba(93,124,145,0.18);
+            border-radius: calc(var(--radius-lg) - 8px);
+            pointer-events: none;
+        }
+        .signature-frame::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            left: 32px;
+            background: linear-gradient(180deg, transparent, rgba(93,124,145,0.24), transparent);
+            pointer-events: none;
+        }
+
+        .hero-cinema {
+            position: relative;
+            min-height: 420px;
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(93,124,145,0.16);
+            background:
+                linear-gradient(135deg, rgba(254,252,248,0.92), rgba(242,237,228,0.72)),
+                var(--surface);
+        }
+        .dark .hero-cinema {
+            background:
+                linear-gradient(135deg, rgba(23,26,29,0.98), rgba(30,34,38,0.9)),
+                var(--surface);
+        }
+        .hero-cinema .hero-photo {
+            position: absolute;
+            object-fit: cover;
+            filter: grayscale(0.12) contrast(1.02) saturate(0.9);
+            border-radius: 22px;
+            box-shadow: var(--shadow-card);
+            border: 1px solid rgba(255,255,255,0.35);
+        }
+        .hero-cinema .hero-photo-main {
+            right: 28px;
+            top: 28px;
+            width: 52%;
+            height: 55%;
+        }
+        .hero-cinema .hero-photo-secondary {
+            left: 28px;
+            bottom: 28px;
+            width: 42%;
+            height: 32%;
+            opacity: 0.9;
+        }
+        .hero-cinema .hero-glass {
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(115deg, rgba(255,255,255,0.42), rgba(255,255,255,0.02) 34%, transparent 58%),
+                radial-gradient(circle at top left, rgba(255,255,255,0.42), transparent 30%);
+            pointer-events: none;
+        }
+        .hero-cinema .hero-badge {
+            position: absolute;
+            right: 28px;
+            bottom: 28px;
+            max-width: 42%;
+            padding: 1rem 1.1rem;
+            border-radius: 18px;
+            background: rgba(254,252,248,0.84);
+            border: 1px solid rgba(93,124,145,0.18);
+            box-shadow: var(--shadow-card);
+            backdrop-filter: blur(14px);
+        }
+        .dark .hero-cinema .hero-badge { background: rgba(23,26,29,0.82); }
+
+        .editorial-panel {
+            border-radius: 30px;
+            border: 1px solid rgba(93,124,145,0.14);
+            box-shadow: var(--shadow-soft);
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.72), rgba(255,255,255,0.92)),
+                var(--surface);
+        }
+        .dark .editorial-panel {
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)),
+                var(--surface);
+        }
+        .editorial-panel.reveal,
+        .product-card,
+        #order-tracking .bg-white,
+        #crypto-checkout .bg-white,
+        #order-page .bg-white {
+            animation: fadeLift 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .glow-chip {
+            position: relative;
+            overflow: hidden;
+        }
+        .glow-chip::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(105deg, transparent 28%, rgba(255,255,255,0.65) 50%, transparent 72%);
+            animation: sheenSweep 5.2s ease-in-out infinite;
+        }
+
+        .lab-doc,
+        .contact-card,
+        .bespoke-card {
+            position: relative;
+        }
+        .lab-doc::before,
+        .contact-card::before,
+        .bespoke-card::before {
+            content: "";
+            position: absolute;
+            inset: 12px;
+            border: 1px solid rgba(93,124,145,0.12);
+            border-radius: 24px;
+            pointer-events: none;
+        }
+
+        .icon-unify i,
+        .icon-unify svg,
+        .section-shell i {
+            stroke-width: 1.75 !important;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -414,19 +843,19 @@
                     <rect x="5" y="1" width="6" height="3" fill="#1C1C16" stroke="#1C1C16" stroke-width="0.3"/>
                 </svg>
             </div>
-            <h1 class="pixel-font text-6xl font-black uppercase tracking-tighter mb-2">FuturePharma</h1>
+            <h1 class="text-5xl font-black tracking-tight mb-2">FuturePharma</h1>
             <div class="w-full h-0.5 bg-beige-950 mb-8"></div>
-            <p class="pixel-font text-3xl uppercase font-bold mb-2">Age Verification</p>
+            <p class="pixel-font text-sm uppercase font-bold mb-3 tracking-[0.2em] opacity-60">Age verification</p>
             <p class="text-beige-800 mb-10 leading-relaxed">This website contains information about research compounds intended for laboratory use. You must be 21 or older to enter.</p>
             <div class="space-y-3">
-                <button onclick="ageClear()" class="w-full bg-beige-950 text-beige-50 py-5 pixel-font text-2xl font-black uppercase tracking-widest hover:invert transition-all">
-                    I am 21 or older — Enter
+                <button onclick="ageClear()" class="w-full bg-beige-950 text-beige-50 py-5 font-semibold tracking-wide rounded-full transition-all">
+                    I am 21 or older
                 </button>
-                <button onclick="ageDeny()" class="w-full border-2 border-beige-950 py-5 pixel-font text-2xl font-bold uppercase tracking-widest hover:bg-beige-200 transition-all">
-                    I am under 21 — Exit
+                <button onclick="ageDeny()" class="w-full border-2 border-beige-950 py-5 font-semibold tracking-wide rounded-full transition-all">
+                    I am under 21
                 </button>
             </div>
-            <p class="pixel-font text-sm opacity-40 mt-8 uppercase">By entering you confirm you are 21+ and agree to our terms of use.</p>
+            <p class="pixel-font text-xs opacity-40 mt-8 uppercase tracking-[0.16em]">By entering you confirm you are 21+ and agree to our terms of use.</p>
         </div>
     </div>
 
@@ -444,16 +873,19 @@
                             <rect x="5" y="1" width="6" height="3" fill="#1C1C16" stroke="#1C1C16" stroke-width="0.3" class="dark:fill-beige-100 group-hover:animate-capLift origin-bottom-left" />
                         </svg>
                     </div>
-                    <span class="text-5xl font-extrabold tracking-tighter uppercase pixel-font">FuturePharma</span>
+                    <div>
+                        <span class="text-4xl font-extrabold tracking-tight">FuturePharma</span>
+                        <p class="pixel-font text-[11px] uppercase opacity-50 tracking-[0.24em]">Research Supply Atelier</p>
+                    </div>
                 </div>
                
-                <div class="hidden lg:flex space-x-8 items-center text-[18px] font-bold tracking-[0.15em] pixel-font">
-                    <button onclick="showPage('home')" class="nav-link">HOME</button>
-                    <button onclick="showPage('peptides')" class="nav-link">PEPTIDES</button>
-                    <button onclick="showPage('lab-testing')" class="nav-link">LAB TESTING</button>
-                    <button onclick="showPage('bespoke')" class="nav-link">BESPOKE</button>
-                    <button onclick="showPage('contact')" class="nav-link">CONTACT</button>
-                    <button onclick="if(cart&&cart.length>0){showPage('order-page')}else{showCartEmptyNotice()}" class="bg-beige-950 text-beige-100 px-6 py-2 rounded-sm hover:invert transition-all">ORDER NOW</button>
+                <div class="hidden lg:flex space-x-8 items-center pixel-font">
+                    <button onclick="showPage('home')" class="nav-link">Home</button>
+                    <button onclick="showPage('peptides')" class="nav-link">Catalog</button>
+                    <button onclick="showPage('lab-testing')" class="nav-link">Lab Reports</button>
+                    <button onclick="showPage('bespoke')" class="nav-link">Custom Projects</button>
+                    <button onclick="showPage('contact')" class="nav-link">Support</button>
+                    <button onclick="if(cart&&cart.length>0){showPage('order-page')}else{showCartEmptyNotice()}" class="bg-beige-950 text-beige-100 px-6 py-3 rounded-full transition-all pixel-font text-xs tracking-[0.18em] uppercase">Start Order</button>
                 </div>
 
                 <div class="flex items-center gap-6">
@@ -479,7 +911,7 @@
 
     <div class="flex-grow">
         <!-- HOME -->
-        <main id="home" class="page-section active pb-20" style="padding-top: 96px;">
+        <main id="home" class="page-section active pb-20 section-shell section-home icon-unify" style="padding-top: 96px;">
 
             <!-- HERO -->
             <section class="relative overflow-hidden border-b-4 border-beige-950 dark:border-beige-100">
@@ -488,20 +920,62 @@
 
                 <div class="max-w-7xl mx-auto px-6 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center relative z-10">
                     <div>
-                        <div class="inline-flex items-center gap-2 border-2 border-beige-950 dark:border-beige-100 px-4 py-1 mb-6">
+                        <div class="inline-flex items-center gap-2 border-2 border-beige-950 dark:border-beige-100 px-4 py-2 mb-6 rounded-full bg-white/70">
                             <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                            <span class="pixel-font text-base uppercase tracking-widest">In Stock · Ships Globally</span>
+                            <span class="pixel-font text-xs uppercase tracking-[0.22em]">Batch verified and ready to dispatch worldwide</span>
                         </div>
-                        <h1 class="text-6xl md:text-8xl font-extrabold mb-6 tracking-tighter leading-none">The Future<br>of Peptide<br><span style="position:relative;display:inline-block;">Research<span style="position:absolute;bottom:-4px;left:0;right:0;height:4px;background:#1C1C16;" class="dark:bg-beige-100"></span></span></h1>
-                        <p class="text-lg text-beige-800 dark:text-beige-200 max-w-md mb-10 pixel-font leading-relaxed">Precision compounds for international laboratories. HPLC-verified 99%+ purity. Third-party tested. Delivered worldwide.</p>
+                        <h1 class="text-6xl md:text-8xl font-extrabold mb-6 tracking-tighter leading-none">Precision peptides for exacting research programs.</h1>
+                        <p class="text-lg text-beige-800 dark:text-beige-200 max-w-xl mb-10 leading-relaxed premium-note">FuturePharma pairs boutique presentation with disciplined lab standards: third-party purity verification, documented handling, global delivery options, and support built for repeat institutional workflows.</p>
                         <div class="flex flex-col sm:flex-row gap-3">
-                            <button onclick="showPage('peptides')" class="bg-beige-950 dark:bg-beige-100 text-beige-50 dark:text-beige-950 px-10 py-4 font-bold uppercase tracking-widest hover:invert transition pixel-font text-xl">Browse Catalog</button>
-                            <button onclick="showPage('lab-testing')" class="bg-transparent border-2 border-beige-950 dark:border-beige-100 px-10 py-4 font-bold uppercase tracking-widest hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950 transition pixel-font text-xl">View Lab Reports</button>
+                            <button onclick="showPage('peptides')" class="bg-beige-950 dark:bg-beige-100 text-beige-50 dark:text-beige-950 px-10 py-4 font-semibold tracking-wide transition text-base rounded-full">Browse catalog</button>
+                            <button onclick="showPage('lab-testing')" class="bg-transparent border-2 border-beige-950 dark:border-beige-100 px-10 py-4 font-semibold tracking-wide transition text-base rounded-full">Review lab reports</button>
+                        </div>
+                        <div class="grid sm:grid-cols-3 gap-4 mt-10">
+                            <div class="bg-white/80 p-4 rounded-2xl border border-beige-950/10">
+                                <p class="pixel-font text-[11px] uppercase tracking-[0.2em] opacity-55 mb-2">Purity standard</p>
+                                <p class="text-2xl font-bold">99%+ HPLC verified</p>
+                            </div>
+                            <div class="bg-white/80 p-4 rounded-2xl border border-beige-950/10">
+                                <p class="pixel-font text-[11px] uppercase tracking-[0.2em] opacity-55 mb-2">Dispatch options</p>
+                                <p class="text-2xl font-bold">Standard and express</p>
+                            </div>
+                            <div class="bg-white/80 p-4 rounded-2xl border border-beige-950/10">
+                                <p class="pixel-font text-[11px] uppercase tracking-[0.2em] opacity-55 mb-2">Support cadence</p>
+                                <p class="text-2xl font-bold">Clear post-order updates</p>
+                            </div>
+                        </div>
+                        <div class="grid sm:grid-cols-4 gap-3 mt-4">
+                            <div class="bg-white/80 p-4 rounded-2xl border border-beige-950/10 text-left">
+                                <p class="pixel-font text-[11px] uppercase tracking-[0.2em] opacity-55 mb-2">What</p>
+                                <p class="text-sm font-semibold">Research compounds, support items, and custom sourcing.</p>
+                            </div>
+                            <div class="bg-white/80 p-4 rounded-2xl border border-beige-950/10 text-left">
+                                <p class="pixel-font text-[11px] uppercase tracking-[0.2em] opacity-55 mb-2">Who</p>
+                                <p class="text-sm font-semibold">Built for lab-style procurement and repeat ordering workflows.</p>
+                            </div>
+                            <div class="bg-white/80 p-4 rounded-2xl border border-beige-950/10 text-left">
+                                <p class="pixel-font text-[11px] uppercase tracking-[0.2em] opacity-55 mb-2">Quality</p>
+                                <p class="text-sm font-semibold">Purity reporting and handling details surfaced throughout the journey.</p>
+                            </div>
+                            <div class="bg-white/80 p-4 rounded-2xl border border-beige-950/10 text-left">
+                                <p class="pixel-font text-[11px] uppercase tracking-[0.2em] opacity-55 mb-2">Flow</p>
+                                <p class="text-sm font-semibold">Browse, inspect, order, pay, then track from one reference code.</p>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Animated vial cluster — synchronized sway via CSS -->
-                    <div class="flex justify-center items-end gap-4 md:gap-6 h-64 md:h-80" id="hero-vials">
+                    <!-- Cinematic research collage -->
+                    <div class="hero-cinema signature-frame reveal">
+                        <img src="krause mt1.jpg" alt="Lab verification report" class="hero-photo hero-photo-main" />
+                        <img src="bt rt1.jpg" alt="Research document detail" class="hero-photo hero-photo-secondary" />
+                        <div class="hero-glass"></div>
+                        <div class="hero-badge glow-chip">
+                            <p class="pixel-font text-[11px] uppercase tracking-[0.18em] opacity-55 mb-2">Current release language</p>
+                            <p class="text-lg font-semibold leading-snug">Boutique research supply, presented with a more editorial and technical visual rhythm.</p>
+                        </div>
+                    </div>
+                    <div class="absolute opacity-0 pointer-events-none">.</div>
+                    <div class="flex justify-center items-end gap-4 md:gap-6 h-64 md:h-80 hidden" id="hero-vials">
                         <div style="margin-bottom:0px;">
                             <svg viewBox="0 0 16 20" class="w-16 h-16 md:w-20 md:h-20" xmlns="http://www.w3.org/2000/svg">
                                 <rect x="5" y="1" width="6" height="3" fill="#333" stroke="#1C1C16" stroke-width="0.3"/>
@@ -564,20 +1038,18 @@
             <!-- STATS TICKER -->
             <div class="border-b-4 border-beige-950 dark:border-beige-100 overflow-hidden bg-beige-950 dark:bg-beige-100" style="height:44px;">
                 <div class="ticker-track pixel-font text-beige-50 dark:text-beige-950 text-xl uppercase flex items-center h-full gap-12" style="white-space:nowrap;display:flex;animation:tickerScroll 28s linear infinite;width:max-content;">
-                    <span>✦ HPLC Verified 99%+ Purity</span>
-                    <span>✦ Third-Party Lab Tested</span>
-                    <span>✦ Global Shipping Available</span>
-                    <span>✦ Customs Clearance Guarantee</span>
-                    <span>✦ Crypto Payments Only</span>
-                    <span>✦ Express Delivery 5 Days</span>
-                    <span>✦ Research Grade Compounds</span>
-                    <span>✦ HPLC Verified 99%+ Purity</span>
-                    <span>✦ Third-Party Lab Tested</span>
-                    <span>✦ Global Shipping Available</span>
-                    <span>✦ Customs Clearance Guarantee</span>
-                    <span>✦ Crypto Payments Only</span>
-                    <span>✦ Express Delivery 5 Days</span>
-                    <span>✦ Research Grade Compounds</span>
+                    <span>Batch-specific verification published</span>
+                    <span>Private-lab presentation with global fulfillment</span>
+                    <span>Express options for eligible compounds</span>
+                    <span>Institution-ready custom sourcing</span>
+                    <span>Crypto settlement across BTC, ETH, USDT, LTC</span>
+                    <span>Structured support from inquiry to delivery</span>
+                    <span>Batch-specific verification published</span>
+                    <span>Private-lab presentation with global fulfillment</span>
+                    <span>Express options for eligible compounds</span>
+                    <span>Institution-ready custom sourcing</span>
+                    <span>Crypto settlement across BTC, ETH, USDT, LTC</span>
+                    <span>Structured support from inquiry to delivery</span>
                 </div>
             </div>
 
@@ -603,51 +1075,118 @@
                 </div>
             </div>
 
+            <div class="max-w-7xl mx-auto px-6 py-10">
+                <div class="editorial-panel p-6 md:p-8">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                        <div>
+                            <p class="pixel-font text-xs uppercase tracking-[0.2em] opacity-50 mb-2">Recommended path</p>
+                            <h3 class="text-2xl md:text-3xl font-black tracking-tight">Browse the catalog, inspect the product sheet, build your order, confirm payment, then monitor delivery from one reference.</h3>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-5 gap-3 text-sm">
+                            <div class="p-4 rounded-2xl bg-beige-50 border border-beige-950/10"><span class="pixel-font text-[11px] uppercase opacity-50">1</span><p class="font-semibold mt-1">Browse</p></div>
+                            <div class="p-4 rounded-2xl bg-beige-50 border border-beige-950/10"><span class="pixel-font text-[11px] uppercase opacity-50">2</span><p class="font-semibold mt-1">Inspect</p></div>
+                            <div class="p-4 rounded-2xl bg-beige-50 border border-beige-950/10"><span class="pixel-font text-[11px] uppercase opacity-50">3</span><p class="font-semibold mt-1">Order</p></div>
+                            <div class="p-4 rounded-2xl bg-beige-50 border border-beige-950/10"><span class="pixel-font text-[11px] uppercase opacity-50">4</span><p class="font-semibold mt-1">Pay</p></div>
+                            <div class="p-4 rounded-2xl bg-beige-50 border border-beige-950/10"><span class="pixel-font text-[11px] uppercase opacity-50">5</span><p class="font-semibold mt-1">Track</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- TRUST FEATURES -->
             <div class="max-w-7xl mx-auto px-6 py-16 md:py-20">
-                <p class="pixel-font text-sm uppercase tracking-widest opacity-40 mb-12 text-center">Why Researchers Choose FuturePharma</p>
+                <p class="pixel-font text-sm uppercase tracking-widest opacity-40 mb-12 text-center">Why teams stay with FuturePharma</p>
                 <div class="grid md:grid-cols-3 gap-6">
                     <div class="border-2 border-beige-950 dark:border-beige-100 p-8 hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(245,245,220,0.3)] transition-all bg-white dark:bg-zinc-900 group">
                         <div class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 flex items-center justify-center mb-6 group-hover:bg-beige-950 group-hover:text-white dark:group-hover:bg-beige-100 dark:group-hover:text-beige-950 transition-colors">
                             <i data-lucide="shield-check" class="w-6 h-6"></i>
                         </div>
-                        <h3 class="text-xl font-black uppercase tracking-tighter mb-3">Customs Guarantee</h3>
-                        <p class="text-beige-800 dark:text-beige-200 leading-relaxed text-sm">Every shipment is packaged using methods designed to ensure successful delivery. Seized shipments are reshipped or fully refunded — no questions asked.</p>
+                        <h3 class="text-2xl font-black tracking-tighter mb-3">Discreet fulfillment</h3>
+                        <p class="text-beige-800 dark:text-beige-200 leading-relaxed text-sm">Shipment handling is designed for consistency and clarity, with reship or refund protection when delivery fails.</p>
                     </div>
                     <div class="border-2 border-beige-950 dark:border-beige-100 p-8 hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(245,245,220,0.3)] transition-all bg-white dark:bg-zinc-900 group">
                         <div class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 flex items-center justify-center mb-6 group-hover:bg-beige-950 group-hover:text-white dark:group-hover:bg-beige-100 dark:group-hover:text-beige-950 transition-colors">
                             <i data-lucide="microscope" class="w-6 h-6"></i>
                         </div>
-                        <h3 class="text-xl font-black uppercase tracking-tighter mb-3">Third-Party Verified</h3>
-                        <p class="text-beige-800 dark:text-beige-200 leading-relaxed text-sm">All compounds are independently tested by certified laboratories. Full HPLC reports are published for every active batch — fully transparent, fully verified.</p>
+                        <h3 class="text-2xl font-black tracking-tighter mb-3">Documented quality</h3>
+                        <p class="text-beige-800 dark:text-beige-200 leading-relaxed text-sm">Every active batch is paired with third-party purity data so procurement teams can review before committing.</p>
                     </div>
                     <div class="border-2 border-beige-950 dark:border-beige-100 p-8 hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(245,245,220,0.3)] transition-all bg-white dark:bg-zinc-900 group">
                         <div class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 flex items-center justify-center mb-6 group-hover:bg-beige-950 group-hover:text-white dark:group-hover:bg-beige-100 dark:group-hover:text-beige-950 transition-colors">
                             <i data-lucide="zap" class="w-6 h-6"></i>
                         </div>
-                        <h3 class="text-xl font-black uppercase tracking-tighter mb-3">Express Shipping</h3>
-                        <p class="text-beige-800 dark:text-beige-200 leading-relaxed text-sm">Standard global delivery in 3 weeks, or upgrade to express for delivery in as little as 5 days. Choose your timeline at checkout.</p>
+                        <h3 class="text-2xl font-black tracking-tighter mb-3">Flexible delivery cadence</h3>
+                        <p class="text-beige-800 dark:text-beige-200 leading-relaxed text-sm">Choose standard global delivery or faster fulfillment for compounds that qualify for express handling.</p>
                     </div>
                     <div class="border-2 border-beige-950 dark:border-beige-100 p-8 hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(245,245,220,0.3)] transition-all bg-white dark:bg-zinc-900 group">
                         <div class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 flex items-center justify-center mb-6 group-hover:bg-beige-950 group-hover:text-white dark:group-hover:bg-beige-100 dark:group-hover:text-beige-950 transition-colors">
                             <i data-lucide="flask-conical" class="w-6 h-6"></i>
                         </div>
-                        <h3 class="text-xl font-black uppercase tracking-tighter mb-3">Bespoke Synthesis</h3>
-                        <p class="text-beige-800 dark:text-beige-200 leading-relaxed text-sm">Need a peptide not in our catalog? Submit a custom sequence request. We synthesize to order with full verification reports and bulk pricing available.</p>
+                        <h3 class="text-2xl font-black tracking-tighter mb-3">Custom sourcing</h3>
+                        <p class="text-beige-800 dark:text-beige-200 leading-relaxed text-sm">Request sequences outside the core catalog and we will scope feasibility, verification, and volume pricing directly with you.</p>
                     </div>
                     <div class="border-2 border-beige-950 dark:border-beige-100 p-8 hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(245,245,220,0.3)] transition-all bg-white dark:bg-zinc-900 group">
                         <div class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 flex items-center justify-center mb-6 group-hover:bg-beige-950 group-hover:text-white dark:group-hover:bg-beige-100 dark:group-hover:text-beige-950 transition-colors">
                             <i data-lucide="wallet" class="w-6 h-6"></i>
                         </div>
-                        <h3 class="text-xl font-black uppercase tracking-tighter mb-3">Crypto Payments</h3>
-                        <p class="text-beige-800 dark:text-beige-200 leading-relaxed text-sm">We accept BTC, ETH, USDT, and LTC. Fast, borderless, and without traditional banking friction. Ideal for international research institutions.</p>
+                        <h3 class="text-2xl font-black tracking-tighter mb-3">International settlement</h3>
+                        <p class="text-beige-800 dark:text-beige-200 leading-relaxed text-sm">Crypto payment options keep ordering straightforward for international buyers working outside traditional banking rails.</p>
                     </div>
                     <div class="border-2 border-beige-950 dark:border-beige-100 p-8 hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(245,245,220,0.3)] transition-all bg-white dark:bg-zinc-900 group">
                         <div class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 flex items-center justify-center mb-6 group-hover:bg-beige-950 group-hover:text-white dark:group-hover:bg-beige-100 dark:group-hover:text-beige-950 transition-colors">
                             <i data-lucide="trending-down" class="w-6 h-6"></i>
                         </div>
-                        <h3 class="text-xl font-black uppercase tracking-tighter mb-3">Volume Pricing</h3>
-                        <p class="text-beige-800 dark:text-beige-200 leading-relaxed text-sm">The more you order, the less you pay per unit. Tiered pricing automatically applies at checkout — no codes, no negotiations required.</p>
+                        <h3 class="text-2xl font-black tracking-tighter mb-3">Volume economics</h3>
+                        <p class="text-beige-800 dark:text-beige-200 leading-relaxed text-sm">Tiered pricing is surfaced clearly so repeat buyers can plan larger runs without back-and-forth negotiation.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-6 pb-20">
+                <div class="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 items-start">
+                    <div class="bg-white p-10 rounded-[28px] border border-beige-950/10 shadow-[0_18px_38px_rgba(23,23,23,0.08)] editorial-panel signature-frame reveal">
+                        <p class="pixel-font text-xs uppercase tracking-[0.22em] opacity-50 mb-4">Support and assurance</p>
+                        <h2 class="text-4xl md:text-5xl font-black tracking-tight mb-5">A calmer research storefront, backed by clearer operating detail.</h2>
+                        <p class="premium-note mb-8">We redesigned the experience around trust cues that serious buyers actually care about: cleaner reading rhythm, transparent shipping choices, softer form flows, documented verification, and an order journey that feels monitored rather than improvised.</p>
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div class="p-5 rounded-2xl bg-beige-50 border border-beige-950/10">
+                                <p class="pixel-font text-xs uppercase tracking-[0.2em] opacity-50 mb-2">FAQ</p>
+                                <p class="font-semibold mb-2">How quickly do you respond?</p>
+                                <p class="premium-note text-sm">General support and custom inquiries are typically acknowledged within one business day.</p>
+                            </div>
+                            <div class="p-5 rounded-2xl bg-beige-50 border border-beige-950/10">
+                                <p class="pixel-font text-xs uppercase tracking-[0.2em] opacity-50 mb-2">Verification</p>
+                                <p class="font-semibold mb-2">What documentation is provided?</p>
+                                <p class="premium-note text-sm">Active batches are paired with HPLC reporting, and custom projects can be quoted with verification expectations up front.</p>
+                            </div>
+                            <div class="p-5 rounded-2xl bg-beige-50 border border-beige-950/10">
+                                <p class="pixel-font text-xs uppercase tracking-[0.2em] opacity-50 mb-2">Shipping</p>
+                                <p class="font-semibold mb-2">What are the fulfillment options?</p>
+                                <p class="premium-note text-sm">Standard global shipping remains available for all orders, while express options appear only when product handling allows it.</p>
+                            </div>
+                            <div class="p-5 rounded-2xl bg-beige-50 border border-beige-950/10">
+                                <p class="pixel-font text-xs uppercase tracking-[0.2em] opacity-50 mb-2">Custom projects</p>
+                                <p class="font-semibold mb-2">Can you source beyond the catalog?</p>
+                                <p class="premium-note text-sm">Yes. Use the bespoke inquiry flow for sequence requests, larger volumes, or procurement discussions with additional constraints.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-10 rounded-[28px] border border-beige-950/10 shadow-[0_18px_38px_rgba(23,23,23,0.08)] editorial-panel reveal">
+                        <p class="pixel-font text-xs uppercase tracking-[0.22em] opacity-50 mb-4">Service profile</p>
+                        <div class="space-y-6">
+                            <div>
+                                <p class="font-semibold text-lg mb-2">Research-first curation</p>
+                                <p class="premium-note">A tighter, better organized product surface helps buyers compare compounds, variants, and volume tiers without reading through visual clutter.</p>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-lg mb-2">Professional checkout</p>
+                                <p class="premium-note">Payment, proof upload, and shipment selection now sit inside a more deliberate information hierarchy inspired by premium B2B intake flows.</p>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-lg mb-2">More legible tracking</p>
+                                <p class="premium-note">Order progress, receipt data, and status history are presented as clear operational updates rather than decorative panels.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -656,12 +1195,12 @@
             <div class="border-t-4 border-beige-950 dark:border-beige-100 bg-beige-950 dark:bg-beige-100">
                 <div class="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
                     <div>
-                        <h2 class="text-4xl md:text-5xl font-black tracking-tighter uppercase text-beige-50 dark:text-beige-950 mb-2">Ready to Order?</h2>
-                        <p class="pixel-font text-lg text-beige-100/60 dark:text-beige-950/50 uppercase">Browse our full catalog of research-grade peptides.</p>
+                        <h2 class="text-4xl md:text-5xl font-black tracking-tighter text-beige-50 dark:text-beige-950 mb-2">Review the full research catalog.</h2>
+                        <p class="text-base text-beige-100/70 dark:text-beige-950/60 max-w-xl">Explore current compounds, compare sizing and pricing structures, or start a custom sourcing conversation for something not yet listed.</p>
                     </div>
                     <div class="flex gap-3 shrink-0">
-                        <button onclick="showPage('peptides')" class="bg-beige-50 dark:bg-beige-950 text-beige-950 dark:text-beige-50 px-8 py-4 font-black uppercase tracking-widest pixel-font text-xl hover:invert transition-all">Browse Catalog</button>
-                        <button onclick="showPage('contact')" class="border-2 border-beige-50/40 dark:border-beige-950/40 text-beige-50 dark:text-beige-950 px-8 py-4 font-bold uppercase tracking-widest pixel-font text-xl hover:bg-beige-50/10 dark:hover:bg-beige-950/10 transition-all">Contact Us</button>
+                        <button onclick="showPage('peptides')" class="bg-beige-50 dark:bg-beige-950 text-beige-950 dark:text-beige-50 px-8 py-4 font-semibold tracking-wide rounded-full transition-all">Browse catalog</button>
+                        <button onclick="showPage('contact')" class="border-2 border-beige-50/40 dark:border-beige-950/40 text-beige-50 dark:text-beige-950 px-8 py-4 font-semibold tracking-wide rounded-full transition-all">Contact support</button>
                     </div>
                 </div>
             </div>
@@ -669,16 +1208,23 @@
         </main>
 
         <!-- PEPTIDES -->
-        <main id="peptides" class="page-section pt-32 pb-20">
+        <main id="peptides" class="page-section pt-32 pb-20 section-shell section-catalog icon-unify">
             <div class="max-w-7xl mx-auto px-6 text-center mb-12">
-                <h2 class="text-6xl font-black mb-4 tracking-tighter uppercase">Research Catalog</h2>
-                <div class="flex flex-col sm:flex-row justify-center gap-6 pixel-font text-xl uppercase opacity-60 mb-8">
-                    <span class="flex items-center gap-2"><i data-lucide="package" class="w-4 h-4"></i> Standard Global Shipping: $30 — Up to 3 weeks</span>
-                    <span class="flex items-center gap-2 text-orange-500 opacity-100 font-bold"><i data-lucide="zap" class="w-4 h-4"></i> Express Global Shipping: $60 — Up to 5 days</span>
+                <h2 class="text-6xl font-black mb-4 tracking-tighter">Research catalog</h2>
+                <p class="premium-note max-w-3xl mx-auto mb-6">A cleaner view of the current lineup, with volume pricing, format selection, and fulfillment eligibility surfaced up front.</p>
+                <div class="flex flex-col sm:flex-row justify-center gap-6 pixel-font text-sm uppercase opacity-60 mb-8 tracking-[0.16em]">
+                    <span class="flex items-center gap-2"><i data-lucide="package" class="w-4 h-4"></i> Standard shipping: $30, up to 3 weeks</span>
+                    <span class="flex items-center gap-2 text-orange-500 opacity-100 font-bold"><i data-lucide="zap" class="w-4 h-4"></i> Express shipping: $60, up to 5 days</span>
                 </div>
                 <div id="mobile-search-sticky" class="max-w-md mx-auto relative mb-6">
-                    <input type="text" id="catalog-search" oninput="filterProducts()" placeholder="SEARCH VIALS..." class="w-full bg-white dark:bg-zinc-900 border-4 border-beige-950 dark:border-beige-100 p-4 outline-none pixel-font text-2xl uppercase shadow-[4px_4px_0px_0px_rgba(28,28,22,1)] focus:shadow-none transition-all">
+                    <input type="text" id="catalog-search" oninput="filterProducts()" placeholder="Search compounds, abbreviations, or batches" class="w-full bg-white dark:bg-zinc-900 border-4 border-beige-950 dark:border-beige-100 p-4 outline-none text-base shadow-[4px_4px_0px_0px_rgba(28,28,22,1)] focus:shadow-none transition-all">
                     <i data-lucide="search" class="absolute right-4 top-1/2 -translate-y-1/2 opacity-40"></i>
+                </div>
+                <div class="flex flex-wrap justify-center gap-2 mb-6">
+                    <button onclick="setCatalogSearch('GHK')" class="px-4 py-2 rounded-full border border-beige-950/15 bg-white text-sm font-medium">Popular: GHK</button>
+                    <button onclick="setCatalogSearch('RETATRUTIDE')" class="px-4 py-2 rounded-full border border-beige-950/15 bg-white text-sm font-medium">Popular: Retatrutide</button>
+                    <button onclick="setCatalogSearch('BPC-157')" class="px-4 py-2 rounded-full border border-beige-950/15 bg-white text-sm font-medium">Popular: BPC-157</button>
+                    <button onclick="setCatalogSearch('CJC')" class="px-4 py-2 rounded-full border border-beige-950/15 bg-white text-sm font-medium">Popular: CJC</button>
                 </div>
                 <!-- Sort & Filter bar -->
                 <div class="flex flex-wrap justify-center gap-3 mb-10">
@@ -688,11 +1234,18 @@
                         <option value="price-desc">Price: High → Low</option>
                         <option value="name-asc">Name: A → Z</option>
                     </select>
+                    <select id="catalog-category" onchange="filterProducts()" class="bg-white dark:bg-zinc-900 border-2 border-beige-950 dark:border-beige-100 px-4 py-2 pixel-font text-lg uppercase outline-none cursor-pointer">
+                        <option value="all">Category: All</option>
+                        <option value="injectable">Injectables</option>
+                        <option value="tablet">Tablets</option>
+                        <option value="support">Support</option>
+                    </select>
                     <button id="filter-express-btn" onclick="toggleExpressFilter()" class="border-2 border-beige-950 dark:border-beige-100 px-4 py-2 pixel-font text-lg uppercase hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950 transition-all">
                         ⚡ Express Only
                     </button>
                 </div>
             </div>
+            <div id="catalog-feedback" class="max-w-7xl mx-auto px-6 mb-4 text-sm text-beige-800"></div>
             <div id="product-grid" class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8"></div>
         </main>
 
@@ -702,49 +1255,56 @@
                 <button onclick="clearHash(); showPage('peptides')" class="mb-8 flex items-center gap-3 px-5 py-3 border-2 border-beige-950 dark:border-beige-100 pixel-font text-xl uppercase font-black hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950 transition-all group">
                     <i data-lucide="arrow-left" class="w-5 h-5 group-hover:-translate-x-1 transition-transform"></i> Back to Catalog
                 </button>
+                <div class="mb-6 editorial-panel p-5 flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
+                    <div>
+                        <p class="pixel-font text-xs uppercase tracking-[0.2em] opacity-50 mb-1">Product page guidance</p>
+                        <p class="text-sm text-beige-800">Review the summary first, then choose the correct size or version, confirm the pricing tier, and add the quantity you actually need.</p>
+                    </div>
+                    <button onclick="if(cart&&cart.length>0){showPage('order-page')}else{showCartEmptyNotice()}" class="px-5 py-3 rounded-full bg-beige-950 text-white text-sm font-semibold whitespace-nowrap">Go to order review</button>
+                </div>
                 <div id="detail-content" class="grid md:grid-cols-2 gap-16 items-center"></div>
             </div>
         </main>
 
         <!-- LAB TESTING -->
-        <main id="lab-testing" class="page-section pt-32 pb-20">
+        <main id="lab-testing" class="page-section pt-32 pb-20 section-shell section-lab icon-unify">
             <div class="max-w-6xl mx-auto px-6">
-                <h2 class="text-6xl font-black mb-6 uppercase tracking-tighter text-center">Third-Party Laboratory Verification</h2>
-                <p class="text-center text-beige-800 pixel-font text-lg max-w-2xl mx-auto mb-16">
-                    All compounds are independently tested by certified third-party laboratories to verify purity, composition, and consistency. Below are authenticated test results from recent batches.
+                <h2 class="text-6xl font-black mb-6 tracking-tighter text-center">Third-party laboratory verification</h2>
+                <p class="text-center text-beige-800 max-w-2xl mx-auto mb-16 premium-note">
+                    Independent reports remain central to the buying experience. Review recent batch documentation below to verify purity, composition, and consistency.
                 </p>
                 <div class="grid md:grid-cols-2 gap-8">
-                    <div class="p-6 bg-white border-2 border-beige-950 shadow-[8px_8px_0px_0px_rgba(28,28,22,1)]">
+                    <div class="p-6 bg-white border-2 border-beige-950 shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] editorial-panel lab-doc reveal">
                         <div class="w-full h-64 flex items-center justify-center bg-beige-50 border border-beige-950 mb-4">
                             <img src="krause mt1.jpg" onclick="openImage(this.src)" class="max-w-full max-h-full object-contain cursor-pointer">
                         </div>
                         <p class="pixel-font text-lg uppercase opacity-60">MT-2 Report</p>
                     </div>
-                    <div class="p-6 bg-white border-2 border-beige-950 shadow-[8px_8px_0px_0px_rgba(28,28,22,1)]">
+                    <div class="p-6 bg-white border-2 border-beige-950 shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] editorial-panel lab-doc reveal">
                         <div class="w-full h-64 flex items-center justify-center bg-beige-50 border border-beige-950 mb-4">
                             <img src="bt tesa1.jpg" onclick="openImage(this.src)" class="max-w-full max-h-full object-contain cursor-pointer">
                         </div>
                         <p class="pixel-font text-lg uppercase opacity-60">Tesamorelin Report</p>
                     </div>
-                    <div class="p-6 bg-white border-2 border-beige-950 shadow-[8px_8px_0px_0px_rgba(28,28,22,1)]">
+                    <div class="p-6 bg-white border-2 border-beige-950 shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] editorial-panel lab-doc reveal">
                         <div class="w-full h-64 flex items-center justify-center bg-beige-50 border border-beige-950 mb-4">
                             <img src="bt bac1.jpg" onclick="openImage(this.src)" class="max-w-full max-h-full object-contain cursor-pointer">
                         </div>
                         <p class="pixel-font text-lg uppercase opacity-60">Bacteriostatic Water Report</p>
                     </div>
-                    <div class="p-6 bg-white border-2 border-beige-950 shadow-[8px_8px_0px_0px_rgba(28,28,22,1)]">
+                    <div class="p-6 bg-white border-2 border-beige-950 shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] editorial-panel lab-doc reveal">
                         <div class="w-full h-64 flex items-center justify-center bg-beige-50 border border-beige-950 mb-4">
                             <img src="bt cjc1.jpg" onclick="openImage(this.src)" class="max-w-full max-h-full object-contain cursor-pointer">
                         </div>
                         <p class="pixel-font text-lg uppercase opacity-60">CJC-1295 Report</p>
                     </div>
-                    <div class="p-6 bg-white border-2 border-beige-950 shadow-[8px_8px_0px_0px_rgba(28,28,22,1)]">
+                    <div class="p-6 bg-white border-2 border-beige-950 shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] editorial-panel lab-doc reveal">
                         <div class="w-full h-64 flex items-center justify-center bg-beige-50 border border-beige-950 mb-4">
                             <img src="bt bpc1.jpg" onclick="openImage(this.src)" class="max-w-full max-h-full object-contain cursor-pointer">
                         </div>
                         <p class="pixel-font text-lg uppercase opacity-60">BPC-157 Report</p>
                     </div>
-                    <div class="p-6 bg-white border-2 border-beige-950 shadow-[8px_8px_0px_0px_rgba(28,28,22,1)]">
+                    <div class="p-6 bg-white border-2 border-beige-950 shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] editorial-panel lab-doc reveal">
                         <div class="w-full h-64 flex items-center justify-center bg-beige-50 border border-beige-950 mb-4">
                             <img src="bt rt1.jpg" onclick="openImage(this.src)" class="max-w-full max-h-full object-contain cursor-pointer">
                         </div>
@@ -755,27 +1315,31 @@
         </main>
 
         <!-- BESPOKE -->
-        <main id="bespoke" class="page-section pt-32 pb-20">
+        <main id="bespoke" class="page-section pt-32 pb-20 section-shell section-bespoke icon-unify">
             <div class="max-w-7xl mx-auto px-6">
                 <div class="grid lg:grid-cols-2 gap-16 items-center">
                     <div>
-                        <h2 class="text-6xl font-extrabold mb-6 uppercase tracking-tighter">Bespoke Solutions</h2>
-                        <p class="text-beige-800 mb-8 leading-relaxed text-lg">Ground-breaking research requires unique sequences. Custom synthesis for peptides not in our catalog.</p>
-                        <ul class="space-y-4 pixel-font text-xl uppercase">
-                            <li class="flex gap-3"><i data-lucide="check-circle" class="w-5 h-5"></i> Custom sequence design</li>
-                            <li class="flex gap-3"><i data-lucide="check-circle" class="w-5 h-5"></i> Full synthesis verification reports</li>
-                            <li class="flex gap-3"><i data-lucide="check-circle" class="w-5 h-5"></i> Gram-scale bulk discounts</li>
+                        <h2 class="text-6xl font-extrabold mb-6 tracking-tighter">Custom projects</h2>
+                        <p class="text-beige-800 mb-8 leading-relaxed text-lg">For programs that need more than the standard catalog, submit a request for custom synthesis, sourcing, or larger-volume procurement support.</p>
+                        <ul class="space-y-4 pixel-font text-sm uppercase tracking-[0.16em]">
+                            <li class="flex gap-3"><i data-lucide="check-circle" class="w-5 h-5"></i> Custom sequence scoping</li>
+                            <li class="flex gap-3"><i data-lucide="check-circle" class="w-5 h-5"></i> Verification expectations defined up front</li>
+                            <li class="flex gap-3"><i data-lucide="check-circle" class="w-5 h-5"></i> Volume-oriented quoting</li>
                         </ul>
+                        <div class="mt-8 editorial-panel p-5">
+                            <p class="pixel-font text-xs uppercase tracking-[0.2em] opacity-50 mb-2">What happens next</p>
+                            <p class="text-sm text-beige-800">Share the target sequence and quantity, then expect a scoped response covering feasibility, documentation expectations, and recommended next steps.</p>
+                        </div>
                     </div>
-                    <div class="bg-beige-950 text-beige-50 p-10 shadow-2xl">
+                    <div class="bg-beige-950 text-beige-50 p-10 shadow-2xl editorial-panel bespoke-card reveal">
                         <form onsubmit="event.preventDefault(); submitBespokeToDatabase();" class="space-y-6">
-                            <input type="text" id="bespoke-peptide" placeholder="Desired Peptide / Sequence" required class="w-full bg-transparent border-b-2 border-beige-100/30 dark:border-beige-100 p-4 outline-none pixel-font text-xl transition-colors">
-                            <input type="number" id="bespoke-quantity" min="1" placeholder="Required Quantity" required class="w-full bg-transparent border-b-2 border-beige-100/30 dark:border-beige-100 p-4 outline-none pixel-font text-xl transition-colors">
+                            <input type="text" id="bespoke-peptide" placeholder="Desired peptide or sequence" required class="w-full bg-transparent border-b-2 border-beige-100/30 dark:border-beige-100 p-4 outline-none text-base transition-colors">
+                            <input type="number" id="bespoke-quantity" min="1" placeholder="Required quantity" required class="w-full bg-transparent border-b-2 border-beige-100/30 dark:border-beige-100 p-4 outline-none text-base transition-colors">
                             <div class="relative">
-                                <input type="email" id="bespoke-email" placeholder="Email Address" required class="w-full bg-transparent border-b-2 border-beige-100/30 dark:border-beige-100 p-4 outline-none pixel-font text-xl transition-colors">
+                                <input type="email" id="bespoke-email" placeholder="Email address" required class="w-full bg-transparent border-b-2 border-beige-100/30 dark:border-beige-100 p-4 outline-none text-base transition-colors">
                                 <div id="bespoke-email-suggestions" class="email-suggestion-box pixel-font text-lg shadow-xl"></div>
                             </div>
-                            <button class="w-full bg-beige-100 text-beige-950 dark:bg-beige-950 dark:text-beige-100 dark:border-2 dark:border-beige-100 py-5 font-bold uppercase pixel-font text-xl">Submit Request</button>
+                            <button class="w-full bg-beige-100 text-beige-950 dark:bg-beige-950 dark:text-beige-100 dark:border-2 dark:border-beige-100 py-5 font-semibold tracking-wide rounded-full">Submit request</button>
                         </form>
                     </div>
                 </div>
@@ -783,26 +1347,30 @@
         </main>
 
         <!-- CONTACT -->
-        <main id="contact" class="page-section pt-32 pb-20">
+        <main id="contact" class="page-section pt-32 pb-20 section-shell section-contact icon-unify">
             <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-20">
                 <div>
-                    <h2 class="text-6xl font-extrabold mb-8 tracking-tighter uppercase">Contact Us</h2>
+                    <h2 class="text-6xl font-extrabold mb-8 tracking-tighter">Contact support</h2>
                     <div class="space-y-8">
                         <div>
-                            <h4 class="pixel-font font-bold text-xl mb-2 underline">Operation Times</h4>
+                            <h4 class="pixel-font font-bold text-sm mb-2 uppercase tracking-[0.18em] opacity-60">Operating times</h4>
                             <p class="text-beige-800">Mon-Fri: 09:00 - 17:00 GMT<br><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f3808683839c8187b3958687868196839b92819e92dd909c9e">[email&#160;protected]</a></p>
                         </div>
                     </div>
                 </div>
-                <div class="bg-white p-10 border-4 border-beige-950 shadow-[10px_10px_0px_0px_rgba(28,28,22,1)]">
+                <div class="bg-white p-10 border-4 border-beige-950 shadow-[10px_10px_0px_0px_rgba(28,28,22,1)] editorial-panel contact-card reveal">
+                    <div class="mb-6 rounded-2xl bg-beige-50 border border-beige-950/10 p-4">
+                        <p class="pixel-font text-xs uppercase tracking-[0.2em] opacity-50 mb-2">Need help deciding?</p>
+                        <p class="text-sm text-beige-800">Use this form for product questions, ordering help, payment issues, or assistance locating the right compound.</p>
+                    </div>
                     <form onsubmit="event.preventDefault(); submitContactToDatabase();" class="space-y-6">
-                        <input type="text" id="contact-name" placeholder="Name" class="w-full p-4 border-b-2 border-beige-950 dark:border-beige-100 bg-transparent outline-none pixel-font text-xl">
+                        <input type="text" id="contact-name" placeholder="Name" class="w-full p-4 border-b-2 border-beige-950 dark:border-beige-100 bg-transparent outline-none text-base">
                         <div class="relative">
-                            <input type="email" id="contact-email" placeholder="Email Address" required class="w-full p-4 border-b-2 border-beige-950 dark:border-beige-100 bg-transparent outline-none pixel-font text-xl">
+                            <input type="email" id="contact-email" placeholder="Email address" required class="w-full p-4 border-b-2 border-beige-950 dark:border-beige-100 bg-transparent outline-none text-base">
                             <div id="contact-email-suggestions" class="email-suggestion-box pixel-font text-lg shadow-xl"></div>
                         </div>
-                        <textarea id="contact-message" placeholder="Message" rows="4" class="w-full p-4 border-b-2 border-beige-950 dark:border-beige-100 bg-transparent outline-none pixel-font text-xl"></textarea>
-                        <button type="submit" class="w-full bg-beige-950 text-beige-100 dark:bg-beige-100 dark:text-beige-950 py-4 font-bold uppercase pixel-font text-xl">Send Inquiry</button>
+                        <textarea id="contact-message" placeholder="Message" rows="4" class="w-full p-4 border-b-2 border-beige-950 dark:border-beige-100 bg-transparent outline-none text-base"></textarea>
+                        <button type="submit" class="w-full bg-beige-950 text-beige-100 dark:bg-beige-100 dark:text-beige-950 py-4 font-semibold tracking-wide rounded-full">Send inquiry</button>
                     </form>
                 </div>
             </div>
@@ -828,21 +1396,26 @@
                         <span class="pixel-font text-lg font-black uppercase">Done</span>
                     </div>
                 </div>
-                <h2 class="text-6xl font-black mb-10 text-center uppercase tracking-tighter">Step 1: Order Details</h2>
+                <h2 class="text-6xl font-black mb-4 text-center tracking-tighter">Step 1: order details</h2>
+                <p class="premium-note text-center max-w-2xl mx-auto mb-10">Confirm recipient information, choose the delivery cadence, and review the live order summary before payment.</p>
                 <div class="grid lg:grid-cols-2 gap-8">
                     <form onsubmit="event.preventDefault(); goToCheckout();" class="bg-white p-8 border-2 border-beige-950 space-y-6 shadow-lg">
+                        <div class="rounded-2xl bg-beige-50 border border-beige-950/10 p-4">
+                            <p class="pixel-font text-xs uppercase tracking-[0.2em] opacity-50 mb-2">Before you continue</p>
+                            <p class="text-sm text-beige-800">Enter recipient details, choose the delivery pace, and review the live order summary. Everything remains editable before payment.</p>
+                        </div>
                         <div class="space-y-4">
-                            <input type="text" id="checkout-name" placeholder="Recipient Name" required class="w-full p-4 border-b border-beige-950 dark:border-beige-100 bg-transparent outline-none pixel-font text-xl">
+                            <input type="text" id="checkout-name" placeholder="Recipient name" required class="w-full p-4 border-b border-beige-950 dark:border-beige-100 bg-transparent outline-none text-base">
                             <div class="relative">
-                                <input type="email" id="checkout-email" placeholder="Email Address" required class="w-full p-4 border-b border-beige-950 dark:border-beige-100 bg-transparent outline-none pixel-font text-xl">
+                                <input type="email" id="checkout-email" placeholder="Email address" required class="w-full p-4 border-b border-beige-950 dark:border-beige-100 bg-transparent outline-none text-base">
                                 <div id="checkout-email-suggestions" class="email-suggestion-box pixel-font text-lg shadow-xl"></div>
                             </div>
                         </div>
-                        <textarea id="checkout-address" placeholder="Delivery Address" required class="w-full p-4 border-b border-beige-950 dark:border-beige-100 bg-transparent outline-none pixel-font text-xl h-32"></textarea>
+                        <textarea id="checkout-address" placeholder="Delivery address" required class="w-full p-4 border-b border-beige-950 dark:border-beige-100 bg-transparent outline-none text-base h-32"></textarea>
 
                         <!-- SHIPPING SELECTOR -->
                         <div>
-                            <p class="pixel-font text-xl uppercase font-bold mb-4 underline">Shipping Method</p>
+                            <p class="pixel-font text-sm uppercase font-bold mb-4 tracking-[0.18em] opacity-60">Shipping method</p>
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
                                     <input type="radio" name="shipping-method" id="shipping-standard" class="shipping-option sr-only" value="standard" checked onchange="selectShipping('standard')">
@@ -868,16 +1441,19 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="w-full bg-beige-950 text-white py-5 font-black uppercase pixel-font text-2xl hover:invert transition-all">CONTINUE TO CHECKOUT</button>
+                        <p id="shipping-eligibility-message" class="text-sm text-beige-800"></p>
+
+                        <button type="submit" class="w-full bg-beige-950 text-white py-5 font-semibold tracking-wide text-base rounded-full transition-all">Continue to checkout</button>
                     </form>
 
                     <div class="bg-white p-8 border-2 border-beige-950 shadow-[10px_10px_0px_0px_rgba(28,28,22,1)]">
                         <div class="flex justify-between items-center mb-6 border-b-2 border-beige-950 pb-2">
-                            <h4 class="pixel-font text-xl font-bold underline uppercase">Manifest</h4>
-                            <button onclick="clearCart()" class="pixel-font text-sm bg-red-600 text-white px-3 py-1 hover:bg-red-800 transition-colors uppercase font-bold">Clear All</button>
+                            <h4 class="pixel-font text-sm font-bold uppercase tracking-[0.18em] opacity-60">Order summary</h4>
+                            <button onclick="clearCart()" class="pixel-font text-xs bg-red-600 text-white px-4 py-2 hover:bg-red-800 transition-colors uppercase font-bold rounded-full tracking-[0.18em]">Clear order</button>
                         </div>
                         <div id="order-summary-list" class="space-y-4 mb-6 pixel-font text-xl">No items selected.</div>
                         <div class="border-t-2 border-beige-950 dark:border-beige-100 pt-6">
+                            <div id="order-summary-meta" class="mb-4 text-sm text-beige-800"></div>
                             <div class="flex justify-between font-black text-3xl"><span>Total</span><span class="order-summary-total-val">$0.00</span></div>
                         </div>
                     </div>
@@ -905,7 +1481,8 @@
                         <span class="pixel-font text-lg font-black uppercase">Done</span>
                     </div>
                 </div>
-                <h2 class="text-6xl font-black mb-10 text-center uppercase tracking-tighter">Finalize Payment</h2>
+                <h2 class="text-6xl font-black mb-6 text-center tracking-tighter">Finalize payment</h2>
+                <p class="premium-note text-center max-w-2xl mx-auto mb-10">Review the locked payment amount, submit proof of transfer, and complete the order with a cleaner, more documented handoff.</p>
                 <div class="bg-white p-10 border-4 border-beige-950 shadow-[12px_12px_0px_0px_rgba(28,28,22,1)]">
                     <div class="mb-8 pb-6 border-b-2 border-dashed border-beige-950">
                         <p class="pixel-font text-2xl uppercase opacity-60 mb-2">Amount Due</p>
@@ -913,7 +1490,7 @@
                         <div id="checkout-shipping-info" class="mt-3 pixel-font text-lg opacity-60 uppercase"></div>
                     </div>
                    
-                    <h4 class="pixel-font text-2xl font-bold uppercase mb-6 underline">Select Payment Method</h4>
+                    <h4 class="pixel-font text-sm font-bold uppercase mb-6 tracking-[0.18em] opacity-60">Select payment method</h4>
                     <form onsubmit="event.preventDefault(); submitOrderToDatabase();">
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
                             <div>
@@ -961,7 +1538,7 @@
                                     <img id="qr-image" src="" class="w-32 h-32 object-contain" />
                                 </div>
                                 <div class="flex-grow w-full">
-                                    <p class="pixel-font text-lg font-bold mb-2 uppercase opacity-60">Recipient Address:</p>
+                            <p class="pixel-font text-sm font-bold mb-2 uppercase tracking-[0.18em] opacity-60">Recipient address</p>
                                     <div class="flex items-stretch border-2 border-beige-950 bg-white cursor-pointer group" onclick="copyAddress()" title="Tap to copy">
                                         <input type="text" id="wallet-address" readonly class="flex-grow p-3 pixel-font text-lg outline-none bg-transparent cursor-pointer" placeholder="Select payment method">
                                         <button type="button" class="bg-beige-950 text-beige-100 px-4 hover:invert transition-all shrink-0">
@@ -974,26 +1551,35 @@
                         </div>
 
                         <div class="mb-10 p-6 border-2 border-beige-950 bg-white dark:bg-zinc-900 shadow-[6px_6px_0px_0px_rgba(28,28,22,1)]">
-                            <h4 class="pixel-font text-2xl font-bold uppercase mb-4 underline">Proof of Payment</h4>
-                            <p class="pixel-font text-lg mb-4 opacity-70">Attach a screenshot of your transaction confirmation.</p>
+                            <h4 class="pixel-font text-sm font-bold uppercase mb-4 tracking-[0.18em] opacity-60">Proof of payment</h4>
+                            <p class="premium-note mb-4">Attach a screenshot of the completed transfer confirmation so the order can move into verification.</p>
                             <div class="relative group">
                                 <input type="file" id="payment-proof" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" required>
                                 <div class="border-4 border-dashed border-beige-950 dark:border-beige-100 p-8 flex flex-col items-center justify-center gap-3 bg-beige-50 dark:bg-zinc-800 group-hover:bg-beige-100 transition-colors">
                                     <i data-lucide="upload-cloud" class="w-8 h-8"></i>
-                                    <span class="pixel-font text-xl font-bold uppercase" id="file-name-display">Select Image File</span>
+                                    <span class="pixel-font text-sm font-bold uppercase tracking-[0.18em]" id="file-name-display">Select image file</span>
                                 </div>
                             </div>
                         </div>
 
+                        <div class="mb-10 rounded-2xl bg-beige-50 border border-beige-950/10 p-5">
+                            <p class="pixel-font text-xs uppercase tracking-[0.2em] opacity-50 mb-2">What happens after payment</p>
+                            <ul class="text-sm text-beige-800 space-y-2">
+                                <li>1. We review the submitted proof and verify the transfer.</li>
+                                <li>2. Your order receives a live status reference for tracking.</li>
+                                <li>3. Updates continue as the order moves from confirmation to shipment.</li>
+                            </ul>
+                        </div>
+
                         <div class="bg-beige-100 p-6 mb-10 border-2 border-beige-950">
                             <p class="pixel-font text-lg leading-tight uppercase font-bold text-red-600">
-                                Warning: Payments are irreversible. Ensure you send the exact amount calculated at checkout. Order processing begins after 2 blockchain confirmations.
+                                Payment instructions are irreversible. Send the exact quoted amount and allow for blockchain confirmations before processing begins.
                             </p>
                         </div>
 
                         <div class="flex flex-col sm:flex-row gap-4">
-                            <button type="button" onclick="showPage('order-page')" class="flex-1 border-2 border-beige-950 py-5 pixel-font text-2xl font-bold uppercase hover:bg-beige-100">Go Back</button>
-                            <button type="submit" id="submit-order-btn" class="flex-1 bg-beige-950 text-white py-5 pixel-font text-2xl font-black uppercase hover:invert transition-all">FINALIZE ORDER</button>
+                            <button type="button" onclick="showPage('order-page')" class="flex-1 border-2 border-beige-950 py-5 font-semibold tracking-wide rounded-full">Back to details</button>
+                            <button type="submit" id="submit-order-btn" class="flex-1 bg-beige-950 text-white py-5 font-semibold tracking-wide rounded-full transition-all">Finalize order</button>
                         </div>
                     </form>
                 </div>
@@ -1002,22 +1588,27 @@
         <!-- ORDER TRACKING -->
         <main id="order-tracking" class="page-section pt-32 pb-20">
             <div class="max-w-3xl mx-auto px-6">
-                <h2 class="text-5xl font-black uppercase tracking-tighter mb-2">Track Your Order</h2>
-                <p class="pixel-font text-lg opacity-50 uppercase mb-10">Enter your order code to view your receipt and live status</p>
+                <h2 class="text-5xl font-black tracking-tighter mb-2">Track your order</h2>
+                <p class="premium-note mb-10">Enter the reference code from your receipt to review shipment progress, receipt details, and the latest status update.</p>
                 <div class="bg-white dark:bg-zinc-900 border-4 border-beige-950 dark:border-beige-100 shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] p-8 mb-10">
                     <div class="flex gap-3">
                         <input type="text" id="tracking-input" placeholder="e.g. FP-K7MN"
-                            class="flex-grow p-4 border-2 border-beige-950 dark:border-beige-100 bg-transparent outline-none pixel-font text-2xl uppercase tracking-widest"
+                            class="flex-grow p-4 border-2 border-beige-950 dark:border-beige-100 bg-transparent outline-none pixel-font text-base uppercase tracking-[0.18em]"
                             oninput="this.value=this.value.toUpperCase()"
                             onkeydown="if(event.key==='Enter')lookupOrder()">
-                        <button onclick="lookupOrder()" class="bg-beige-950 dark:bg-beige-100 text-beige-50 dark:text-beige-950 px-8 pixel-font text-xl font-black uppercase hover:invert transition-all">Search</button>
+                        <button onclick="lookupOrder()" class="bg-beige-950 dark:bg-beige-100 text-beige-50 dark:text-beige-950 px-8 font-semibold tracking-wide rounded-full transition-all">Search</button>
                     </div>
                     <p id="tracking-error" class="pixel-font text-red-500 text-base uppercase font-bold mt-3 hidden"></p>
+                </div>
+                <div class="editorial-panel p-5 mb-8">
+                    <p class="pixel-font text-xs uppercase tracking-[0.2em] opacity-50 mb-2">If you need help</p>
+                    <p class="text-sm text-beige-800">Use the order reference from your receipt. If a status seems stalled, contact support with the code and payment proof for a faster review.</p>
                 </div>
                 <div id="tracking-result" class="hidden space-y-8">
                     <div class="bg-white dark:bg-zinc-900 border-4 border-beige-950 dark:border-beige-100 shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] p-8">
                         <p class="pixel-font text-xs uppercase opacity-40 mb-6">Order Progress</p>
                         <div id="tracking-pipeline" class="relative"></div>
+                        <div id="tracking-next-step" class="mt-5 text-sm text-beige-800"></div>
                     </div>
                     <div class="bg-white dark:bg-zinc-900 border-4 border-beige-950 dark:border-beige-100 shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] overflow-hidden">
                         <div class="bg-beige-950 dark:bg-beige-100 text-beige-50 dark:text-beige-950 px-8 py-5 flex justify-between items-center">
@@ -1093,13 +1684,13 @@
                 <div class="w-16 h-16 bg-green-500 flex items-center justify-center mx-auto mb-6" style="animation:successPop 0.5s cubic-bezier(0.22,1,0.36,1) 0.2s both;">
                     <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" d="M5 13l4 4L19 7"/></svg>
                 </div>
-                <h1 class="pixel-font text-5xl font-black uppercase tracking-tighter mb-3 text-beige-950 dark:text-beige-100">Order Received</h1>
-                <p class="pixel-font text-xl opacity-60 uppercase mb-1 text-beige-950 dark:text-beige-100">A receipt has been sent to your email</p>
-                <p class="pixel-font text-base font-black uppercase mb-6 text-beige-950 dark:text-beige-100">Order ID: <span id="success-order-id" class="text-green-600"></span></p>
+                <h1 class="text-5xl font-black tracking-tight mb-3 text-beige-950 dark:text-beige-100">Order received</h1>
+                <p class="premium-note mb-1 text-beige-950 dark:text-beige-100">A confirmation record has been prepared for your email.</p>
+                <p class="pixel-font text-sm font-black uppercase mb-6 text-beige-950 dark:text-beige-100 tracking-[0.18em]">Order ID <span id="success-order-id" class="text-green-600"></span></p>
                 <div id="success-order-summary" class="text-left border-t-2 border-b-2 border-beige-950/10 dark:border-beige-100/10 py-4 mb-6 space-y-2"></div>
-                <p class="pixel-font text-base opacity-50 uppercase mb-8 text-beige-950 dark:text-beige-100">We will process your order once payment is confirmed on the blockchain. Check your email for updates.</p>
-                <button onclick="closeOrderSuccess()" class="w-full bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 py-5 pixel-font text-2xl font-black uppercase hover:invert transition-all">
-                    Return to Home
+                <p class="premium-note mb-8 text-beige-950 dark:text-beige-100">Processing begins after blockchain confirmation. Use the tracking page for ongoing status updates.</p>
+                <button onclick="closeOrderSuccess()" class="w-full bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 py-5 font-semibold tracking-wide rounded-full transition-all">
+                    Return home
                 </button>
             </div>
 
@@ -1118,13 +1709,13 @@
                         <rect x="6" y="13" width="4" height="3" fill="#5DADE2"/>
                         <rect x="5" y="8" width="6" height="4" fill="#E8E8C8"/>
                     </svg>
-                    <span class="pixel-font text-2xl font-black uppercase tracking-tight">FuturePharma</span>
+                    <span class="text-2xl font-black tracking-tight">FuturePharma</span>
                 </div>
-                <p class="text-sm opacity-60 leading-relaxed">Precision peptide research compounds. HPLC-verified. Third-party tested. Delivered worldwide.</p>
+                <p class="text-sm opacity-60 leading-relaxed">Premium presentation for research-grade compounds, with documented verification, clear fulfillment options, and cleaner support touchpoints.</p>
             </div>
             <!-- Nav -->
             <div>
-                <p class="pixel-font text-base font-black uppercase mb-4 opacity-50">Navigate</p>
+                <p class="pixel-font text-xs font-black uppercase mb-4 opacity-50 tracking-[0.18em]">Navigate</p>
                 <ul class="space-y-2 pixel-font text-lg">
                     <li><button onclick="showPage('home')" class="opacity-70 hover:opacity-100 transition-opacity">Home</button></li>
                     <li><button onclick="showPage('peptides')" class="opacity-70 hover:opacity-100 transition-opacity">Catalog</button></li>
@@ -1135,49 +1726,49 @@
             </div>
             <!-- Info -->
             <div>
-                <p class="pixel-font text-base font-black uppercase mb-4 opacity-50">Shipping</p>
+                <p class="pixel-font text-xs font-black uppercase mb-4 opacity-50 tracking-[0.18em]">Shipping</p>
                 <ul class="space-y-2 pixel-font text-lg opacity-70">
-                    <li>📦 Standard — up to 3 weeks</li>
-                    <li>⚡ Express — up to 5 days</li>
-                    <li>🌍 Worldwide delivery</li>
-                    <li>🔒 Discreet packaging</li>
+                    <li>Standard: up to 3 weeks</li>
+                    <li>Express: up to 5 days</li>
+                    <li>Worldwide delivery</li>
+                    <li>Discreet packaging</li>
                 </ul>
             </div>
             <!-- Payment -->
             <div>
-                <p class="pixel-font text-base font-black uppercase mb-4 opacity-50">Payment</p>
+                <p class="pixel-font text-xs font-black uppercase mb-4 opacity-50 tracking-[0.18em]">Payment</p>
                 <ul class="space-y-2 pixel-font text-lg opacity-70">
-                    <li>₿ Bitcoin (BTC)</li>
-                    <li>Ξ Ethereum (ETH)</li>
-                    <li>₮ Tether (USDT)</li>
-                    <li>Ł Litecoin (LTC)</li>
+                    <li>Bitcoin (BTC)</li>
+                    <li>Ethereum (ETH)</li>
+                    <li>Tether (USDT)</li>
+                    <li>Litecoin (LTC)</li>
                 </ul>
             </div>
         </div>
         <div class="border-t border-beige-50/10 dark:border-beige-950/10 px-6 py-6">
             <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
                 <p class="text-xs opacity-40 text-center md:text-left leading-relaxed max-w-2xl">
-                    <strong>Research Use Only:</strong> All products are supplied strictly for laboratory research, analytical, or in-vitro testing purposes. Not for human consumption. By purchasing you confirm compliance with all applicable laws.
+                    <strong>Research use only:</strong> All products are supplied strictly for laboratory research, analytical, or in-vitro testing purposes. Not for human consumption. By purchasing you confirm compliance with all applicable laws.
                 </p>
-                <p class="pixel-font text-sm opacity-30 shrink-0">© 2025 FuturePharma</p>
+                <p class="pixel-font text-sm opacity-30 shrink-0">© 2026 FuturePharma</p>
             </div>
         </div>
     </footer>
 
     <div id="cart-sidebar" class="fixed right-0 top-0 h-full w-full sm:w-96 bg-[#F5F5DC] dark:bg-[#0F0F0F] border-l-4 border-beige-950 shadow-2xl z-[60] flex flex-col" style="transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.22,1,0.36,1);">
         <div class="p-8 border-b border-beige-950 flex justify-between items-center">
-            <h3 class="text-2xl font-black uppercase">Cart</h3>
+            <h3 class="text-2xl font-black">Order cart</h3>
             <button onclick="toggleCart()"><i data-lucide="x"></i></button>
         </div>
         <div id="cart-items" class="flex-grow p-8 space-y-4 overflow-y-auto pixel-font text-xl"></div>
         <div class="p-8 bg-beige-200 dark:bg-beige-950 border-t-2 border-beige-950 space-y-4">
             <div>
-                <p class="pixel-font text-base uppercase font-bold mb-2 opacity-70">Shipping</p>
+                <p class="pixel-font text-xs uppercase font-bold mb-3 opacity-70 tracking-[0.18em]">Shipping</p>
                 <div class="grid grid-cols-2 gap-2">
                     <div>
                         <input type="radio" name="cart-shipping" id="cart-shipping-standard" class="sr-only shipping-option" value="standard" checked onchange="selectShipping('standard')">
                         <label for="cart-shipping-standard" class="shipping-label p-3 text-beige-950 dark:text-beige-100">
-                            <span class="pixel-font text-sm font-bold uppercase">Standard</span>
+                            <span class="pixel-font text-xs font-bold uppercase tracking-[0.18em]">Standard</span>
                             <span class="pixel-font text-xl font-black">$30</span>
                             <span class="pixel-font text-xs opacity-60">3 weeks</span>
                         </label>
@@ -1185,7 +1776,7 @@
                     <div>
                         <input type="radio" name="cart-shipping" id="cart-shipping-express" class="sr-only shipping-option" value="express" onchange="selectShipping('express')">
                         <label for="cart-shipping-express" class="shipping-label p-3 text-beige-950 dark:text-beige-100">
-                            <span class="pixel-font text-sm font-bold uppercase flex items-center gap-1"><i data-lucide="zap" class="w-3 h-3"></i> Express</span>
+                            <span class="pixel-font text-xs font-bold uppercase tracking-[0.18em] flex items-center gap-1"><i data-lucide="zap" class="w-3 h-3"></i> Express</span>
                             <span class="pixel-font text-xl font-black">$60</span>
                             <span class="pixel-font text-xs opacity-60">5 days</span>
                         </label>
@@ -1196,7 +1787,7 @@
                 <span>Total</span>
                 <span id="cart-total">$0.00</span>
             </div>
-            <button onclick="if(cart&&cart.length>0){showPage('order-page');toggleCart();}else{showCartEmptyNotice();}" class="w-full bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 py-4 font-bold uppercase pixel-font text-2xl">Checkout</button>
+            <button onclick="if(cart&&cart.length>0){showPage('order-page');toggleCart();}else{showCartEmptyNotice();}" class="w-full bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 py-4 font-semibold tracking-wide rounded-full">Review checkout</button>
         </div>
     </div>
 
@@ -1331,6 +1922,17 @@
 
         function toggleTheme() { document.documentElement.classList.toggle('dark'); }
 
+        function showToast(message, isError) {
+            var existing = document.getElementById('fp-toast');
+            if (existing) existing.remove();
+            var toast = document.createElement('div');
+            toast.id = 'fp-toast';
+            toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:99999;padding:14px 18px;border-radius:999px;background:' + (isError ? '#7f1d1d' : '#171717') + ';color:#fff;font-family:Manrope,sans-serif;font-size:14px;font-weight:600;box-shadow:0 18px 40px rgba(0,0,0,0.18);max-width:min(90vw,720px);text-align:center;';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(function() { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.25s ease'; setTimeout(function() { toast.remove(); }, 280); }, 2600);
+        }
+
         // --- Shipping State ---
         const SHIPPING_OPTIONS = {
             standard: { price: 30, label: 'Standard Shipping', eta: 'Up to 3 weeks' },
@@ -1362,7 +1964,7 @@
         function selectShipping(type) {
             if (type === 'express' && !cartIsExpressEligible()) {
                 var names = getIneligibleCartItems();
-                alert('Express shipping unavailable for: ' + names.join(', ') + '.\nRemove these items or choose Standard Shipping.');
+                showToast('Express shipping is unavailable for: ' + names.join(', ') + '. Remove those items or continue with standard shipping.', true);
                 document.querySelectorAll('input[id$="-standard"]').forEach(function(r) { r.checked = true; });
                 document.querySelectorAll('input[id$="-express"]').forEach(function(r) { r.checked = false; });
                 selectedShipping = 'standard';
@@ -1393,6 +1995,7 @@
             var qrMap = { btc: 'btc.JPG', eth: 'eth.JPG', usdt: 'usdt.JPG', ltc: 'ltc.JPG' };
             qrImage.src = qrMap[type];
             document.getElementById('copy-status').classList.add('hidden');
+            showToast('Payment method selected. We are fetching the current amount now.');
             fetchCryptoRate(type);
             startCryptoTimer();
         }
@@ -1447,14 +2050,7 @@
         });
 
         function showCartEmptyNotice() {
-            var existing = document.getElementById('empty-cart-toast');
-            if (existing) existing.remove();
-            var toast = document.createElement('div');
-            toast.id = 'empty-cart-toast';
-            toast.style.cssText = 'position:fixed;bottom:32px;left:50%;transform:translateX(-50%);z-index:9999;font-family:"VT323",monospace;font-size:20px;letter-spacing:0.05em;text-transform:uppercase;padding:16px 28px;border:3px solid #1C1C16;background:#F5F5DC;color:#1C1C16;box-shadow:6px 6px 0 rgba(28,28,22,0.25);transition:opacity 0.4s;white-space:nowrap;';
-            toast.innerText = '🛒 Add products before checking out';
-            document.body.appendChild(toast);
-            setTimeout(function() { toast.style.opacity = '0'; setTimeout(function() { toast.remove(); }, 400); }, 3000);
+            showToast('Add one or more products to start the order flow.');
             // Also open the cart so they can see it's empty
             var sidebar = document.getElementById('cart-sidebar');
             if (sidebar && sidebar.style.transform !== 'translateX(0%)') toggleCart();
@@ -1540,7 +2136,7 @@
                 clearCart();
             } catch (err) {
                 console.error(err);
-                alert('Submission Error: ' + err.message);
+                showToast('Order submission failed: ' + err.message, true);
             } finally {
                 btn.innerText = originalText;
                 btn.disabled = false;
@@ -1630,8 +2226,8 @@
                     budget_estimate: 'N/A'
                 }]);
                 if (result.error) throw result.error;
-                alert('Bespoke request sent!');
-            } catch (err) { console.error(err); alert('Submission Error: ' + err.message); }
+                showToast('Custom project request sent. We will reply with scope and next steps.', false);
+            } catch (err) { console.error(err); showToast('Bespoke request failed: ' + err.message, true); }
         }
 
         // --- Contact Submission ---
@@ -1644,8 +2240,8 @@
                     name: name, email: email, subject: 'General Inquiry', message: message
                 }]);
                 if (result.error) throw result.error;
-                alert('Message sent!');
-            } catch (err) { console.error(err); alert('Submission Error: ' + err.message); }
+                showToast('Support message sent. We will follow up as soon as possible.', false);
+            } catch (err) { console.error(err); showToast('Message failed: ' + err.message, true); }
         }
 
         // --- Products ---
@@ -1917,7 +2513,7 @@
             // 12. Update page title
             document.title = PAGE_TITLES[id] || 'FuturePharma';
             // Active nav indicator
-            var navMap = { home: 'HOME', peptides: 'PEPTIDES', 'lab-testing': 'LAB TESTING', bespoke: 'BESPOKE', contact: 'CONTACT' };
+            var navMap = { home: 'Home', peptides: 'Catalog', 'lab-testing': 'Lab Reports', bespoke: 'Custom Projects', contact: 'Support' };
             document.querySelectorAll('.nav-link').forEach(function(btn) { btn.classList.remove('nav-active'); });
             document.querySelectorAll('.nav-link').forEach(function(btn) {
                 if (btn.innerText.trim() === (navMap[id] || '')) btn.classList.add('nav-active');
@@ -1940,9 +2536,9 @@
                 var btn = document.getElementById('cjc-variant-' + v.key);
                 if (!btn) return;
                 if (v.key === key) {
-                    btn.className = 'flex-1 bg-beige-950 text-white dark:bg-beige-100 dark:text-beige-950 py-3 pixel-font text-xl font-black uppercase border-2 border-beige-950';
+                    btn.className = 'flex-1 bg-beige-950 text-white dark:bg-beige-100 dark:text-beige-950 py-3 pixel-font text-sm font-black uppercase border-2 border-beige-950 rounded-full';
                 } else {
-                    btn.className = 'flex-1 bg-transparent text-beige-950 dark:text-beige-100 py-3 pixel-font text-xl font-bold uppercase border-2 border-beige-950 dark:border-beige-100 hover:bg-beige-200 dark:hover:bg-zinc-800';
+                    btn.className = 'flex-1 bg-transparent text-beige-950 dark:text-beige-100 py-3 pixel-font text-sm font-bold uppercase border-2 border-beige-950 dark:border-beige-100 hover:bg-beige-200 dark:hover:bg-zinc-800 rounded-full';
                 }
             });
         }
@@ -1951,10 +2547,10 @@
             var p = products.find(function(x) { return x.id === id; });
             if (!localCounts[id]) localCounts[id] = 0;
             var expressHTML = p.expressEligible
-                ? '<span class="pixel-font text-xl text-orange-500 font-bold uppercase">&#9889; Express shipping eligible</span>'
-                : '<span class="pixel-font text-xl text-gray-400 font-bold uppercase">&#128230; Standard shipping only</span>';
+                ? '<span class="pixel-font text-sm text-orange-500 font-bold uppercase tracking-[0.16em]">&#9889; Express eligible</span>'
+                : '<span class="pixel-font text-sm text-gray-400 font-bold uppercase tracking-[0.16em]">&#128230; Standard delivery only</span>';
 
-            var vialSVG = '<div class="flex justify-center bg-white border-4 border-beige-950 p-12 shadow-[12px_12px_0px_0px_rgba(28,28,22,1)]">'
+            var vialSVG = '<div class="flex justify-center bg-white border-4 border-beige-950 p-12 shadow-[12px_12px_0px_0px_rgba(28,28,22,1)] rounded-[28px]">'
                 + getProductSVG(p, 'lg')
                 + '</div>';
 
@@ -1968,17 +2564,19 @@
                 var sizeButtons = p.sizeVariants.map(function(sv, si) {
                     var isActive = si === selectedSizeVariants[id];
                     var cls = isActive
-                        ? 'px-4 py-2 bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 pixel-font text-lg font-black uppercase border-2 border-beige-950 dark:border-beige-100 transition-all'
-                        : 'px-4 py-2 bg-transparent text-beige-950 dark:text-beige-100 pixel-font text-lg font-bold uppercase border-2 border-beige-950 dark:border-beige-100 hover:bg-beige-200 dark:hover:bg-zinc-800 transition-all';
+                        ? 'px-4 py-3 bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 pixel-font text-sm font-black uppercase border-2 border-beige-950 dark:border-beige-100 transition-all rounded-full'
+                        : 'px-4 py-3 bg-transparent text-beige-950 dark:text-beige-100 pixel-font text-sm font-bold uppercase border-2 border-beige-950 dark:border-beige-100 hover:bg-beige-200 dark:hover:bg-zinc-800 transition-all rounded-full';
                     return '<button onclick="selectSizeVariant(' + id + ',' + si + ')" class="' + cls + '">' + sv.label + '</button>';
                 }).join('');
 
                 rightPanel = '<div>'
-                    + '<h2 class="text-7xl font-black uppercase tracking-tighter mb-2 leading-none">' + p.name + '</h2>'
+                    + '<h2 class="text-7xl font-black tracking-tighter mb-2 leading-none">' + p.name + '</h2>'
                     + '<div class="mb-4">' + expressHTML + '</div>'
-                    + '<p class="pixel-font text-xl uppercase font-bold mb-3 underline">Select Size</p>'
+                    + '<p class="text-sm text-beige-800 mb-5">' + getProductSummary(p) + '</p>'
+                    + '<p class="pixel-font text-sm uppercase font-bold mb-3 tracking-[0.18em] opacity-60">Select size</p>'
                     + '<div class="flex flex-wrap gap-2 mb-4" id="size-btn-group-' + id + '">' + sizeButtons + '</div>'
                     + '<div id="size-detail-' + id + '">' + buildSizeDetailHTML(p, selectedSizeVariants[id], id) + '</div>'
+                    + '<p class="mt-5 text-sm text-beige-800">Need help choosing? Start with the smallest suitable format, then increase volume once your order structure looks correct.</p>'
                     + '</div>';
 
             } else if (p.variants) {
@@ -1988,42 +2586,46 @@
                 var variantButtons = p.variants.map(function(v) {
                     var isActive = v.key === 'wdac';
                     var cls = isActive
-                        ? 'flex-1 bg-beige-950 text-white dark:bg-beige-100 dark:text-beige-950 py-3 pixel-font text-xl font-black uppercase border-2 border-beige-950'
-                        : 'flex-1 bg-transparent text-beige-950 dark:text-beige-100 py-3 pixel-font text-xl font-bold uppercase border-2 border-beige-950 dark:border-beige-100 hover:bg-beige-200 dark:hover:bg-zinc-800';
+                        ? 'flex-1 bg-beige-950 text-white dark:bg-beige-100 dark:text-beige-950 py-3 pixel-font text-sm font-black uppercase border-2 border-beige-950 rounded-full'
+                        : 'flex-1 bg-transparent text-beige-950 dark:text-beige-100 py-3 pixel-font text-sm font-bold uppercase border-2 border-beige-950 dark:border-beige-100 hover:bg-beige-200 dark:hover:bg-zinc-800 rounded-full';
                     return '<button id="cjc-variant-' + v.key + '" onclick="selectCjcVariant(\'' + v.key + '\')" class="' + cls + '">'
                         + v.label + '<br><span class="text-2xl font-black">$' + v.price.toFixed(2) + '</span>'
                         + '</button>';
                 }).join('');
 
                 rightPanel = '<div>'
-                    + '<span class="pixel-font text-2xl bg-beige-950 text-white px-4 py-1 mb-4 inline-block">' + p.mg + '</span>'
-                    + '<h2 class="text-7xl font-black uppercase tracking-tighter mb-2 leading-none">' + p.name + '</h2>'
+                    + '<span class="pixel-font text-xs bg-beige-950 text-white px-4 py-2 mb-5 inline-block rounded-full uppercase tracking-[0.2em]">' + p.mg + '</span>'
+                    + '<h2 class="text-7xl font-black tracking-tighter mb-2 leading-none">' + p.name + '</h2>'
                     + '<div class="mb-4">' + expressHTML + '</div>'
-                    + '<p class="pixel-font text-xl uppercase font-bold mb-3 underline">Select Version</p>'
-                    + '<div class="flex gap-3 mb-3">' + variantButtons + '</div>'
+                    + '<p class="text-sm text-beige-800 mb-5">' + getProductSummary(p) + '</p>'
+                    + '<p class="pixel-font text-sm uppercase font-bold mb-3 tracking-[0.18em] opacity-60">Select version</p>'
+                    + '<div class="flex gap-3 mb-4">' + variantButtons + '</div>'
                     + (p.scaledPricing && p.scaledPricing.length ? buildPricingTableHTML(p) : '')
                     + '<p class="text-5xl font-black mt-4 mb-8" id="cjc-price">$' + activeVariant.price.toFixed(2) + '</p>'
                     + '<div class="flex items-center gap-4 mb-8">'
-                    + '<button onclick="updateLocalCount(' + id + ', -1)" class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 font-bold text-2xl hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950">-</button>'
-                    + '<span class="pixel-font text-3xl font-bold" id="detail-count-' + id + '">' + localCounts[id] + '</span>'
-                    + '<button onclick="updateLocalCount(' + id + ', 1)" class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 font-bold text-2xl hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950">+</button>'
+                    + '<button onclick="updateLocalCount(' + id + ', -1)" class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 font-bold text-2xl hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950 rounded-full">-</button>'
+                    + '<span class="pixel-font text-xl font-semibold" id="detail-count-' + id + '">' + localCounts[id] + '</span>'
+                    + '<button onclick="updateLocalCount(' + id + ', 1)" class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 font-bold text-2xl hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950 rounded-full">+</button>'
                     + '</div>'
-                    + '<button onclick="commitToCartWithVariant(' + id + ')" class="w-full bg-beige-950 text-white dark:bg-beige-100 dark:text-beige-950 py-6 font-bold uppercase tracking-widest hover:invert transition-all pixel-font text-2xl">Add to Request</button>'
+                    + '<button onclick="commitToCartWithVariant(' + id + ')" class="w-full bg-beige-950 text-white dark:bg-beige-100 dark:text-beige-950 py-5 font-semibold tracking-wide transition-all text-base rounded-full">Add to order</button>'
+                    + '<p class="mt-5 text-sm text-beige-800">Version selection changes the unit price immediately, and the cart will keep the entire tier in sync as quantity changes.</p>'
                     + '</div>';
             } else {
                 // PLAIN product layout
                 rightPanel = '<div>'
-                    + '<span class="pixel-font text-2xl bg-beige-950 text-white px-4 py-1 mb-4 inline-block">' + p.mg + '</span>'
-                    + '<h2 class="text-7xl font-black uppercase tracking-tighter mb-2 leading-none">' + p.name + '</h2>'
+                    + '<span class="pixel-font text-xs bg-beige-950 text-white px-4 py-2 mb-5 inline-block rounded-full uppercase tracking-[0.2em]">' + p.mg + '</span>'
+                    + '<h2 class="text-7xl font-black tracking-tighter mb-2 leading-none">' + p.name + '</h2>'
                     + '<div class="mb-4">' + expressHTML + '</div>'
+                    + '<p class="text-sm text-beige-800 mb-5">' + getProductSummary(p) + '</p>'
                     + '<p class="text-5xl font-black mb-2">$' + p.price + '</p>'
                     + (p.scaledPricing && p.scaledPricing.length ? buildPricingTableHTML(p) : '')
                     + '<div class="flex items-center gap-4 mt-6 mb-8">'
-                    + '<button onclick="updateLocalCount(' + id + ', -1)" class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 font-bold text-2xl hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950">-</button>'
-                    + '<span class="pixel-font text-3xl font-bold" id="detail-count-' + id + '">' + localCounts[id] + '</span>'
-                    + '<button onclick="updateLocalCount(' + id + ', 1)" class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 font-bold text-2xl hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950">+</button>'
+                    + '<button onclick="updateLocalCount(' + id + ', -1)" class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 font-bold text-2xl hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950 rounded-full">-</button>'
+                    + '<span class="pixel-font text-xl font-semibold" id="detail-count-' + id + '">' + localCounts[id] + '</span>'
+                    + '<button onclick="updateLocalCount(' + id + ', 1)" class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 font-bold text-2xl hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950 rounded-full">+</button>'
                     + '</div>'
-                    + '<button onclick="commitToCart(' + id + ')" class="w-full bg-beige-950 text-white dark:bg-beige-100 dark:text-beige-950 py-6 font-bold uppercase tracking-widest hover:invert transition-all pixel-font text-2xl">Add to Request</button>'
+                    + '<button onclick="commitToCart(' + id + ')" class="w-full bg-beige-950 text-white dark:bg-beige-100 dark:text-beige-950 py-5 font-semibold tracking-wide transition-all text-base rounded-full">Add to order</button>'
+                    + '<p class="mt-5 text-sm text-beige-800">Use the quantity controls here if you already know the order size, or return to the catalog and continue browsing first.</p>'
                     + '</div>';
             }
 
@@ -2040,14 +2642,14 @@ if (!localCounts[id]) localCounts[id] = 0;
             var pricingHTML = (sv.scaledPricing && sv.scaledPricing.length)
                 ? buildPricingTableHTML(p, null, sv.scaledPricing)
                 : '';
-            return '<p class="text-5xl font-black mb-2" id="size-price-' + id + '">$' + sv.price.toFixed(2) + '</p>'
+            return '<p class="text-5xl font-black mb-2 tracking-tight" id="size-price-' + id + '">$' + sv.price.toFixed(2) + '</p>'
                 + pricingHTML
                 + '<div class="flex items-center gap-4 mt-6 mb-8">'
-                + '<button onclick="updateLocalCount(' + id + ', -1)" class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 font-bold text-2xl hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950">-</button>'
-                + '<span class="pixel-font text-3xl font-bold" id="detail-count-' + id + '">' + localCounts[id] + '</span>'
-                + '<button onclick="updateLocalCount(' + id + ', 1)" class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 font-bold text-2xl hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950">+</button>'
+                + '<button onclick="updateLocalCount(' + id + ', -1)" class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 font-bold text-2xl hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950 rounded-full">-</button>'
+                + '<span class="pixel-font text-xl font-semibold" id="detail-count-' + id + '">' + localCounts[id] + '</span>'
+                + '<button onclick="updateLocalCount(' + id + ', 1)" class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 font-bold text-2xl hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950 rounded-full">+</button>'
                 + '</div>'
-                + '<button onclick="commitToCartSizeVariant(' + id + ')" class="w-full bg-beige-950 text-white dark:bg-beige-100 dark:text-beige-950 py-6 font-bold uppercase tracking-widest hover:invert transition-all pixel-font text-2xl">Add to Request</button>';
+                + '<button onclick="commitToCartSizeVariant(' + id + ')" class="w-full bg-beige-950 text-white dark:bg-beige-100 dark:text-beige-950 py-5 font-semibold tracking-wide transition-all text-base rounded-full">Add to order</button>';
         }
 
         function selectSizeVariant(id, si) {
@@ -2060,9 +2662,9 @@ if (!localCounts[id]) localCounts[id] = 0;
                 var btns = group.querySelectorAll('button');
                 btns.forEach(function(btn, i) {
                     if (i === si) {
-                        btn.className = 'px-4 py-2 bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 pixel-font text-lg font-black uppercase border-2 border-beige-950 dark:border-beige-100 transition-all';
+                        btn.className = 'px-4 py-3 bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 pixel-font text-sm font-black uppercase border-2 border-beige-950 dark:border-beige-100 transition-all rounded-full';
                     } else {
-                        btn.className = 'px-4 py-2 bg-transparent text-beige-950 dark:text-beige-100 pixel-font text-lg font-bold uppercase border-2 border-beige-950 dark:border-beige-100 hover:bg-beige-200 dark:hover:bg-zinc-800 transition-all';
+                        btn.className = 'px-4 py-3 bg-transparent text-beige-950 dark:text-beige-100 pixel-font text-sm font-bold uppercase border-2 border-beige-950 dark:border-beige-100 hover:bg-beige-200 dark:hover:bg-zinc-800 transition-all rounded-full';
                     }
                 });
             }
@@ -2237,33 +2839,36 @@ if (!localCounts[id]) localCounts[id] = 0;
         function getVialSVG(color, abbrev, size) {
             var cls = size === 'lg' ? 'w-64 h-64' : size === 'xs' ? 'w-10 h-10' : 'w-32 h-32';
             return '<svg viewBox="0 0 16 20" class="' + cls + '" xmlns="http://www.w3.org/2000/svg">'
-                + '<rect x="5" y="1" width="6" height="3" fill="#333" stroke="#1C1C16" stroke-width="0.3"/>'
-                + '<rect x="6" y="4" width="4" height="2" fill="#DDD" stroke="#1C1C16" stroke-width="0.3"/>'
-                + '<rect x="4" y="6" width="8" height="11" fill="#FFF" stroke="#1C1C16" stroke-width="0.3"/>'
-                + '<rect x="5" y="7" width="1" height="9" fill="#EEE"/>'
-                + '<rect x="6" y="13" width="4" height="3" fill="' + color + '"/>'
-                + '<rect x="5" y="8" width="6" height="4" fill="#E8E8C8"/>'
-                + (size !== 'xs' ? '<text x="8" y="11" font-family="VT323, monospace" font-size="2.8" fill="#1C1C16" text-anchor="middle" letter-spacing="0.0">' + abbrev + '</text>' : '')
+                + '<defs><linearGradient id="glass-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.96"/><stop offset="55%" stop-color="#f8f6f1" stop-opacity="0.98"/><stop offset="100%" stop-color="#e7e0d4" stop-opacity="1"/></linearGradient><linearGradient id="cap-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#3a4650"/><stop offset="100%" stop-color="#171717"/></linearGradient><linearGradient id="liquid-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="' + color + '" stop-opacity="0.96"/><stop offset="100%" stop-color="' + color + '" stop-opacity="0.72"/></linearGradient></defs>'
+                + '<rect x="5" y="1" width="6" height="3" rx="0.6" fill="url(#cap-' + abbrev + size + ')" stroke="#1C1C16" stroke-width="0.28"/>'
+                + '<rect x="6" y="4" width="4" height="2" rx="0.45" fill="#d5dde1" stroke="#1C1C16" stroke-width="0.26"/>'
+                + '<rect x="4" y="6" width="8" height="11" rx="1" fill="url(#glass-' + abbrev + size + ')" stroke="#1C1C16" stroke-width="0.3"/>'
+                + '<rect x="4.7" y="6.8" width="1" height="9" rx="0.4" fill="#ffffff" opacity="0.74"/>'
+                + '<rect x="6" y="12.8" width="4" height="3.2" rx="0.4" fill="url(#liquid-' + abbrev + size + ')"/>'
+                + '<rect x="5.2" y="8" width="5.6" height="4.2" rx="0.45" fill="#edf0eb"/>'
+                + '<path d="M4.4 9.2 L11.6 7.3" stroke="rgba(255,255,255,0.7)" stroke-width="0.35"/>'
+                + (size !== 'xs' ? '<text x="8" y="10.95" font-family="IBM Plex Mono, monospace" font-size="2.15" font-weight="600" fill="#1C1C16" text-anchor="middle" letter-spacing="0.08">' + abbrev + '</text>' : '')
                 + '</svg>';
         }
 
         function getPillBottleSVG(color, abbrev, size) {
             var cls = size === 'lg' ? 'w-64 h-64' : size === 'xs' ? 'w-10 h-10' : 'w-32 h-32';
             return '<svg viewBox="0 0 20 24" class="' + cls + '" xmlns="http://www.w3.org/2000/svg">'
-                + '<rect x="4" y="1" width="12" height="4" fill="#333" stroke="#1C1C16" stroke-width="0.3"/>'
-                + '<rect x="5" y="1" width="1" height="4" fill="#555"/>'
-                + '<rect x="8" y="1" width="1" height="4" fill="#555"/>'
-                + '<rect x="11" y="1" width="1" height="4" fill="#555"/>'
-                + '<rect x="14" y="1" width="1" height="4" fill="#555"/>'
-                + '<rect x="6" y="5" width="8" height="2" fill="#DDD" stroke="#1C1C16" stroke-width="0.3"/>'
-                + '<rect x="3" y="7" width="14" height="15" fill="#FFF" stroke="#1C1C16" stroke-width="0.3"/>'
-                + '<rect x="4" y="9" width="12" height="8" fill="#E8E8C8"/>'
-                + '<rect x="3" y="19" width="14" height="3" fill="' + color + '"/>'
-                + '<rect x="4" y="7" width="1" height="15" fill="#EEE"/>'
-                + (size !== 'xs' ? '<text x="10" y="14" font-family="VT323, monospace" font-size="3.5" fill="#1C1C16" text-anchor="middle" letter-spacing="0.0">' + abbrev + '</text>' : '')
-                + '<rect x="6" y="10" width="2" height="1" rx="0.5" fill="' + color + '" opacity="0.7"/>'
-                + '<rect x="9" y="10" width="2" height="1" rx="0.5" fill="' + color + '" opacity="0.7"/>'
-                + '<rect x="12" y="10" width="2" height="1" rx="0.5" fill="' + color + '" opacity="0.7"/>'
+                + '<defs><linearGradient id="bottle-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#e8e0d4"/></linearGradient><linearGradient id="pillcap-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#42505c"/><stop offset="100%" stop-color="#171717"/></linearGradient></defs>'
+                + '<rect x="4" y="1" width="12" height="4" rx="0.8" fill="url(#pillcap-' + abbrev + size + ')" stroke="#1C1C16" stroke-width="0.3"/>'
+                + '<rect x="5" y="1.4" width="1" height="3.2" fill="#64727d" opacity="0.65"/>'
+                + '<rect x="8" y="1.4" width="1" height="3.2" fill="#64727d" opacity="0.65"/>'
+                + '<rect x="11" y="1.4" width="1" height="3.2" fill="#64727d" opacity="0.65"/>'
+                + '<rect x="14" y="1.4" width="1" height="3.2" fill="#64727d" opacity="0.65"/>'
+                + '<rect x="6" y="5" width="8" height="2" rx="0.45" fill="#d6dde2" stroke="#1C1C16" stroke-width="0.3"/>'
+                + '<rect x="3" y="7" width="14" height="15" rx="1.2" fill="url(#bottle-' + abbrev + size + ')" stroke="#1C1C16" stroke-width="0.3"/>'
+                + '<rect x="4" y="9" width="12" height="8" rx="0.7" fill="#ece9e1"/>'
+                + '<rect x="3" y="19" width="14" height="3" rx="0.7" fill="' + color + '" opacity="0.88"/>'
+                + '<rect x="4" y="7.6" width="1" height="13.6" rx="0.5" fill="#fff" opacity="0.75"/>'
+                + (size !== 'xs' ? '<text x="10" y="13.85" font-family="IBM Plex Mono, monospace" font-size="2.7" font-weight="600" fill="#1C1C16" text-anchor="middle" letter-spacing="0.08">' + abbrev + '</text>' : '')
+                + '<rect x="6" y="10" width="2" height="1" rx="0.5" fill="' + color + '" opacity="0.65"/>'
+                + '<rect x="9" y="10" width="2" height="1" rx="0.5" fill="' + color + '" opacity="0.65"/>'
+                + '<rect x="12" y="10" width="2" height="1" rx="0.5" fill="' + color + '" opacity="0.65"/>'
                 + '</svg>';
         }
 
@@ -2272,20 +2877,54 @@ if (!localCounts[id]) localCounts[id] = 0;
             return getVialSVG(p.color, p.abbrev, size);
         }
 
+        function getProductSummary(p) {
+            var category = getProductCategory(p);
+            if (category === 'tablet') return 'Oral-format research item with the same clear pricing, shipping, and ordering guidance as the injectable catalog.';
+            if (category === 'support') return 'Support item intended to complement a broader order, with shipping and quantity guidance kept straightforward.';
+            return 'Research compound presented with size or version choices first, followed by live pricing and quantity controls.';
+        }
+
+        function getProductCategory(p) {
+            if (p.graphic === 'pill') return 'tablet';
+            if ((p.name || '').toLowerCase().includes('water')) return 'support';
+            return 'injectable';
+        }
+
+        function setCatalogSearch(term) {
+            var input = document.getElementById('catalog-search');
+            if (input) input.value = term;
+            filterProducts();
+        }
+
+        function getCartGroupKey(item) {
+            return item.id + '|' + (item.variantKey || item.sizeKey || item.name);
+        }
+
         function renderProductGrid(productsToRender) {
             var grid = document.getElementById('product-grid');
+            var feedback = document.getElementById('catalog-feedback');
             grid.innerHTML = '';
+            if (feedback) {
+                feedback.innerText = productsToRender.length
+                    ? productsToRender.length + ' product' + (productsToRender.length === 1 ? '' : 's') + ' shown. Select a product for more detail or add directly from the grid.'
+                    : 'No products match the current filters. Try clearing one filter or searching a broader term.';
+            }
+            if (!productsToRender.length) {
+                grid.innerHTML = '<div class="md:col-span-3 editorial-panel p-10 text-center"><p class="pixel-font text-xs uppercase tracking-[0.2em] opacity-50 mb-3">No matching results</p><p class="text-lg font-semibold mb-2">Try a different search, category, or shipping filter.</p><p class="text-sm text-beige-800">Popular starting points include GHK, BPC-157, Retatrutide, and CJC.</p></div>';
+                return;
+            }
             productsToRender.forEach(function(p) {
                 if (!(p.id in localCounts)) localCounts[p.id] = 0;
                 var expressTag = p.expressEligible
                     ? '<span class="pixel-font text-sm text-orange-500 font-bold uppercase">&#9889; Express eligible</span>'
                     : '<span class="pixel-font text-sm text-gray-400 font-bold uppercase">&#128230; Standard only</span>';
+                var category = getProductCategory(p);
                 grid.innerHTML +=
-                    '<div onclick="showProductDetail(' + p.id + ')" class="product-card bg-white p-6 border-2 border-beige-950 flex flex-col items-center hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] transition-all cursor-pointer">'
+                    '<div onclick="showProductDetail(' + p.id + ')" class="product-card bg-white p-7 border-2 border-beige-950 flex flex-col items-center transition-all cursor-pointer">'
                     + '<div class="mb-4">' + getProductSVG(p, 'sm') + '</div>'
-                    + '<div class="w-full flex justify-between mb-1"><h3 class="font-extrabold text-2xl uppercase">' + p.name + '</h3><span class="pixel-font text-xl bg-beige-950 text-white px-2">' + (p.sizeVariants && p.sizeVariants.length ? p.sizeVariants.map(function(sv){return sv.label;}).join(' / ') : p.mg) + '</span></div>'
-                    + '<div class="w-full mb-2">' + expressTag + '</div>'
-                    + '<p class="w-full text-2xl font-black mb-1">' + (p.sizeVariants && p.sizeVariants.length
+                    + '<div class="w-full flex justify-between items-start gap-3 mb-2"><h3 class="font-extrabold text-[1.35rem] leading-tight">' + p.name + '</h3><span class="pixel-font text-xs bg-beige-950 text-white px-3 py-1 rounded-full">' + (p.sizeVariants && p.sizeVariants.length ? p.sizeVariants.map(function(sv){return sv.label;}).join(' / ') : p.mg) + '</span></div>'
+                    + '<div class="w-full mb-2 flex items-center justify-between gap-2">' + expressTag + '<span class="pixel-font text-[11px] uppercase tracking-[0.18em] opacity-40">' + category + '</span></div>'
+                    + '<p class="w-full text-3xl font-black mb-2 tracking-tight">' + (p.sizeVariants && p.sizeVariants.length
                         ? 'From $' + Math.min.apply(null, p.sizeVariants.map(function(sv){return sv.price;})).toFixed(2)
                         : (p.variants ? '$' + p.variants[p.variants.length-1].price.toFixed(2) + ' — $' + p.variants[0].price.toFixed(2)
                         : (p.scaledPricing && p.scaledPricing.length ? 'From $' + Math.min.apply(null, p.scaledPricing.map(function(t){return t.price;})).toFixed(2) : '$' + p.price))) + '</p>'
@@ -2295,7 +2934,7 @@ if (!localCounts[id]) localCounts[id] = 0;
                                   return '<span class="pixel-font text-xs font-bold whitespace-nowrap border border-beige-950/20 dark:border-beige-100/20 px-1.5 py-0.5">' + sv.label + ' <span class="opacity-60">$' + sv.price.toFixed(2) + '</span></span>';
                               }).join('');
                               var extra = p.sizeVariants.length > 4 ? '<span class="pixel-font text-xs opacity-40 font-bold">+' + (p.sizeVariants.length - 4) + ' more</span>' : '';
-                              return '<div class="w-full mb-3 flex flex-wrap items-center gap-1"><span class="pixel-font text-xs font-black uppercase tracking-widest opacity-40 mr-1">Sizes</span>' + chips + extra + '</div>';
+                              return '<div class="w-full mb-4 flex flex-wrap items-center gap-1.5"><span class="pixel-font text-[11px] font-black uppercase tracking-[0.18em] opacity-40 mr-1">Sizes</span>' + chips + extra + '</div>';
                           })()
                         : (p.scaledPricing && p.scaledPricing.length
                             ? (function() {
@@ -2308,20 +2947,20 @@ if (!localCounts[id]) localCounts[id] = 0;
                                           + (isLast ? t.minQty + '+' : t.minQty)
                                           + ' <span class="opacity-60">$' + t.price.toFixed(2) + '</span></span>';
                                   }).join('');
-                                  return '<div class="w-full mb-3 flex flex-wrap items-center gap-1"><span class="pixel-font text-xs font-black uppercase tracking-widest opacity-40 mr-1">Vol.</span>' + chips + (hasMore ? '<span class="pixel-font text-xs opacity-40 font-bold">+' + (sorted.length - 4) + ' more</span>' : '') + '</div>';
+                                  return '<div class="w-full mb-4 flex flex-wrap items-center gap-1.5"><span class="pixel-font text-[11px] font-black uppercase tracking-[0.18em] opacity-40 mr-1">Volume</span>' + chips + (hasMore ? '<span class="pixel-font text-xs opacity-40 font-bold">+' + (sorted.length - 4) + ' more</span>' : '') + '</div>';
                               })()
-                            : '<div class="mb-3"></div>'
+                            : '<div class="mb-4"></div>'
                           )
                       )
-                    + '<div class="flex w-full items-center justify-between gap-2 mb-4" onclick="event.stopPropagation()">'
+                    + '<div class="flex w-full items-center justify-between gap-2 mb-1" onclick="event.stopPropagation()">'
                     + '<div class="flex items-center gap-3">'
-                    + '<button onclick="updateLocalCount(' + p.id + ', -1)" class="w-8 h-8 border border-beige-950 dark:border-beige-100 flex items-center justify-center font-bold hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950">-</button>'
-                    + '<span class="pixel-font text-xl font-bold" id="grid-count-' + p.id + '">' + localCounts[p.id] + '</span>'
-                    + '<button onclick="updateLocalCount(' + p.id + ', 1)" class="w-8 h-8 border border-beige-950 dark:border-beige-100 flex items-center justify-center font-bold hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950">+</button>'
+                    + '<button onclick="updateLocalCount(' + p.id + ', -1)" class="w-9 h-9 border border-beige-950 dark:border-beige-100 flex items-center justify-center font-bold hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950 rounded-full">-</button>'
+                    + '<span class="pixel-font text-base font-semibold" id="grid-count-' + p.id + '">' + localCounts[p.id] + '</span>'
+                    + '<button onclick="updateLocalCount(' + p.id + ', 1)" class="w-9 h-9 border border-beige-950 dark:border-beige-100 flex items-center justify-center font-bold hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950 rounded-full">+</button>'
                     + '</div>'
                     + (p.variants || p.sizeVariants
-                        ? '<button onclick="showProductDetail(' + p.id + ')" class="flex-grow border-2 border-beige-950 dark:border-beige-100 py-2 font-bold uppercase tracking-widest hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950 transition pixel-font text-lg">' + (p.sizeVariants ? 'Select Size' : 'Select Version') + '</button>'
-                        : '<button onclick="commitToCart(' + p.id + ')" class="flex-grow border-2 border-beige-950 dark:border-beige-100 py-2 font-bold uppercase tracking-widest hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950 transition pixel-font text-lg">Add</button>'
+                        ? '<button onclick="showProductDetail(' + p.id + ')" class="flex-grow border-2 border-beige-950 dark:border-beige-100 py-3 font-semibold tracking-wide hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950 transition text-sm rounded-full">' + (p.sizeVariants ? 'Select size' : 'Select version') + '</button>'
+                        : '<button onclick="commitToCart(' + p.id + ')" class="flex-grow border-2 border-beige-950 dark:border-beige-100 py-3 font-semibold tracking-wide hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950 transition text-sm rounded-full">Add to order</button>'
                       )
                     + '</div></div>';
             });
@@ -2347,10 +2986,12 @@ if (!localCounts[id]) localCounts[id] = 0;
         function filterProducts() {
             var term = document.getElementById('catalog-search') ? document.getElementById('catalog-search').value.toLowerCase() : '';
             var sortVal = document.getElementById('catalog-sort') ? document.getElementById('catalog-sort').value : 'default';
+            var categoryVal = document.getElementById('catalog-category') ? document.getElementById('catalog-category').value : 'all';
             var filtered = products.filter(function(p) {
-                var matchText = p.name.toLowerCase().includes(term) || p.abbrev.toLowerCase().includes(term);
+                var matchText = p.name.toLowerCase().includes(term) || p.abbrev.toLowerCase().includes(term) || (p.mg || '').toLowerCase().includes(term);
                 var matchExpress = !expressFilterActive || p.expressEligible;
-                return matchText && matchExpress;
+                var matchCategory = categoryVal === 'all' || getProductCategory(p) === categoryVal;
+                return matchText && matchExpress && matchCategory;
             });
             // Sort
             if (sortVal === 'price-asc') filtered.sort(function(a,b){ return a.price - b.price; });
@@ -2402,6 +3043,7 @@ if (!localCounts[id]) localCounts[id] = 0;
 
             // Dim express option if cart is not eligible
             var eligible = cartIsExpressEligible();
+            var eligibilityMessage = document.getElementById('shipping-eligibility-message');
             document.querySelectorAll('input[id$="-express"]').forEach(function(r) { r.disabled = !eligible; });
             document.querySelectorAll('label[for$="-express"]').forEach(function(lbl) {
                 if (!eligible) {
@@ -2414,18 +3056,29 @@ if (!localCounts[id]) localCounts[id] = 0;
                     lbl.title = '';
                 }
             });
+            if (eligibilityMessage) {
+                eligibilityMessage.innerText = eligible
+                    ? 'Express remains available for the current order.'
+                    : 'Express is disabled because one or more selected items require standard delivery.';
+            }
 
             var shippingCost = getShippingCost();
             var total = sub > 0 ? sub + shippingCost : 0;
             document.getElementById('cart-total').innerText = '$' + total.toFixed(2);
 
             var grouped = cart.reduce(function(acc, curr) {
-                if (!acc[curr.id]) acc[curr.id] = Object.assign({}, curr, { count: 0 });
-                acc[curr.id].count += 1;
+                var groupKey = getCartGroupKey(curr);
+                if (!acc[groupKey]) acc[groupKey] = Object.assign({}, curr, { count: 0 });
+                acc[groupKey].count += 1;
                 return acc;
             }, {});
 
             var cont = document.getElementById('cart-items');
+            if (!cart.length) {
+                cont.innerHTML = '<div class="editorial-panel p-5"><p class="pixel-font text-xs uppercase tracking-[0.2em] opacity-50 mb-2">Cart is empty</p><p class="text-sm text-beige-800">Add products from the catalog to build an order. Volume pricing updates automatically as quantities change.</p></div>';
+                updateOrderSummary();
+                return;
+            }
             cont.innerHTML = Object.values(grouped).map(function(i) {
                 // 2. Find product for thumbnail graphic
                 var prod = products.find(function(x) { return x.id === i.id; });
@@ -2438,20 +3091,16 @@ if (!localCounts[id]) localCounts[id] = 0;
                     + thumbSVG
                     + '<div class="flex-grow min-w-0">'
                     + '<p class="font-extrabold text-base uppercase leading-tight truncate">' + i.name + '</p>'
-                    + '<p class="text-xs opacity-60">Qty: ' + i.count + ' · $' + lineTotal + '</p>'
+                    + '<p class="text-xs opacity-60">Qty: ' + i.count + ' · $' + lineTotal + (i.variantLabel ? ' · ' + i.variantLabel : '') + (i.sizeLabel ? ' · ' + i.sizeLabel : '') + '</p>'
                     + '</div>'
-                    + '<button onclick="removeFromCart(' + i.id + ')" class="ml-2 shrink-0 w-6 h-6 border border-beige-950 dark:border-beige-100 hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950 text-sm flex items-center justify-center">×</button>'
+                    + '<button onclick="removeCartGroupItem(' + JSON.stringify(getCartGroupKey(i)) + ')" class="ml-2 shrink-0 w-6 h-6 border border-beige-950 dark:border-beige-100 hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950 text-sm flex items-center justify-center">×</button>'
                     + '</div>';
             }).join('');
             lucide.createIcons();
             updateOrderSummary();
         }
 
-        function removeFromCart(id) {
-            var index = cart.findLastIndex(function(item) { return item.id === id; });
-            if (index !== -1) cart.splice(index, 1);
-
-            // Reprice remaining units of this product at the new total qty tier
+        function repriceProductInCart(id) {
             var p = products.find(function(x) { return x.id === id; });
             if (!p) { updateCartUI(); return; }
 
@@ -2484,6 +3133,23 @@ if (!localCounts[id]) localCounts[id] = 0;
             updateCartUI();
         }
 
+        function removeCartGroupItem(groupKey) {
+            var index = -1;
+            for (var i = cart.length - 1; i >= 0; i--) {
+                if (getCartGroupKey(cart[i]) === groupKey) { index = i; break; }
+            }
+            if (index === -1) return;
+            var removed = cart[index];
+            cart.splice(index, 1);
+            repriceProductInCart(removed.id);
+        }
+
+        function removeFromCart(id) {
+            var index = cart.findLastIndex(function(item) { return item.id === id; });
+            if (index !== -1) cart.splice(index, 1);
+            repriceProductInCart(id);
+        }
+
         function clearCart() { cart = []; updateCartUI(); }
         function toggleCart() {
             var sidebar = document.getElementById('cart-sidebar');
@@ -2493,17 +3159,23 @@ if (!localCounts[id]) localCounts[id] = 0;
 
         function updateOrderSummary() {
             var list = document.getElementById('order-summary-list');
+            var meta = document.getElementById('order-summary-meta');
             var sub = cart.reduce(function(s, i) { return s + i.price; }, 0);
             var shippingCost = getShippingCost();
             var totalText = sub > 0 ? '$' + (sub + shippingCost).toFixed(2) : '$0.00';
             document.querySelectorAll('.order-summary-total-val').forEach(function(el) { el.innerText = totalText; });
 
             if (!list) return;
-            if (cart.length === 0) { list.innerHTML = 'No items selected.'; return; }
+            if (cart.length === 0) {
+                list.innerHTML = '<div class="editorial-panel p-5"><p class="pixel-font text-xs uppercase tracking-[0.2em] opacity-50 mb-2">No items selected</p><p class="text-sm text-beige-800">Browse the catalog to add products, then return here to review shipping and totals.</p></div>';
+                if (meta) meta.innerText = 'Your order summary will update live as you add or remove products.';
+                return;
+            }
 
             var grouped = cart.reduce(function(acc, curr) {
-                if (!acc[curr.id]) acc[curr.id] = Object.assign({}, curr, { count: 0 });
-                acc[curr.id].count += 1;
+                var groupKey = getCartGroupKey(curr);
+                if (!acc[groupKey]) acc[groupKey] = Object.assign({}, curr, { count: 0 });
+                acc[groupKey].count += 1;
                 return acc;
             }, {});
 
@@ -2513,7 +3185,7 @@ if (!localCounts[id]) localCounts[id] = 0;
             var summaryHTML = Object.values(grouped).map(function(i) {
                 return '<div class="flex justify-between items-center group">'
                     + '<div class="flex items-center gap-3">'
-                    + '<button onclick="removeFromCart(' + i.id + ')" class="text-[10px] border border-beige-950 px-2 py-0.5 hover:bg-beige-950 hover:text-white transition-colors">REMOVE ONE</button>'
+                    + '<button onclick="removeCartGroupItem(' + JSON.stringify(getCartGroupKey(i)) + ')" class="text-[10px] border border-beige-950 px-2 py-0.5 hover:bg-beige-950 hover:text-white transition-colors">REMOVE ONE</button>'
                     + '<span class="font-extrabold uppercase">' + i.name + ' (x' + i.count + ')</span>'
                     + '</div>'
                     + '<span>$' + (i.price * i.count).toFixed(2) + '</span>'
@@ -2526,6 +3198,7 @@ if (!localCounts[id]) localCounts[id] = 0;
                 + '</div>';
 
             list.innerHTML = summaryHTML;
+            if (meta) meta.innerText = 'Items: ' + cart.length + ' total units. Shipping is ' + shippingOpt.label.toLowerCase() + ' and can still be edited before payment.';
         }
 
         function openImage(src) {
@@ -3405,8 +4078,11 @@ if (!localCounts[id]) localCounts[id] = 0;
             resultEl.classList.add('hidden');
             if (!code) { errEl.innerText = 'Please enter an order code.'; errEl.classList.remove('hidden'); return; }
             try {
+                errEl.innerText = 'Looking up order details…';
+                errEl.classList.remove('hidden');
                 var r = await supabaseClient.from('orders').select('*').eq('order_id', code).single();
                 if (r.error || !r.data) { errEl.innerText = 'No order found with that code. Please check and try again.'; errEl.classList.remove('hidden'); return; }
+                errEl.classList.add('hidden');
                 renderTrackingResult(r.data);
             } catch(e) { errEl.innerText = 'Could not connect. Please try again.'; errEl.classList.remove('hidden'); }
         }
@@ -3442,6 +4118,13 @@ if (!localCounts[id]) localCounts[id] = 0;
             var cur = ORDER_STATUSES[statusIdx];
             pipeHtml += '<div class="mt-6 px-5 py-3 bg-beige-50 dark:bg-zinc-800 border-l-4 border-beige-950 dark:border-beige-100"><p class="pixel-font text-sm uppercase font-bold mb-0.5">' + cur.label + '</p><p class="pixel-font text-xs opacity-60">' + cur.desc + '</p></div>';
             pipelineEl.innerHTML = pipeHtml;
+            var nextEl = document.getElementById('tracking-next-step');
+            if (nextEl) {
+                var nextStatus = ORDER_STATUSES[statusIdx + 1];
+                nextEl.innerText = nextStatus
+                    ? 'Next expected step: ' + nextStatus.label + '. Keep this order code handy in case you need support.'
+                    : 'This order has reached its final recorded stage. If anything looks incorrect, contact support with the order code and payment proof.';
+            }
 
             document.getElementById('receipt-order-id').innerText = o.order_id || '—';
             document.getElementById('receipt-date').innerText = o.created_at ? new Date(o.created_at).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) : '—';
