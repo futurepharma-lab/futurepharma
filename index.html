@@ -215,10 +215,9 @@
         }
         #site-edit-toolbar {
             position: fixed;
-            left: 50%;
-            bottom: 24px;
-            transform: translateX(-50%);
-            width: min(92vw, 760px);
+            left: 24px;
+            top: 96px;
+            width: min(92vw, 820px);
             z-index: 950;
             border: 1px solid var(--line);
             background: color-mix(in srgb, var(--surface) 92%, white 8%);
@@ -248,6 +247,80 @@
             font-size: 12px;
             letter-spacing: 0.08em;
             text-transform: uppercase;
+        }
+        .site-edit-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 16px 18px 0;
+            cursor: move;
+        }
+        .site-edit-panel-body {
+            padding: 14px 18px 18px;
+        }
+        .site-edit-toolbar-collapsed .site-edit-panel-body {
+            display: none;
+        }
+        .site-edit-toolbar-collapsed .site-edit-header {
+            padding-bottom: 16px;
+        }
+        .site-edit-tab {
+            border: 1px solid var(--line);
+            background: transparent;
+            color: var(--muted);
+            border-radius: 999px;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .site-edit-tab.active {
+            background: var(--text);
+            color: var(--surface);
+            border-color: var(--text);
+        }
+        .site-edit-pane { display: none; }
+        .site-edit-pane.active { display: block; }
+        .ai-chat-thread {
+            max-height: 280px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .ai-chat-bubble {
+            border: 1px solid var(--line);
+            background: var(--surface);
+            border-radius: 18px;
+            padding: 12px 14px;
+            font-size: 14px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+        .ai-chat-bubble.user {
+            background: var(--accent-soft);
+            border-color: transparent;
+        }
+        .ai-chat-bubble.assistant {
+            background: color-mix(in srgb, var(--surface) 92%, white 8%);
+        }
+        .ai-chat-meta {
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+        @media (max-width: 900px) {
+            #site-edit-toolbar {
+                left: 12px !important;
+                right: 12px;
+                top: auto !important;
+                bottom: 12px;
+                width: auto;
+            }
         }
         .site-builder-mode-active [data-builder-key] {
             outline: 1px dashed rgba(93, 124, 145, 0.28);
@@ -2163,8 +2236,8 @@
                 <div class="grid lg:grid-cols-[1.15fr_0.85fr] gap-6">
                     <div class="bg-white dark:bg-zinc-900 border-2 border-beige-950 dark:border-beige-100 rounded-[28px] p-8">
                         <p class="pixel-font text-xs uppercase tracking-[0.2em] opacity-50 mb-3">Edit mode</p>
-                        <h2 class="text-3xl font-black tracking-tight mb-4 text-beige-950 dark:text-beige-100">Click text on the site, rewrite it, and publish the update.</h2>
-                        <p class="text-sm text-beige-800 dark:text-beige-200 leading-relaxed mb-6">This mode edits marked text blocks only. Changes are saved to shared content storage when the `site_content` table is available, so everyone loading the site sees the updated copy.</p>
+                        <h2 class="text-3xl font-black tracking-tight mb-4 text-beige-950 dark:text-beige-100">Edit copy directly on the site, or use the assistant to improve it.</h2>
+                        <p class="text-sm text-beige-800 dark:text-beige-200 leading-relaxed mb-6">Edit mode is designed for quick copy updates across the storefront. Changes are saved to shared content storage when the `site_content` table is available, so everyone loading the site sees the updated copy.</p>
                         <div class="flex flex-wrap gap-3 mb-6">
                             <button onclick="startSiteEditMode()" class="bg-beige-950 dark:bg-beige-100 text-white dark:text-beige-950 px-6 py-3 font-semibold tracking-wide rounded-full">Start edit mode</button>
                             <button onclick="stopSiteEditMode(true)" class="border-2 border-beige-950 dark:border-beige-100 text-beige-950 dark:text-beige-100 px-6 py-3 font-semibold tracking-wide rounded-full">Stop edit mode</button>
@@ -2219,16 +2292,25 @@
     </div>
 
     <div id="site-edit-toolbar" class="hidden">
-        <div class="p-5 md:p-6">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
-                <div>
-                    <div class="site-edit-pill pixel-font">
-                        <span>Edit Mode</span>
-                        <span id="site-edit-current-label" class="opacity-70">Select text</span>
-                    </div>
-                    <p id="site-edit-current-key" class="text-xs mt-3 text-beige-800 dark:text-beige-200"></p>
+        <div class="site-edit-header" id="site-edit-drag-handle">
+            <div>
+                <div class="site-edit-pill pixel-font">
+                    <span>Edit Mode</span>
+                    <span id="site-edit-current-label" class="opacity-70">Select text</span>
                 </div>
-                <div class="flex flex-wrap gap-2">
+                <p id="site-edit-current-key" class="text-xs mt-3 text-beige-800 dark:text-beige-200"></p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <button type="button" class="site-edit-tab active" id="site-edit-tab-copy" onclick="setEditPanelTab('copy')">Copy</button>
+                <button type="button" class="site-edit-tab" id="site-edit-tab-ai" onclick="setEditPanelTab('ai')">AI Assistant</button>
+                <button type="button" onclick="toggleSiteEditToolbarCollapse()" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold">Collapse</button>
+                <button type="button" onclick="returnToAdminEditTab()" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold">Admin</button>
+                <button type="button" onclick="stopSiteEditMode()" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold">Close</button>
+            </div>
+        </div>
+        <div class="site-edit-panel-body">
+            <div id="site-edit-pane-copy" class="site-edit-pane active">
+                <div class="flex flex-wrap gap-2 mb-4">
                     <select id="site-edit-page-select" onchange="setSiteEditPage(this.value, { clearTarget: true })" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold bg-white dark:bg-zinc-900 text-beige-950 dark:text-beige-100 outline-none">
                         <option value="home">Home</option>
                         <option value="peptides">Catalog</option>
@@ -2241,17 +2323,46 @@
                     </select>
                     <button onclick="selectPreviousEditableText()" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold">Previous</button>
                     <button onclick="selectNextEditableText()" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold">Next</button>
-                    <button onclick="returnToAdminEditTab()" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold">Admin</button>
-                    <button onclick="stopSiteEditMode()" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold">Close</button>
+                </div>
+                <input id="site-edit-search" oninput="syncSiteEditSearch(); renderEditableContentList()" type="text" placeholder="Search current page text" class="w-full rounded-[16px] border border-beige-950/15 dark:border-beige-100/15 bg-white dark:bg-zinc-900 px-4 py-3 outline-none text-sm text-beige-950 dark:text-beige-100 mb-4">
+                <textarea id="site-edit-input" class="w-full rounded-[20px] border border-beige-950/15 dark:border-beige-100/15 bg-white dark:bg-zinc-900 px-4 py-4 outline-none text-base text-beige-950 dark:text-beige-100" placeholder="Click a highlighted text block to edit it."></textarea>
+                <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+                    <p id="site-edit-message" class="text-sm text-beige-800 dark:text-beige-200">Click text on the page or use search and next/previous to move through copy quickly.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <button id="site-edit-reset-btn" onclick="resetActiveSiteText()" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold" disabled>Reset</button>
+                        <button id="site-edit-save-btn" onclick="saveActiveSiteText()" class="bg-beige-950 dark:bg-beige-100 text-beige-50 dark:text-beige-950 px-5 py-2.5 rounded-full text-sm font-semibold" disabled>Save for everyone</button>
+                    </div>
                 </div>
             </div>
-            <input id="site-edit-search" oninput="syncSiteEditSearch(); renderEditableContentList()" type="text" placeholder="Search current page text" class="w-full rounded-[16px] border border-beige-950/15 dark:border-beige-100/15 bg-white dark:bg-zinc-900 px-4 py-3 outline-none text-sm text-beige-950 dark:text-beige-100 mb-4">
-            <textarea id="site-edit-input" class="w-full rounded-[20px] border border-beige-950/15 dark:border-beige-100/15 bg-white dark:bg-zinc-900 px-4 py-4 outline-none text-base text-beige-950 dark:text-beige-100" placeholder="Click a highlighted text block to edit it."></textarea>
-            <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
-                <p id="site-edit-message" class="text-sm text-beige-800 dark:text-beige-200">Click text on the page or use search and next/previous to move through copy quickly.</p>
-                <div class="flex flex-wrap gap-2">
-                    <button id="site-edit-reset-btn" onclick="resetActiveSiteText()" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold" disabled>Reset</button>
-                    <button id="site-edit-save-btn" onclick="saveActiveSiteText()" class="bg-beige-950 dark:bg-beige-100 text-beige-50 dark:text-beige-950 px-5 py-2.5 rounded-full text-sm font-semibold" disabled>Save for everyone</button>
+            <div id="site-edit-pane-ai" class="site-edit-pane">
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <select id="site-ai-mode" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold bg-white dark:bg-zinc-900 text-beige-950 dark:text-beige-100 outline-none">
+                        <option value="ideas">Ideas</option>
+                        <option value="rewrite">Rewrite selected text</option>
+                        <option value="full">Chat assistant</option>
+                    </select>
+                    <input id="site-ai-api-key" oninput="saveAiEditorSettings()" type="password" placeholder="Optional OpenAI API key" class="flex-1 min-w-[220px] rounded-full border border-beige-950/15 dark:border-beige-100/15 bg-white dark:bg-zinc-900 px-4 py-2 text-sm text-beige-950 dark:text-beige-100 outline-none">
+                </div>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <button onclick="fillAiPrompt('Give me 3 stronger headline options for the selected text.')" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold">3 headlines</button>
+                    <button onclick="fillAiPrompt('Give me 3 stronger CTA options for the selected text.')" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold">3 CTAs</button>
+                    <button onclick="fillAiPrompt('Rewrite the selected text to sound more premium and professional.')" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold">Rewrite</button>
+                    <button onclick="fillAiPrompt('Give me visual and UX ideas for this section.')" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold">Ideas</button>
+                </div>
+                <div id="site-ai-thread" class="ai-chat-thread mb-4">
+                    <div class="ai-chat-bubble assistant">
+                        <div class="ai-chat-meta">Assistant</div>
+                        I can help you rewrite copy, suggest homepage improvements, or draft new messaging for the selected section.
+                    </div>
+                </div>
+                <textarea id="site-ai-input" rows="4" class="w-full rounded-[20px] border border-beige-950/15 dark:border-beige-100/15 bg-white dark:bg-zinc-900 px-4 py-4 outline-none text-base text-beige-950 dark:text-beige-100" placeholder="Ask for ideas, rewrites, or layout suggestions."></textarea>
+                <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+                    <p id="site-ai-message" class="text-sm text-beige-800 dark:text-beige-200">If you add an API key, the assistant can send live requests. Without one, it still gives built-in ideas and rewrite help.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="applyAiSuggestionToSelectedText()" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold">Apply suggestion</button>
+                        <button onclick="clearAiConversation()" class="border border-beige-950/15 dark:border-beige-100/15 px-4 py-2 rounded-full text-sm font-semibold">Clear chat</button>
+                        <button onclick="submitAiEditorPrompt()" class="bg-[#5d7c91] text-white px-5 py-2.5 rounded-full text-sm font-semibold">Send</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2384,6 +2495,10 @@
         var siteContentStorageMode = 'checking';
         var currentSiteEditPage = 'all';
         var siteEditSearchTerm = '';
+        var siteEditPanelTab = 'copy';
+        var siteEditToolbarDrag = null;
+        var siteAiMessages = [];
+        var siteAiLastSuggestedText = '';
         var SITE_BUILDER_STORAGE_KEY = 'futurePharmaBuilderStateFallback';
         var builderState = {};
         var builderOriginalInlineStyles = {};
@@ -2614,6 +2729,29 @@
             if (adminSearch && adminSearch.value !== siteEditSearchTerm) adminSearch.value = siteEditSearchTerm;
         }
 
+        function setEditPanelTab(tab) {
+            siteEditPanelTab = tab;
+            var copyTab = document.getElementById('site-edit-tab-copy');
+            var aiTab = document.getElementById('site-edit-tab-ai');
+            var copyPane = document.getElementById('site-edit-pane-copy');
+            var aiPane = document.getElementById('site-edit-pane-ai');
+            if (copyTab) copyTab.classList.toggle('active', tab === 'copy');
+            if (aiTab) aiTab.classList.toggle('active', tab === 'ai');
+            if (copyPane) copyPane.classList.toggle('active', tab === 'copy');
+            if (aiPane) aiPane.classList.toggle('active', tab === 'ai');
+        }
+
+        function saveAiEditorSettings() {
+            var keyInput = document.getElementById('site-ai-api-key');
+            if (!keyInput) return;
+            try { localStorage.setItem('futurePharmaAiEditorKey', keyInput.value); } catch (e) {}
+        }
+
+        function toggleSiteEditToolbarCollapse() {
+            var toolbar = document.getElementById('site-edit-toolbar');
+            toolbar.classList.toggle('site-edit-toolbar-collapsed');
+        }
+
         function setSiteEditPage(pageId, options) {
             options = options || {};
             currentSiteEditPage = pageId || 'all';
@@ -2752,6 +2890,11 @@
             }
             applySiteContentValues();
             updateSiteEditStatusUi();
+            try {
+                var savedAiKey = localStorage.getItem('futurePharmaAiEditorKey');
+                var keyInput = document.getElementById('site-ai-api-key');
+                if (savedAiKey && keyInput) keyInput.value = savedAiKey;
+            } catch (e) {}
         }
 
         function captureBuilderDefaults() {
@@ -2857,12 +3000,15 @@
         function startSiteEditMode() {
             siteEditModeEnabled = true;
             document.body.classList.add('site-edit-mode-active');
-            document.getElementById('site-edit-toolbar').classList.remove('hidden');
+            var toolbar = document.getElementById('site-edit-toolbar');
+            toolbar.classList.remove('hidden');
+            toolbar.classList.remove('site-edit-toolbar-collapsed');
             if (currentSiteEditPage === 'all') currentSiteEditPage = 'home';
             syncSiteEditPageControls();
             setSiteEditPage(currentSiteEditPage);
             updateSiteEditStatusUi();
             setActiveSiteEditTarget(activeSiteEditKey);
+            setEditPanelTab(siteEditPanelTab || 'copy');
             closeAdmin();
             showToast('Edit mode is live. Click any highlighted text block to change it.');
         }
@@ -3167,6 +3313,143 @@
         function selectPreviousEditableText() { selectEditableByOffset(-1); }
         function selectNextEditableText() { selectEditableByOffset(1); }
 
+        function appendAiMessage(role, content) {
+            siteAiMessages.push({ role: role, content: content });
+            var thread = document.getElementById('site-ai-thread');
+            if (!thread) return;
+            var bubble = document.createElement('div');
+            bubble.className = 'ai-chat-bubble ' + (role === 'user' ? 'user' : 'assistant');
+            bubble.innerHTML = '<div class="ai-chat-meta">' + (role === 'user' ? 'You' : 'Assistant') + '</div>' + content.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
+            thread.appendChild(bubble);
+            thread.scrollTop = thread.scrollHeight;
+        }
+
+        function clearAiConversation() {
+            siteAiMessages = [];
+            siteAiLastSuggestedText = '';
+            var thread = document.getElementById('site-ai-thread');
+            if (!thread) return;
+            thread.innerHTML = '<div class="ai-chat-bubble assistant"><div class="ai-chat-meta">Assistant</div>I can help you rewrite copy, suggest homepage improvements, or draft new messaging for the selected section.</div>';
+        }
+
+        function fillAiPrompt(text) {
+            var input = document.getElementById('site-ai-input');
+            if (!input) return;
+            input.value = text;
+            input.focus();
+        }
+
+        function getCurrentEditContext() {
+            var key = activeSiteEditKey;
+            var node = key ? getEditableNodes().find(function(el) { return getEditableKey(el) === key; }) : null;
+            return {
+                key: key || '',
+                page: node ? getEditablePageLabel(getEditablePageId(node)) : getEditablePageLabel(currentSiteEditPage),
+                label: key ? getEditableLabel(key) : 'No text selected',
+                text: key ? (siteContentValues[key] || siteContentDefaults[key] || '') : ''
+            };
+        }
+
+        function buildLocalAiReply(prompt, mode) {
+            var ctx = getCurrentEditContext();
+            var lower = prompt.toLowerCase();
+            if (mode === 'rewrite' || lower.includes('rewrite') || lower.includes('make this')) {
+                var source = ctx.text || prompt;
+                var rewritten = source
+                    .replace(/A quieter storefront for verified peptide sourcing, built around purity data, measured delivery options, and a smoother order path\./i, 'Research-grade peptides with third-party verification, straightforward ordering, and worldwide delivery.')
+                    .replace(/FuturePharma focuses on verified batches, clear shipping options, responsive communication, and an order process that is easy to follow from start to finish\./i, 'Verified batches, clear shipping options, responsive support, and a straightforward ordering process.')
+                    .replace(/\bcleaner\b/gi, 'clearer')
+                    .replace(/\bcalmer\b/gi, 'more direct');
+                siteAiLastSuggestedText = rewritten;
+                return 'Suggested rewrite:\n\n' + rewritten;
+            }
+            if (lower.includes('headline')) {
+                siteAiLastSuggestedText = 'Verified research compounds, ready to order with confidence.';
+                return 'Headline options:\n\n1. Verified research compounds, ready to order with confidence.\n2. Research-grade peptides backed by batch verification.\n3. Trusted peptide supply with clear ordering and delivery.';
+            }
+            if (lower.includes('cta')) {
+                siteAiLastSuggestedText = 'View catalog';
+                return 'CTA options:\n\n1. View catalog\n2. Review available compounds\n3. Start your order';
+            }
+            if (lower.includes('idea') || mode === 'ideas') {
+                return 'Ideas for this section:\n\n1. Lead with the buyer benefit first.\n2. Replace abstract design language with concrete trust signals.\n3. Keep one main CTA and one supporting CTA.\n4. Use shorter sentences and fewer adjectives.\n5. If this is the homepage, add a stronger proof point or support promise.';
+            }
+            return 'Helpful next step:\n\nTell me what you want changed in plain language, like "make this headline more premium", "give me 3 stronger CTA options", or "rewrite this for a more clinical tone". I can also suggest alternate copy for the selected text.';
+        }
+
+        async function requestLiveAiReply(prompt) {
+            var key = document.getElementById('site-ai-api-key').value.trim();
+            var ctx = getCurrentEditContext();
+            var mode = document.getElementById('site-ai-mode').value;
+            var body = {
+                model: 'gpt-5-mini',
+                input: [
+                    {
+                        role: 'system',
+                        content: 'You are an editing assistant inside a website builder. Be concise, practical, and focused on improving marketing/site copy and editing workflow. When appropriate, give direct replacement text.'
+                    },
+                    {
+                        role: 'user',
+                        content: 'Current page: ' + ctx.page + '\nSelected field: ' + ctx.label + '\nSelected text: ' + ctx.text + '\nMode: ' + mode + '\nRequest: ' + prompt
+                    }
+                ]
+            };
+            var response = await fetch('https://api.openai.com/v1/responses', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + key
+                },
+                body: JSON.stringify(body)
+            });
+            if (!response.ok) throw new Error('AI request failed: ' + response.status);
+            var data = await response.json();
+            return data.output_text || 'No response returned.';
+        }
+
+        async function submitAiEditorPrompt() {
+            var input = document.getElementById('site-ai-input');
+            var messageEl = document.getElementById('site-ai-message');
+            var prompt = (input.value || '').trim();
+            var mode = document.getElementById('site-ai-mode').value;
+            var apiKey = document.getElementById('site-ai-api-key').value.trim();
+            if (!prompt) {
+                messageEl.innerText = 'Write a request first.';
+                return;
+            }
+            appendAiMessage('user', prompt);
+            input.value = '';
+            messageEl.innerText = apiKey ? 'Contacting AI assistant…' : 'Using built-in assistant tools…';
+            try {
+                var reply = apiKey ? await requestLiveAiReply(prompt) : buildLocalAiReply(prompt, mode);
+                if (!siteAiLastSuggestedText) {
+                    var match = reply.match(/Suggested rewrite:\n\n([\s\S]+)/);
+                    if (match) siteAiLastSuggestedText = match[1].trim();
+                }
+                appendAiMessage('assistant', reply);
+                messageEl.innerText = apiKey ? 'Live AI reply received.' : 'Built-in assistant reply ready.';
+            } catch (err) {
+                var fallback = buildLocalAiReply(prompt, mode);
+                appendAiMessage('assistant', fallback);
+                messageEl.innerText = 'Live AI was unavailable, so I used built-in suggestions instead.';
+            }
+        }
+
+        function applyAiSuggestionToSelectedText() {
+            var messageEl = document.getElementById('site-ai-message');
+            if (!activeSiteEditKey) {
+                messageEl.innerText = 'Select a text block first.';
+                return;
+            }
+            if (!siteAiLastSuggestedText) {
+                messageEl.innerText = 'Ask the assistant for a rewrite or options first.';
+                return;
+            }
+            document.getElementById('site-edit-input').value = siteAiLastSuggestedText;
+            setEditPanelTab('copy');
+            messageEl.innerText = 'Suggestion copied into the editor. Save it when you are ready.';
+        }
+
         document.addEventListener('click', function(e) {
             if (!siteEditModeEnabled) return;
             var editable = resolveEditableTarget(e.target);
@@ -3220,6 +3503,21 @@
             e.stopPropagation();
         });
 
+        document.getElementById('site-edit-drag-handle').addEventListener('mousedown', function(e) {
+            if (e.target.closest('button, select, input, textarea')) return;
+            var toolbar = document.getElementById('site-edit-toolbar');
+            var rect = toolbar.getBoundingClientRect();
+            siteEditToolbarDrag = {
+                startX: e.clientX,
+                startY: e.clientY,
+                baseLeft: rect.left,
+                baseTop: rect.top
+            };
+            toolbar.style.right = 'auto';
+            toolbar.style.bottom = 'auto';
+            e.preventDefault();
+        });
+
         document.addEventListener('mousemove', function(e) {
             if (!builderDragSession || !activeBuilderKey) return;
             var dx = e.clientX - builderDragSession.startX;
@@ -3235,8 +3533,18 @@
             updateBuilderInspector();
         });
 
+        document.addEventListener('mousemove', function(e) {
+            if (!siteEditToolbarDrag) return;
+            var toolbar = document.getElementById('site-edit-toolbar');
+            var nextLeft = Math.max(12, siteEditToolbarDrag.baseLeft + (e.clientX - siteEditToolbarDrag.startX));
+            var nextTop = Math.max(12, siteEditToolbarDrag.baseTop + (e.clientY - siteEditToolbarDrag.startY));
+            toolbar.style.left = nextLeft + 'px';
+            toolbar.style.top = nextTop + 'px';
+        });
+
         document.addEventListener('mouseup', function() {
             builderDragSession = null;
+            siteEditToolbarDrag = null;
         });
 
         document.addEventListener('keydown', function(e) {
