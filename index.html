@@ -502,6 +502,10 @@
             /* Product grid cards: compact */
             .product-card { padding: 0.75rem !important; }
             .product-card svg.w-32 { width: 64px !important; height: 64px !important; }
+            .product-card-art { min-height: 112px !important; border-radius: 18px !important; margin-bottom: 0.75rem !important; }
+            .product-card-title { font-size: 1rem !important; }
+            .product-card-price { font-size: 1.25rem !important; margin-bottom: 0.45rem !important; }
+            .product-card-tag { padding: 0.28rem 0.5rem !important; font-size: 0.58rem !important; }
             .product-card .mb-4 { margin-bottom: 0.5rem !important; }
             .product-card h3 { font-size: 0.85rem !important; }
             .product-card .text-2xl { font-size: 1rem !important; }
@@ -514,6 +518,7 @@
             .product-card .text-xs { font-size: 0.65rem !important; }
             .product-card .w-8 { width: 28px !important; height: 28px !important; }
             .product-card .text-lg { font-size: 0.8rem !important; }
+            .catalog-panel { padding: 0.95rem !important; border-radius: 22px !important; }
 
             /* PRODUCT DETAIL */
             #product-detail .grid { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
@@ -769,14 +774,121 @@
         .product-card {
             background: linear-gradient(180deg, rgba(255,255,255,0.75), rgba(255,255,255,0.9)), var(--surface) !important;
             transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+            position: relative;
+            overflow: hidden;
         }
         .dark .product-card {
-            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)), var(--surface) !important;
+            background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)), var(--surface) !important;
+        }
+        .product-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 132px;
+            background:
+                radial-gradient(circle at 24% 20%, rgba(255,255,255,0.82), transparent 34%),
+                radial-gradient(circle at 78% 18%, rgba(93,124,145,0.12), transparent 30%),
+                linear-gradient(180deg, rgba(220,230,236,0.42), rgba(220,230,236,0.02));
+            pointer-events: none;
+        }
+        .dark .product-card::before {
+            background:
+                radial-gradient(circle at 24% 20%, rgba(255,255,255,0.08), transparent 34%),
+                radial-gradient(circle at 78% 18%, rgba(143,175,192,0.16), transparent 30%),
+                linear-gradient(180deg, rgba(143,175,192,0.08), rgba(143,175,192,0.01));
         }
         .product-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 24px 48px rgba(23, 23, 23, 0.12) !important;
+            transform: translateY(-4px);
+            box-shadow: 0 22px 40px rgba(23, 23, 23, 0.11) !important;
             border-color: rgba(93, 124, 145, 0.5) !important;
+        }
+        .product-card-art {
+            width: 100%;
+            min-height: 178px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 24px;
+            background:
+                radial-gradient(circle at 30% 24%, rgba(255,255,255,0.92), transparent 30%),
+                linear-gradient(180deg, rgba(254,252,248,0.92), rgba(242,237,228,0.68));
+            border: 1px solid rgba(93,124,145,0.12);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
+        }
+        .dark .product-card-art {
+            background:
+                radial-gradient(circle at 30% 24%, rgba(255,255,255,0.08), transparent 30%),
+                linear-gradient(180deg, rgba(27,31,34,0.92), rgba(21,24,27,0.72));
+            border-color: rgba(143,175,192,0.14);
+        }
+        .product-card-body {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+        }
+        .product-card-title {
+            font-size: 1.45rem;
+            line-height: 1.02;
+            letter-spacing: -0.04em;
+        }
+        .product-card-price {
+            font-size: 2rem;
+            line-height: 1;
+            letter-spacing: -0.05em;
+        }
+        .product-card-tag {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            padding: 0.38rem 0.72rem;
+            border: 1px solid rgba(93,124,145,0.14);
+            background: rgba(255,255,255,0.64);
+            backdrop-filter: blur(10px);
+        }
+        .dark .product-card-tag {
+            background: rgba(23,26,29,0.72);
+            border-color: rgba(143,175,192,0.16);
+        }
+        .catalog-panel {
+            border-radius: 32px;
+            padding: 1.75rem;
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.74), rgba(255,255,255,0.94)),
+                var(--surface);
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(93,124,145,0.12);
+        }
+        .dark .catalog-panel {
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)),
+                var(--surface);
+        }
+        .trust-card {
+            border-radius: 28px;
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.96)),
+                var(--surface) !important;
+            box-shadow: var(--shadow-card);
+        }
+        .dark .trust-card {
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)),
+                var(--surface) !important;
+        }
+        .page-identity-card {
+            position: relative;
+            overflow: hidden;
+        }
+        .page-identity-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 88px;
+            background: linear-gradient(180deg, rgba(220,230,236,0.26), transparent);
+            pointer-events: none;
+        }
+        .dark .page-identity-card::before {
+            background: linear-gradient(180deg, rgba(143,175,192,0.08), transparent);
         }
 
         button,
@@ -906,7 +1018,7 @@
             50% { transform: translate3d(0, -10px, 0); }
         }
         @keyframes fadeLift {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(14px); }
             to { opacity: 1; transform: translateY(0); }
         }
         @keyframes sheenSweep {
@@ -918,6 +1030,15 @@
         .section-shell {
             position: relative;
             overflow: hidden;
+        }
+        .section-shell::after {
+            content: "";
+            position: absolute;
+            inset: auto 0 0 0;
+            height: 140px;
+            pointer-events: none;
+            background: linear-gradient(180deg, transparent, rgba(255,255,255,0.18));
+            opacity: 0.8;
         }
         .section-shell::before {
             content: "";
@@ -963,6 +1084,21 @@
             opacity: 0.6;
             filter: saturate(0.8);
         }
+        .section-catalog::after {
+            background: linear-gradient(180deg, transparent, rgba(220,230,236,0.18));
+        }
+        .section-lab::after {
+            background: linear-gradient(180deg, transparent, rgba(93,124,145,0.12));
+        }
+        .section-bespoke::after {
+            background: linear-gradient(180deg, transparent, rgba(23,23,23,0.05));
+        }
+        .section-contact::after {
+            background: linear-gradient(180deg, transparent, rgba(220,230,236,0.14));
+        }
+        .dark .section-shell::after {
+            background: linear-gradient(180deg, transparent, rgba(0,0,0,0.22));
+        }
 
         .signature-frame {
             position: relative;
@@ -989,17 +1125,19 @@
 
         .hero-cinema {
             position: relative;
-            min-height: 420px;
-            border-radius: 32px;
+            min-height: 500px;
+            border-radius: 38px;
             overflow: hidden;
             box-shadow: var(--shadow-soft);
             border: 1px solid rgba(93,124,145,0.16);
             background:
-                linear-gradient(135deg, rgba(254,252,248,0.92), rgba(242,237,228,0.72)),
+                radial-gradient(circle at 28% 18%, rgba(255,255,255,0.88), transparent 28%),
+                linear-gradient(135deg, rgba(254,252,248,0.94), rgba(242,237,228,0.72)),
                 var(--surface);
         }
         .dark .hero-cinema {
             background:
+                radial-gradient(circle at 26% 18%, rgba(255,255,255,0.05), transparent 28%),
                 linear-gradient(135deg, rgba(23,26,29,0.98), rgba(30,34,38,0.9)),
                 var(--surface);
         }
@@ -1019,8 +1157,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 1rem;
-            padding: 2.25rem;
+            gap: 1.25rem;
+            padding: 2.6rem;
         }
         .hero-vial-card {
             position: relative;
@@ -1033,7 +1171,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            animation: heroVialFloat 4.8s ease-in-out infinite;
+            animation: heroVialFloat 7s ease-in-out infinite;
         }
         .dark .hero-vial-card {
             background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
@@ -1055,9 +1193,9 @@
             background: linear-gradient(180deg, rgba(255,255,255,0.52), transparent 54%);
             opacity: 0.9;
         }
-        .hero-vial-card.center { width: 148px; height: 338px; animation-delay: -1.1s; z-index: 2; }
-        .hero-vial-card.left { transform: rotate(-10deg) translateY(18px); animation-delay: -0.3s; }
-        .hero-vial-card.right { transform: rotate(10deg) translateY(12px); animation-delay: -2.1s; }
+        .hero-vial-card.center { width: 166px; height: 372px; animation-delay: -1.1s; z-index: 2; }
+        .hero-vial-card.left { transform: rotate(-8deg) translateY(26px); animation-delay: -0.3s; }
+        .hero-vial-card.right { transform: rotate(8deg) translateY(18px); animation-delay: -2.1s; }
         .hero-vial-shell {
             position: relative;
             width: 82px;
@@ -1170,11 +1308,11 @@
         }
         .hero-cinema-orbit {
             position: absolute;
-            width: 260px;
-            height: 260px;
+            width: 308px;
+            height: 308px;
             border: 1px solid rgba(93,124,145,0.18);
             border-radius: 999px;
-            top: 72px;
+            top: 84px;
             left: 50%;
             transform: translateX(-50%);
         }
@@ -1191,7 +1329,7 @@
         }
         @keyframes heroVialFloat {
             0%, 100% { translate: 0 0; }
-            50% { translate: 0 -12px; }
+            50% { translate: 0 -8px; }
         }
         .hero-cinema .hero-badge {
             position: absolute;
@@ -1209,6 +1347,47 @@
         .hero-copy-block {
             position: relative;
             z-index: 2;
+            max-width: 620px;
+            padding-right: 1rem;
+        }
+        .hero-kicker {
+            font-size: 0.9rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--accent);
+            font-weight: 700;
+        }
+        .hero-copy-block h1 {
+            max-width: 11ch;
+            text-wrap: balance;
+        }
+        .hero-copy-block .premium-note {
+            font-size: 1.04rem;
+            max-width: 34rem;
+        }
+        .hero-metric-card {
+            position: relative;
+            overflow: hidden;
+            background: rgba(255,255,255,0.78) !important;
+            border-color: rgba(93,124,145,0.1) !important;
+            box-shadow: 0 16px 30px rgba(23,23,23,0.06);
+        }
+        .hero-metric-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 auto 0 0;
+            width: 3px;
+            background: linear-gradient(180deg, rgba(93,124,145,0.08), rgba(93,124,145,0.42), rgba(93,124,145,0.08));
+        }
+        .hero-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.78rem 1rem;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.72);
+            border: 1px solid rgba(93,124,145,0.12);
+            color: var(--muted);
+            backdrop-filter: blur(10px);
         }
         .dark .hero-copy-block {
             background: linear-gradient(180deg, rgba(10,12,14,0.32), rgba(10,12,14,0.08));
@@ -1244,6 +1423,15 @@
             background: rgba(23, 26, 29, 0.72) !important;
             border-color: rgba(223, 230, 238, 0.14) !important;
             color: #e5ebf1 !important;
+        }
+        .dark .hero-chip {
+            background: rgba(23,26,29,0.72);
+            border-color: rgba(223,230,238,0.14);
+            color: #e3ebf2;
+        }
+        .dark .hero-metric-card {
+            background: rgba(23,26,29,0.82) !important;
+            border-color: rgba(223,230,238,0.12) !important;
         }
         .dark .hero-badge .pixel-font,
         .dark .hero-badge p {
@@ -1304,10 +1492,42 @@
             .dark .hero-copy-block {
                 padding: 1rem 0.9rem 1.1rem;
             }
+            .hero-copy-block {
+                max-width: none;
+                padding-right: 0;
+            }
+            .hero-copy-block h1 {
+                max-width: none;
+            }
+            .hero-cinema {
+                min-height: 360px;
+            }
+            .hero-vial-card.center {
+                width: 126px;
+                height: 290px;
+            }
+            .hero-vial-card.left,
+            .hero-vial-card.right {
+                width: 102px;
+                height: 250px;
+            }
+            .hero-cinema-orbit {
+                width: 224px;
+                height: 224px;
+                top: 66px;
+            }
+            .hero-chip {
+                padding: 0.65rem 0.86rem;
+                font-size: 0.8rem;
+            }
+            .catalog-panel {
+                padding: 1rem;
+                border-radius: 24px;
+            }
         }
 
         .editorial-panel {
-            border-radius: 30px;
+            border-radius: 34px;
             border: 1px solid rgba(93,124,145,0.14);
             box-shadow: var(--shadow-soft);
             background:
@@ -1324,7 +1544,7 @@
         #order-tracking .bg-white,
         #crypto-checkout .bg-white,
         #order-page .bg-white {
-            animation: fadeLift 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+            animation: fadeLift 0.55s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         .glow-chip {
@@ -1367,8 +1587,8 @@
             gap: 0.9rem;
         }
         .brand-mark {
-            width: 48px;
-            height: 48px;
+            width: 50px;
+            height: 50px;
             border-radius: 16px;
             display: grid;
             place-items: center;
@@ -1405,8 +1625,38 @@
             border-radius: 999px;
             background: rgba(255,255,255,0.56);
             border: 1px solid rgba(93,124,145,0.16);
+            backdrop-filter: blur(14px);
         }
         .dark .nav-utility { background: rgba(255,255,255,0.03); }
+        #site-edit-toolbar,
+        #site-builder-toolbar {
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.82)),
+                var(--surface);
+            box-shadow: 0 28px 54px rgba(23,23,23,0.12);
+            border-radius: 30px;
+        }
+        .dark #site-edit-toolbar,
+        .dark #site-builder-toolbar {
+            background:
+                linear-gradient(180deg, rgba(24,27,30,0.98), rgba(21,24,27,0.95)),
+                var(--surface);
+        }
+        .site-edit-header {
+            padding: 18px 20px 0;
+        }
+        .site-edit-panel-body {
+            padding: 16px 20px 20px;
+        }
+        .site-edit-pill,
+        .site-edit-tab,
+        .builder-grid input,
+        .builder-stack input,
+        .builder-stack select,
+        .builder-stack textarea,
+        .ai-chat-bubble {
+            border-radius: 16px;
+        }
         .nav-icon-btn {
             width: 40px;
             height: 40px;
@@ -1587,24 +1837,24 @@
                             <button onclick="showPage('lab-testing')" class="bg-transparent border-2 border-beige-950 dark:border-beige-100 px-10 py-4 font-semibold tracking-wide transition text-base rounded-full" data-edit-key="hero_secondary_cta" data-edit-label="Hero secondary button">Review lab reports</button>
                         </div>
                         <div class="grid sm:grid-cols-3 gap-4 mt-10">
-                            <div class="bg-white/80 p-4 rounded-2xl border border-beige-950/10">
+                            <div class="hero-metric-card bg-white/80 p-4 rounded-2xl border border-beige-950/10">
                                 <p class="pixel-font text-[11px] uppercase tracking-[0.2em] opacity-55 mb-2">Purity</p>
                                 <p class="text-2xl font-bold" data-edit-key="hero_metric_purity" data-edit-label="Hero metric: Purity">99%+ HPLC verified</p>
                             </div>
-                            <div class="bg-white/80 p-4 rounded-2xl border border-beige-950/10">
+                            <div class="hero-metric-card bg-white/80 p-4 rounded-2xl border border-beige-950/10">
                                 <p class="pixel-font text-[11px] uppercase tracking-[0.2em] opacity-55 mb-2">Shipping</p>
                                 <p class="text-2xl font-bold" data-edit-key="hero_metric_shipping" data-edit-label="Hero metric: Shipping">Standard and express</p>
                             </div>
-                            <div class="bg-white/80 p-4 rounded-2xl border border-beige-950/10">
+                            <div class="hero-metric-card bg-white/80 p-4 rounded-2xl border border-beige-950/10">
                                 <p class="pixel-font text-[11px] uppercase tracking-[0.2em] opacity-55 mb-2">Tracking</p>
                                 <p class="text-2xl font-bold" data-edit-key="hero_metric_tracking" data-edit-label="Hero metric: Tracking">Live order updates</p>
                             </div>
                         </div>
                         <div class="mt-5 flex flex-wrap gap-3 text-sm text-beige-800">
-                            <span class="px-4 py-2 rounded-full bg-white/80 border border-beige-950/10">Research-grade peptides</span>
-                            <span class="px-4 py-2 rounded-full bg-white/80 border border-beige-950/10">Third-party reporting</span>
-                            <span class="px-4 py-2 rounded-full bg-white/80 border border-beige-950/10">Worldwide fulfillment</span>
-                            <span class="px-4 py-2 rounded-full bg-white/80 border border-beige-950/10">Custom sourcing</span>
+                            <span class="hero-chip">Research-grade peptides</span>
+                            <span class="hero-chip">Third-party reporting</span>
+                            <span class="hero-chip">Worldwide fulfillment</span>
+                            <span class="hero-chip">Custom sourcing</span>
                         </div>
                     </div>
 
@@ -1758,7 +2008,7 @@
             </div>
 
             <div class="max-w-7xl mx-auto px-6 py-10">
-                <div class="editorial-panel p-6 md:p-8">
+                <div class="editorial-panel p-6 md:p-8 catalog-panel">
                     <div class="grid md:grid-cols-3 gap-4">
                         <div class="rounded-2xl bg-beige-50 border border-beige-950/10 p-5">
                             <p class="pixel-font text-[11px] uppercase tracking-[0.18em] opacity-50 mb-2">Ordering</p>
@@ -1780,42 +2030,42 @@
             <div class="max-w-7xl mx-auto px-6 py-16 md:py-20">
                 <p class="pixel-font text-sm uppercase tracking-widest opacity-40 mb-12 text-center">Why teams stay with FuturePharma</p>
                 <div class="grid md:grid-cols-3 gap-6">
-                    <div class="border-2 border-beige-950 dark:border-beige-100 p-8 hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(245,245,220,0.3)] transition-all bg-white dark:bg-zinc-900 group">
+                    <div class="trust-card border-2 border-beige-950 dark:border-beige-100 p-8 hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(245,245,220,0.3)] transition-all bg-white dark:bg-zinc-900 group">
                         <div class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 flex items-center justify-center mb-6 group-hover:bg-beige-950 group-hover:text-white dark:group-hover:bg-beige-100 dark:group-hover:text-beige-950 transition-colors">
                             <i data-lucide="shield-check" class="w-6 h-6"></i>
                         </div>
                         <h3 class="text-2xl font-black tracking-tighter mb-3">Discreet fulfillment</h3>
                         <p class="text-beige-800 dark:text-beige-200 leading-relaxed text-sm">Shipment handling is designed for consistency and clarity, with reship or refund protection when delivery fails.</p>
                     </div>
-                    <div class="border-2 border-beige-950 dark:border-beige-100 p-8 hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(245,245,220,0.3)] transition-all bg-white dark:bg-zinc-900 group">
+                    <div class="trust-card border-2 border-beige-950 dark:border-beige-100 p-8 hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(245,245,220,0.3)] transition-all bg-white dark:bg-zinc-900 group">
                         <div class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 flex items-center justify-center mb-6 group-hover:bg-beige-950 group-hover:text-white dark:group-hover:bg-beige-100 dark:group-hover:text-beige-950 transition-colors">
                             <i data-lucide="microscope" class="w-6 h-6"></i>
                         </div>
                         <h3 class="text-2xl font-black tracking-tighter mb-3">Documented quality</h3>
                         <p class="text-beige-800 dark:text-beige-200 leading-relaxed text-sm">Every active batch is paired with third-party purity data so procurement teams can review before committing.</p>
                     </div>
-                    <div class="border-2 border-beige-950 dark:border-beige-100 p-8 hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(245,245,220,0.3)] transition-all bg-white dark:bg-zinc-900 group">
+                    <div class="trust-card border-2 border-beige-950 dark:border-beige-100 p-8 hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(245,245,220,0.3)] transition-all bg-white dark:bg-zinc-900 group">
                         <div class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 flex items-center justify-center mb-6 group-hover:bg-beige-950 group-hover:text-white dark:group-hover:bg-beige-100 dark:group-hover:text-beige-950 transition-colors">
                             <i data-lucide="zap" class="w-6 h-6"></i>
                         </div>
                         <h3 class="text-2xl font-black tracking-tighter mb-3">Flexible delivery cadence</h3>
                         <p class="text-beige-800 dark:text-beige-200 leading-relaxed text-sm">Choose standard global delivery or faster fulfillment for compounds that qualify for express handling.</p>
                     </div>
-                    <div class="border-2 border-beige-950 dark:border-beige-100 p-8 hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(245,245,220,0.3)] transition-all bg-white dark:bg-zinc-900 group">
+                    <div class="trust-card border-2 border-beige-950 dark:border-beige-100 p-8 hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(245,245,220,0.3)] transition-all bg-white dark:bg-zinc-900 group">
                         <div class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 flex items-center justify-center mb-6 group-hover:bg-beige-950 group-hover:text-white dark:group-hover:bg-beige-100 dark:group-hover:text-beige-950 transition-colors">
                             <i data-lucide="flask-conical" class="w-6 h-6"></i>
                         </div>
                         <h3 class="text-2xl font-black tracking-tighter mb-3">Custom sourcing</h3>
                         <p class="text-beige-800 dark:text-beige-200 leading-relaxed text-sm">Request sequences outside the core catalog and we will scope feasibility, verification, and volume pricing directly with you.</p>
                     </div>
-                    <div class="border-2 border-beige-950 dark:border-beige-100 p-8 hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(245,245,220,0.3)] transition-all bg-white dark:bg-zinc-900 group">
+                    <div class="trust-card border-2 border-beige-950 dark:border-beige-100 p-8 hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(245,245,220,0.3)] transition-all bg-white dark:bg-zinc-900 group">
                         <div class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 flex items-center justify-center mb-6 group-hover:bg-beige-950 group-hover:text-white dark:group-hover:bg-beige-100 dark:group-hover:text-beige-950 transition-colors">
                             <i data-lucide="wallet" class="w-6 h-6"></i>
                         </div>
                         <h3 class="text-2xl font-black tracking-tighter mb-3">International settlement</h3>
                         <p class="text-beige-800 dark:text-beige-200 leading-relaxed text-sm">Crypto payment options keep ordering straightforward for international buyers working outside traditional banking rails.</p>
                     </div>
-                    <div class="border-2 border-beige-950 dark:border-beige-100 p-8 hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(245,245,220,0.3)] transition-all bg-white dark:bg-zinc-900 group">
+                    <div class="trust-card border-2 border-beige-950 dark:border-beige-100 p-8 hover:shadow-[8px_8px_0px_0px_rgba(28,28,22,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(245,245,220,0.3)] transition-all bg-white dark:bg-zinc-900 group">
                         <div class="w-12 h-12 border-2 border-beige-950 dark:border-beige-100 flex items-center justify-center mb-6 group-hover:bg-beige-950 group-hover:text-white dark:group-hover:bg-beige-100 dark:group-hover:text-beige-950 transition-colors">
                             <i data-lucide="trending-down" class="w-6 h-6"></i>
                         </div>
@@ -1827,7 +2077,7 @@
 
             <div class="max-w-7xl mx-auto px-6 pb-20">
                 <div class="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 items-start">
-                    <div class="bg-white p-10 rounded-[28px] border border-beige-950/10 shadow-[0_18px_38px_rgba(23,23,23,0.08)] editorial-panel signature-frame reveal">
+                    <div class="bg-white p-10 rounded-[28px] border border-beige-950/10 shadow-[0_18px_38px_rgba(23,23,23,0.08)] editorial-panel signature-frame reveal catalog-panel">
                         <p class="pixel-font text-xs uppercase tracking-[0.22em] opacity-50 mb-4">Support and assurance</p>
                         <h2 class="text-4xl md:text-5xl font-black tracking-tight mb-5" data-edit-key="home_support_title" data-edit-label="Support panel title">Built for buyers who want clarity before they order.</h2>
                         <p class="premium-note mb-8" data-edit-key="home_support_copy" data-edit-label="Support panel paragraph">FuturePharma focuses on verified batches, clear shipping options, responsive communication, and an order process that is easy to follow from start to finish.</p>
@@ -1854,7 +2104,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="bg-white p-10 rounded-[28px] border border-beige-950/10 shadow-[0_18px_38px_rgba(23,23,23,0.08)] editorial-panel reveal">
+                    <div class="bg-white p-10 rounded-[28px] border border-beige-950/10 shadow-[0_18px_38px_rgba(23,23,23,0.08)] editorial-panel reveal catalog-panel">
                         <p class="pixel-font text-xs uppercase tracking-[0.22em] opacity-50 mb-4">Service profile</p>
                         <div class="space-y-6">
                             <div>
@@ -2456,7 +2706,7 @@
         <div class="border-t border-beige-50/10 dark:border-beige-950/10 px-6 py-6">
             <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
                 <p class="text-xs opacity-40 text-center md:text-left leading-relaxed max-w-2xl">
-                    <strong></strong> For research use only. All products are supplied strictly for laboratory research, analytical, or in-vitro testing purposes. Not for human consumption. By purchasing, you confirm compliance with all applicable laws.
+                    <strong>For research use only.</strong> All products are supplied strictly for laboratory research, analytical, or in-vitro testing purposes. Not for human consumption. By purchasing, you confirm compliance with all applicable laws.
                 </p>
                 <p class="pixel-font text-sm opacity-30 shrink-0">© 2026 FuturePharma</p>
             </div>
@@ -4965,10 +5215,11 @@ if (!localCounts[id]) localCounts[id] = 0;
                 var category = getProductCategory(p);
                 grid.innerHTML +=
                     '<div onclick="showProductDetail(' + p.id + ')" class="product-card bg-white p-7 border-2 border-beige-950 flex flex-col items-center transition-all cursor-pointer">'
-                    + '<div class="mb-4">' + getProductSVG(p, 'sm') + '</div>'
-                    + '<div class="w-full flex justify-between items-start gap-3 mb-2"><h3 class="font-extrabold text-[1.35rem] leading-tight">' + p.name + '</h3><span class="pixel-font text-xs bg-beige-950 text-white px-3 py-1 rounded-full">' + (p.sizeVariants && p.sizeVariants.length ? p.sizeVariants.map(function(sv){return sv.label;}).join(' / ') : p.mg) + '</span></div>'
-                    + '<div class="w-full mb-2 flex items-center justify-between gap-2">' + expressTag + '<span class="pixel-font text-[11px] uppercase tracking-[0.18em] opacity-40">' + category + '</span></div>'
-                    + '<p class="w-full text-3xl font-black mb-2 tracking-tight">' + (p.sizeVariants && p.sizeVariants.length
+                    + '<div class="product-card-art mb-5">' + getProductSVG(p, 'sm') + '</div>'
+                    + '<div class="product-card-body">'
+                    + '<div class="w-full flex justify-between items-start gap-3 mb-3"><h3 class="product-card-title font-extrabold">' + p.name + '</h3><span class="product-card-tag pixel-font text-xs">' + (p.sizeVariants && p.sizeVariants.length ? p.sizeVariants.map(function(sv){return sv.label;}).join(' / ') : p.mg) + '</span></div>'
+                    + '<div class="w-full mb-3 flex items-center justify-between gap-2">' + expressTag + '<span class="pixel-font text-[11px] uppercase tracking-[0.18em] opacity-40">' + category + '</span></div>'
+                    + '<p class="w-full product-card-price font-black mb-3 tracking-tight">' + (p.sizeVariants && p.sizeVariants.length
                         ? 'From $' + Math.min.apply(null, p.sizeVariants.map(function(sv){return sv.price;})).toFixed(2)
                         : (p.variants ? '$' + p.variants[p.variants.length-1].price.toFixed(2) + ' — $' + p.variants[0].price.toFixed(2)
                         : (p.scaledPricing && p.scaledPricing.length ? 'From $' + Math.min.apply(null, p.scaledPricing.map(function(t){return t.price;})).toFixed(2) : '$' + p.price))) + '</p>'
@@ -4996,7 +5247,7 @@ if (!localCounts[id]) localCounts[id] = 0;
                             : '<div class="mb-4"></div>'
                           )
                       )
-                    + '<div class="flex w-full items-center justify-between gap-2 mb-1" onclick="event.stopPropagation()">'
+                    + '<div class="flex w-full items-center justify-between gap-2 mb-1 mt-auto" onclick="event.stopPropagation()">'
                     + '<div class="flex items-center gap-3">'
                     + '<button onclick="updateLocalCount(' + p.id + ', -1)" class="w-9 h-9 border border-beige-950 dark:border-beige-100 flex items-center justify-center font-bold hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950 rounded-full">-</button>'
                     + '<span class="pixel-font text-base font-semibold" id="grid-count-' + p.id + '">' + localCounts[p.id] + '</span>'
@@ -5006,7 +5257,7 @@ if (!localCounts[id]) localCounts[id] = 0;
                         ? '<button onclick="showProductDetail(' + p.id + ')" class="flex-grow border-2 border-beige-950 dark:border-beige-100 py-3 font-semibold tracking-wide hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950 transition text-sm rounded-full">' + (p.sizeVariants ? 'Select size' : 'Select version') + '</button>'
                         : '<button onclick="commitToCart(' + p.id + ')" class="flex-grow border-2 border-beige-950 dark:border-beige-100 py-3 font-semibold tracking-wide hover:bg-beige-950 hover:text-white dark:hover:bg-beige-100 dark:hover:text-beige-950 transition text-sm rounded-full">Add to order</button>'
                       )
-                    + '</div></div>';
+                    + '</div></div></div>';
             });
         }
 
@@ -6393,5 +6644,3 @@ if (!localCounts[id]) localCounts[id] = 0;
     </script>
 </body>
 </html>
-
-
