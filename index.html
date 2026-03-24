@@ -3200,6 +3200,20 @@
             localStorage.setItem(SITE_BUILDER_STORAGE_KEY, JSON.stringify(map));
         }
 
+        function normalizeEditableContentValue(key, value) {
+            if (typeof value !== 'string') return value;
+            var normalized = value.trim();
+            if (/research use only/i.test(normalized)) {
+                normalized = normalized
+                    .replace(/\s*For research use only\.?\s*$/i, '')
+                    .replace(/\s*Research use only\.?\s*$/i, function(match, offset, full) {
+                        return /^research use only/i.test(full.trim()) ? match : '';
+                    })
+                    .trim();
+            }
+            return normalized;
+        }
+
         function applySiteContentValues() {
             getEditableNodes().forEach(function(node) {
                 var key = getEditableKey(node);
@@ -3207,7 +3221,7 @@
                 var value = Object.prototype.hasOwnProperty.call(siteContentValues, key)
                     ? siteContentValues[key]
                     : siteContentDefaults[key];
-                if (typeof value === 'string') setEditableText(node, value);
+                if (typeof value === 'string') setEditableText(node, normalizeEditableContentValue(key, value));
             });
             renderEditableContentList();
         }
