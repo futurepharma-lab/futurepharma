@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Future Pharma | The Future of Peptide Research</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg viewBox='0 0 16 20' xmlns='http://www.w3.org/2000/svg'><rect x='6' y='4' width='4' height='2' fill='%23DDD' stroke='%231C1C16' stroke-width='0.3'/><rect x='4' y='6' width='8' height='11' fill='%23FFF' stroke='%231C1C16' stroke-width='0.3'/><rect x='6' y='13' width='4' height='3' fill='%235DADE2'/><rect x='5' y='1' width='6' height='3' fill='%231C1C16' stroke='%231C1C16' stroke-width='0.3'/></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg' fill='none'><defs><linearGradient id='g' x1='24' y1='10' x2='24' y2='38' gradientUnits='userSpaceOnUse'><stop stop-color='%23FFFFFF'/><stop offset='1' stop-color='%23E8EEF2'/></linearGradient><linearGradient id='l' x1='24' y1='25' x2='24' y2='35' gradientUnits='userSpaceOnUse'><stop stop-color='%238FB6CC'/><stop offset='1' stop-color='%235D7C91'/></linearGradient></defs><rect x='17' y='8' width='14' height='5' rx='2.5' fill='%2320262B'/><rect x='20' y='13' width='8' height='4' rx='1.6' fill='%23C9D4DB'/><rect x='14.5' y='17' width='19' height='23' rx='6' fill='url(%23g)' stroke='%232D3740' stroke-width='1.4'/><path d='M18.2 20H20.4V36.5H18.2Z' fill='rgba(255,255,255,0.72)'/><rect x='17.5' y='28' width='13' height='8' rx='3' fill='url(%23l)'/><rect x='18.8' y='21.3' width='10.4' height='5.6' rx='2.2' fill='%23F7F5F0' stroke='%23A8B7C1' stroke-width='0.8'/><path d='M21.2 23.7H26.8' stroke='%235D7C91' stroke-width='1.1' stroke-linecap='round'/><circle cx='24' cy='24.1' r='0.8' fill='%235D7C91'/></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -745,6 +745,43 @@
         .dark .text-base.text-beige-200,
         .dark .text-lg.text-beige-200 {
             color: #dfe6ee !important;
+        }
+        .dark #order-page .premium-note,
+        .dark #crypto-checkout .premium-note,
+        .dark #order-tracking .premium-note,
+        .dark #order-page .text-beige-800,
+        .dark #crypto-checkout .text-beige-800,
+        .dark #order-tracking .text-beige-800,
+        .dark #order-page p,
+        .dark #crypto-checkout p,
+        .dark #order-tracking p,
+        .dark #order-page li,
+        .dark #crypto-checkout li,
+        .dark #order-tracking li,
+        .dark #order-page label,
+        .dark #crypto-checkout label,
+        .dark #order-tracking label {
+            color: #e3e9f0 !important;
+        }
+        .dark #order-page .bg-beige-50,
+        .dark #crypto-checkout .bg-beige-50,
+        .dark #order-tracking .bg-beige-50,
+        .dark #crypto-checkout #payment-display,
+        .dark #order-page form.bg-white,
+        .dark #crypto-checkout .bg-white,
+        .dark #order-tracking .bg-white {
+            background:
+                linear-gradient(180deg, rgba(24,27,30,0.98), rgba(21,24,27,0.95)),
+                var(--surface) !important;
+            border-color: rgba(223,230,238,0.12) !important;
+        }
+        .dark #crypto-rate-loading {
+            color: #f1e6c5 !important;
+        }
+        .dark #order-summary-list .state-card,
+        .dark #cart-items .state-card,
+        .dark #tracking-error .state-card {
+            color: #e3e9f0 !important;
         }
         .dark .opacity-30 { opacity: 0.58 !important; }
         .dark .opacity-40 { opacity: 0.68 !important; }
@@ -4428,16 +4465,26 @@
 
                 try {
                     var emailOrder = { order_id: orderId, customer_name: name, customer_email: email, shipping_address: address, order_manifest: cart, total_price: subtotal + shippingCost, shipping_cost: shippingCost, shipping_method: selectedShipping, payment_method: cryptoType, crypto_amount: cryptoAmountStr };
+                    var emailHtml = buildOrderEmailHtml(emailOrder);
+                    var emailText = buildOrderEmailText(emailOrder);
+                    var emailSubject = 'Order confirmation · ' + orderId;
                     await fetch('https://kuawyjitkfuwmbduchla.supabase.co/functions/v1/hyper-handler', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + supabaseKey },
                         body: JSON.stringify({
                             order: emailOrder,
+                            subject: emailSubject,
+                            html: emailHtml,
+                            text: emailText,
+                            email_html: emailHtml,
+                            email_text: emailText,
+                            email_subject: emailSubject,
                             email_payload: {
-                                subject: 'Order confirmation · ' + orderId,
-                                html: buildOrderEmailHtml(emailOrder),
-                                text: buildOrderEmailText(emailOrder)
-                            }
+                                subject: emailSubject,
+                                html: emailHtml,
+                                text: emailText
+                            },
+                            template_version: 'futurepharma_v2'
                         })
                     });
                 } catch(e) { console.warn('Email failed:', e); }
