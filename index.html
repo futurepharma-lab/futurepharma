@@ -863,6 +863,54 @@
                 linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)),
                 var(--surface);
         }
+        .state-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 30px;
+            border: 1px solid rgba(93,124,145,0.14);
+            background:
+                radial-gradient(circle at 18% 18%, rgba(255,255,255,0.9), transparent 30%),
+                linear-gradient(180deg, rgba(255,255,255,0.84), rgba(255,255,255,0.96)),
+                var(--surface);
+            box-shadow: var(--shadow-card);
+        }
+        .state-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 auto 0 0;
+            width: 3px;
+            background: linear-gradient(180deg, rgba(93,124,145,0.08), rgba(93,124,145,0.34), rgba(93,124,145,0.08));
+        }
+        .dark .state-card {
+            background:
+                radial-gradient(circle at 18% 18%, rgba(255,255,255,0.05), transparent 30%),
+                linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)),
+                var(--surface);
+        }
+        .state-card-icon {
+            width: 52px;
+            height: 52px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 18px;
+            background: rgba(93,124,145,0.12);
+            color: var(--accent);
+            margin: 0 auto 1rem;
+        }
+        .dark .state-card-icon {
+            background: rgba(143,175,192,0.14);
+        }
+        .loading-inline-card {
+            border-radius: 22px;
+            border: 1px solid rgba(193,138,82,0.24);
+            background: rgba(255,248,231,0.9);
+            box-shadow: 0 14px 28px rgba(165,106,42,0.08);
+        }
+        .dark .loading-inline-card {
+            background: rgba(62,46,24,0.34);
+            border-color: rgba(193,138,82,0.2);
+        }
         .trust-card {
             border-radius: 28px;
             background:
@@ -4379,10 +4427,18 @@
                 if (cryptoTimerInterval) clearInterval(cryptoTimerInterval);
 
                 try {
+                    var emailOrder = { order_id: orderId, customer_name: name, customer_email: email, shipping_address: address, order_manifest: cart, total_price: subtotal + shippingCost, shipping_cost: shippingCost, shipping_method: selectedShipping, payment_method: cryptoType, crypto_amount: cryptoAmountStr };
                     await fetch('https://kuawyjitkfuwmbduchla.supabase.co/functions/v1/hyper-handler', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + supabaseKey },
-                        body: JSON.stringify({ order: { order_id: orderId, customer_name: name, customer_email: email, shipping_address: address, order_manifest: cart, total_price: subtotal + shippingCost, shipping_cost: shippingCost, shipping_method: selectedShipping, payment_method: cryptoType, crypto_amount: cryptoAmountStr } })
+                        body: JSON.stringify({
+                            order: emailOrder,
+                            email_payload: {
+                                subject: 'Order confirmation · ' + orderId,
+                                html: buildOrderEmailHtml(emailOrder),
+                                text: buildOrderEmailText(emailOrder)
+                            }
+                        })
                     });
                 } catch(e) { console.warn('Email failed:', e); }
 
@@ -4564,12 +4620,12 @@
             if (!grid) return;
             var skels = '';
             for (var i = 0; i < 6; i++) {
-                skels += '<div class="skeleton-card">'
-                    + '<div class="skeleton-line" style="width:64px;height:64px;align-self:center;margin-bottom:8px;"></div>'
-                    + '<div class="skeleton-line" style="height:18px;width:80%;"></div>'
-                    + '<div class="skeleton-line" style="height:14px;width:50%;"></div>'
-                    + '<div class="skeleton-line" style="height:22px;width:40%;"></div>'
-                    + '<div class="skeleton-line" style="height:36px;width:100%;margin-top:4px;"></div>'
+                skels += '<div class="skeleton-card state-card">'
+                    + '<div class="skeleton-line" style="width:100%;height:168px;border-radius:22px;margin-bottom:12px;"></div>'
+                    + '<div class="skeleton-line" style="height:20px;width:72%;"></div>'
+                    + '<div class="skeleton-line" style="height:14px;width:42%;"></div>'
+                    + '<div class="skeleton-line" style="height:30px;width:34%;margin-top:4px;"></div>'
+                    + '<div class="skeleton-line" style="height:34px;width:100%;margin-top:10px;border-radius:16px;"></div>'
                     + '</div>';
             }
             grid.innerHTML = skels;
@@ -5194,6 +5250,77 @@ if (!localCounts[id]) localCounts[id] = 0;
             return item.id + '|' + (item.variantKey || item.sizeKey || item.name);
         }
 
+        function buildStateCard(options) {
+            options = options || {};
+            return '<div class="state-card p-8 text-center">'
+                + '<div class="state-card-icon">' + (options.icon || '<i data-lucide="sparkles" class="w-6 h-6"></i>') + '</div>'
+                + '<p class="pixel-font text-xs uppercase tracking-[0.2em] opacity-50 mb-3">' + (options.eyebrow || 'Status') + '</p>'
+                + '<p class="text-xl font-semibold mb-2">' + (options.title || '') + '</p>'
+                + '<p class="text-sm text-beige-800 max-w-md mx-auto">' + (options.copy || '') + '</p>'
+                + '</div>';
+        }
+
+        function buildOrderEmailHtml(order) {
+            var items = Array.isArray(order.order_manifest) ? order.order_manifest : [];
+            var grouped = {};
+            items.forEach(function(item) {
+                var key = item.name || 'Unknown item';
+                if (!grouped[key]) grouped[key] = { count: 0, price: item.price || 0 };
+                grouped[key].count += 1;
+            });
+            var rows = Object.keys(grouped).map(function(name) {
+                var g = grouped[name];
+                return '<tr>'
+                    + '<td style="padding:12px 0;border-bottom:1px solid #e5ddd2;font:600 14px Manrope,Arial,sans-serif;color:#171717;">' + name + ' <span style="opacity:0.55;">x' + g.count + '</span></td>'
+                    + '<td style="padding:12px 0;border-bottom:1px solid #e5ddd2;font:700 14px IBM Plex Mono,monospace;color:#171717;text-align:right;">$' + (g.price * g.count).toFixed(2) + '</td>'
+                    + '</tr>';
+            }).join('');
+            return '<div style="background:#f7f5f0;padding:32px 18px;font-family:Manrope,Arial,sans-serif;color:#171717;">'
+                + '<div style="max-width:640px;margin:0 auto;background:#fefcf8;border:1px solid #d9d4cb;border-radius:28px;overflow:hidden;box-shadow:0 20px 44px rgba(23,23,23,0.08);">'
+                + '<div style="padding:28px 32px;background:linear-gradient(135deg,#171717,#2a3136);color:#f7f5f0;">'
+                + '<div style="font:700 11px IBM Plex Mono,monospace;letter-spacing:0.22em;text-transform:uppercase;opacity:0.72;margin-bottom:10px;">Order Confirmation</div>'
+                + '<div style="font:800 34px Manrope,Arial,sans-serif;letter-spacing:-0.05em;line-height:1;">FuturePharma</div>'
+                + '<p style="margin:14px 0 0;font-size:15px;line-height:1.7;max-width:420px;color:rgba(247,245,240,0.82);">Your order has been recorded and is waiting for payment confirmation. Keep this reference for tracking updates.</p>'
+                + '</div>'
+                + '<div style="padding:30px 32px;">'
+                + '<div style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:22px;">'
+                + '<div><div style="font:700 11px IBM Plex Mono,monospace;letter-spacing:0.18em;text-transform:uppercase;color:#5f6470;margin-bottom:6px;">Order ID</div><div style="font:800 26px Manrope,Arial,sans-serif;letter-spacing:-0.04em;">' + order.order_id + '</div></div>'
+                + '<div><div style="font:700 11px IBM Plex Mono,monospace;letter-spacing:0.18em;text-transform:uppercase;color:#5f6470;margin-bottom:6px;">Shipping</div><div style="font:700 15px Manrope,Arial,sans-serif;">' + (order.shipping_method === 'express' ? 'Express' : 'Standard') + '</div></div>'
+                + '<div><div style="font:700 11px IBM Plex Mono,monospace;letter-spacing:0.18em;text-transform:uppercase;color:#5f6470;margin-bottom:6px;">Payment</div><div style="font:700 15px Manrope,Arial,sans-serif;">' + String(order.payment_method || 'Pending').toUpperCase() + '</div></div>'
+                + '</div>'
+                + '<div style="padding:18px 20px;border:1px solid #d9d4cb;border-radius:22px;background:#faf8f3;margin-bottom:22px;">'
+                + '<div style="font:700 11px IBM Plex Mono,monospace;letter-spacing:0.18em;text-transform:uppercase;color:#5f6470;margin-bottom:8px;">Customer</div>'
+                + '<div style="font-size:15px;line-height:1.7;">' + order.customer_name + '<br>' + order.customer_email + '<br><span style="color:#5f6470;">' + String(order.shipping_address || '').replace(/\n/g, '<br>') + '</span></div>'
+                + '</div>'
+                + '<table style="width:100%;border-collapse:collapse;margin-bottom:18px;">' + rows + '</table>'
+                + '<div style="border-top:1px solid #e5ddd2;padding-top:14px;">'
+                + '<div style="display:flex;justify-content:space-between;margin-bottom:8px;font:600 14px Manrope,Arial,sans-serif;color:#5f6470;"><span>Shipping</span><span>$' + parseFloat(order.shipping_cost || 0).toFixed(2) + '</span></div>'
+                + '<div style="display:flex;justify-content:space-between;font:800 20px Manrope,Arial,sans-serif;letter-spacing:-0.04em;"><span>Total</span><span>$' + parseFloat(order.total_price || 0).toFixed(2) + '</span></div>'
+                + (order.crypto_amount ? '<div style="margin-top:10px;font:700 12px IBM Plex Mono,monospace;color:#2f6b4f;text-transform:uppercase;letter-spacing:0.14em;">' + order.crypto_amount + '</div>' : '')
+                + '</div>'
+                + '<div style="margin-top:22px;padding:18px 20px;border-radius:20px;background:#dce6ec;color:#25313a;">'
+                + '<div style="font:700 11px IBM Plex Mono,monospace;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:8px;">What happens next</div>'
+                + '<div style="font-size:14px;line-height:1.7;">Payment review begins after blockchain confirmation. Use your order code on the tracking page for the latest status updates.</div>'
+                + '</div>'
+                + '</div></div></div>';
+        }
+
+        function buildOrderEmailText(order) {
+            return [
+                'FuturePharma Order Confirmation',
+                '',
+                'Order ID: ' + order.order_id,
+                'Customer: ' + order.customer_name,
+                'Email: ' + order.customer_email,
+                'Shipping: ' + (order.shipping_method === 'express' ? 'Express' : 'Standard'),
+                'Payment: ' + String(order.payment_method || 'pending').toUpperCase(),
+                'Total: $' + parseFloat(order.total_price || 0).toFixed(2),
+                order.crypto_amount ? 'Crypto amount: ' + order.crypto_amount : null,
+                '',
+                'Use your order code on the tracking page for status updates.'
+            ].filter(Boolean).join('\n');
+        }
+
         function renderProductGrid(productsToRender) {
             var grid = document.getElementById('product-grid');
             var feedback = document.getElementById('catalog-feedback');
@@ -5204,7 +5331,13 @@ if (!localCounts[id]) localCounts[id] = 0;
                     : 'No products match the current filters. Try clearing one filter or searching a broader term.';
             }
             if (!productsToRender.length) {
-                grid.innerHTML = '<div class="md:col-span-3 editorial-panel p-10 text-center"><p class="pixel-font text-xs uppercase tracking-[0.2em] opacity-50 mb-3">No matching results</p><p class="text-lg font-semibold mb-2">Try a different search, category, or shipping filter.</p><p class="text-sm text-beige-800">Popular starting points include GHK, BPC-157, Retatrutide, and CJC.</p></div>';
+                grid.innerHTML = '<div class="md:col-span-3">' + buildStateCard({
+                    eyebrow: 'No matching results',
+                    title: 'Try a different filter or broader search term.',
+                    copy: 'Popular starting points include GHK, BPC-157, Retatrutide, and CJC. You can also clear the shipping filter to widen the catalog.',
+                    icon: '<i data-lucide="search-x" class="w-6 h-6"></i>'
+                }) + '</div>';
+                lucide.createIcons();
                 return;
             }
             productsToRender.forEach(function(p) {
@@ -5370,8 +5503,14 @@ if (!localCounts[id]) localCounts[id] = 0;
 
             var cont = document.getElementById('cart-items');
             if (!cart.length) {
-                cont.innerHTML = '<div class="editorial-panel p-5"><p class="pixel-font text-xs uppercase tracking-[0.2em] opacity-50 mb-2">Cart is empty</p><p class="text-sm text-beige-800">Add products from the catalog to build an order. Volume pricing updates automatically as quantities change.</p></div>';
+                cont.innerHTML = buildStateCard({
+                    eyebrow: 'Cart is empty',
+                    title: 'Add products to start building an order.',
+                    copy: 'Volume pricing updates automatically as quantities change, and shipping options remain visible throughout checkout.',
+                    icon: '<i data-lucide="shopping-cart" class="w-6 h-6"></i>'
+                });
                 updateOrderSummary();
+                lucide.createIcons();
                 return;
             }
             cont.innerHTML = Object.values(grouped).map(function(i) {
@@ -5462,8 +5601,14 @@ if (!localCounts[id]) localCounts[id] = 0;
 
             if (!list) return;
             if (cart.length === 0) {
-                list.innerHTML = '<div class="editorial-panel p-5"><p class="pixel-font text-xs uppercase tracking-[0.2em] opacity-50 mb-2">No items selected</p><p class="text-sm text-beige-800">Browse the catalog to add products, then return here to review shipping and totals.</p></div>';
+                list.innerHTML = buildStateCard({
+                    eyebrow: 'No items selected',
+                    title: 'Your order summary will appear here.',
+                    copy: 'Browse the catalog to add products, then return here to review shipping, totals, and the final payment amount.',
+                    icon: '<i data-lucide="clipboard-list" class="w-6 h-6"></i>'
+                });
                 if (meta) meta.innerText = 'Your order summary will update live as you add or remove products.';
+                lucide.createIcons();
                 return;
             }
 
@@ -6383,13 +6528,32 @@ if (!localCounts[id]) localCounts[id] = 0;
             resultEl.classList.add('hidden');
             if (!code) { errEl.innerText = 'Please enter an order code.'; errEl.classList.remove('hidden'); return; }
             try {
-                errEl.innerText = 'Looking up order details…';
+                errEl.innerHTML = '<div class="loading-inline-card px-5 py-4"><p class="pixel-font text-xs uppercase tracking-[0.18em] opacity-60 mb-1">Tracking lookup</p><p class="text-sm">Looking up order details and receipt history…</p></div>';
                 errEl.classList.remove('hidden');
                 var r = await supabaseClient.from('orders').select('*').eq('order_id', code).single();
-                if (r.error || !r.data) { errEl.innerText = 'No order found with that code. Please check and try again.'; errEl.classList.remove('hidden'); return; }
+                if (r.error || !r.data) {
+                    errEl.innerHTML = buildStateCard({
+                        eyebrow: 'Order not found',
+                        title: 'We could not find a record for that code.',
+                        copy: 'Check the reference from your receipt and try again. If the issue continues, contact support with your payment proof.',
+                        icon: '<i data-lucide="package-x" class="w-6 h-6"></i>'
+                    });
+                    errEl.classList.remove('hidden');
+                    lucide.createIcons();
+                    return;
+                }
                 errEl.classList.add('hidden');
                 renderTrackingResult(r.data);
-            } catch(e) { errEl.innerText = 'Could not connect. Please try again.'; errEl.classList.remove('hidden'); }
+            } catch(e) {
+                errEl.innerHTML = buildStateCard({
+                    eyebrow: 'Connection issue',
+                    title: 'Tracking is temporarily unavailable.',
+                    copy: 'Please try again in a moment. If this keeps happening, contact support with your order code and payment proof.',
+                    icon: '<i data-lucide="wifi-off" class="w-6 h-6"></i>'
+                });
+                errEl.classList.remove('hidden');
+                lucide.createIcons();
+            }
         }
 
         function renderTrackingResult(o) {
