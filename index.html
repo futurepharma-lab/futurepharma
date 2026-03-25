@@ -1210,7 +1210,7 @@
 
         .hero-cinema {
             position: relative;
-            min-height: 500px;
+            min-height: 556px;
             border-radius: 38px;
             overflow: hidden;
             box-shadow: var(--shadow-soft);
@@ -1243,7 +1243,29 @@
             align-items: center;
             justify-content: center;
             gap: 1.25rem;
-            padding: 2.6rem;
+            padding: 2rem 2.6rem;
+        }
+        .hero-vial-scene::before {
+            content: "";
+            position: absolute;
+            width: 360px;
+            height: 360px;
+            border-radius: 999px;
+            background: radial-gradient(circle, rgba(143,175,192,0.18), rgba(143,175,192,0.06) 42%, transparent 72%);
+            filter: blur(10px);
+            opacity: 0.95;
+        }
+        .hero-vial-scene::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: 76px;
+            width: 320px;
+            height: 54px;
+            transform: translateX(-50%);
+            background: radial-gradient(circle, rgba(23,23,23,0.16), transparent 72%);
+            filter: blur(12px);
+            opacity: 0.7;
         }
         .hero-vial-card {
             position: relative;
@@ -1252,7 +1274,9 @@
             border-radius: 32px;
             background: linear-gradient(180deg, rgba(255,255,255,0.26), rgba(255,255,255,0.04));
             border: 1px solid rgba(255,255,255,0.4);
-            box-shadow: 0 28px 60px rgba(23,23,23,0.12);
+            box-shadow:
+                0 30px 64px rgba(23,23,23,0.14),
+                inset 0 1px 0 rgba(255,255,255,0.18);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1272,14 +1296,36 @@
         .hero-vial-card::after {
             content: "";
             position: absolute;
-            inset: 18px auto 18px 18px;
-            width: 16px;
+            inset: 16px auto 18px 18px;
+            width: 18px;
             border-radius: 999px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.52), transparent 54%);
-            opacity: 0.9;
+            background: linear-gradient(180deg, rgba(255,255,255,0.62), rgba(255,255,255,0.18) 34%, transparent 60%);
+            opacity: 0.95;
         }
-        .hero-vial-card.center { width: 166px; height: 372px; animation-delay: -1.1s; z-index: 2; }
-        .hero-vial-card.left { transform: rotate(-8deg) translateY(26px); animation-delay: -0.3s; }
+        .hero-vial-card > .hero-vial-shell::before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: -18px;
+            width: 72%;
+            height: 20px;
+            transform: translateX(-50%);
+            border-radius: 999px;
+            background: radial-gradient(circle, rgba(93,124,145,0.18), transparent 72%);
+            filter: blur(6px);
+            opacity: 0.85;
+        }
+        .hero-vial-card.center {
+            width: 166px;
+            height: 372px;
+            animation-delay: -1.1s;
+            z-index: 2;
+            box-shadow:
+                0 38px 84px rgba(23,23,23,0.18),
+                0 0 42px rgba(143,175,192,0.16),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+        .hero-vial-card.left { transform: rotate(-8deg) translateY(24px); animation-delay: -0.3s; }
         .hero-vial-card.right { transform: rotate(8deg) translateY(18px); animation-delay: -2.1s; }
         .hero-vial-shell {
             position: relative;
@@ -1294,15 +1340,16 @@
             width: 54px;
             height: 24px;
             border-radius: 12px 12px 8px 8px;
-            background: linear-gradient(180deg, #39434a, #20262b);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.28);
+            background: linear-gradient(180deg, #47535d, #232a31 58%, #1b2126);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), 0 6px 12px rgba(23,23,23,0.14);
             margin-bottom: 6px;
         }
         .hero-vial-neck {
             width: 30px;
             height: 16px;
             border-radius: 6px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(210,218,224,0.66));
+            background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(210,218,224,0.66));
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.65);
             margin-bottom: 4px;
         }
         .hero-vial-body {
@@ -1313,7 +1360,29 @@
             background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(240,243,246,0.76));
             border: 1px solid rgba(93,124,145,0.18);
             overflow: hidden;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.58);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.58), inset 0 -10px 18px rgba(93,124,145,0.08);
+        }
+        .hero-vial-body::before {
+            content: "";
+            position: absolute;
+            inset: 12px 18px auto auto;
+            width: 26px;
+            height: 64%;
+            border-radius: 999px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.38), transparent 72%);
+            opacity: 0.75;
+            z-index: 2;
+        }
+        .hero-vial-body::after {
+            content: "";
+            position: absolute;
+            left: 8px;
+            right: 8px;
+            bottom: 6px;
+            height: 18px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(93,124,145,0.12), transparent 72%);
+            opacity: 0.7;
         }
         .dark .hero-vial-body {
             background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.05));
@@ -1327,7 +1396,7 @@
             height: var(--liquid-height, 34%);
             border-radius: 14px 14px 22px 22px;
             background: linear-gradient(180deg, var(--liquid-top, #8ec3df), var(--liquid-bottom, #5d7c91));
-            box-shadow: inset 0 10px 18px rgba(255,255,255,0.18);
+            box-shadow: inset 0 10px 18px rgba(255,255,255,0.18), 0 8px 18px rgba(93,124,145,0.12);
         }
         .hero-vial-liquid::before {
             content: "";
@@ -1339,6 +1408,17 @@
             border-radius: 999px;
             background: rgba(255,255,255,0.24);
         }
+        .hero-vial-liquid::after {
+            content: "";
+            position: absolute;
+            left: 10px;
+            top: 14px;
+            width: 28%;
+            height: 42%;
+            border-radius: 999px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.16), transparent);
+            opacity: 0.8;
+        }
         .hero-vial-core {
             position: absolute;
             left: 14px;
@@ -1348,7 +1428,7 @@
             border-radius: 18px;
             background: linear-gradient(180deg, rgba(250,249,246,0.96), rgba(239,242,245,0.9));
             border: 1px solid rgba(93,124,145,0.16);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), 0 8px 16px rgba(93,124,145,0.06);
         }
         .dark .hero-vial-core {
             background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
@@ -1364,6 +1444,13 @@
         }
         .hero-vial-core::before { top: 24px; }
         .hero-vial-core::after { top: 42px; }
+        .hero-vial-core-shadow {
+            position: absolute;
+            inset: 8px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.28);
+            opacity: 0.65;
+        }
         .hero-vial-core-mark {
             position: absolute;
             left: 14px;
@@ -1412,9 +1499,25 @@
         .hero-cinema-orbit::after {
             inset: 52px;
         }
+        .hero-cinema-pulse {
+            position: absolute;
+            width: 244px;
+            height: 244px;
+            border-radius: 999px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(143,175,192,0.14), transparent 64%);
+            filter: blur(18px);
+            animation: heroPulse 6.4s ease-in-out infinite;
+        }
         @keyframes heroVialFloat {
             0%, 100% { translate: 0 0; }
             50% { translate: 0 -8px; }
+        }
+        @keyframes heroPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(0.96); opacity: 0.72; }
+            50% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
         }
         .hero-cinema .hero-badge {
             position: absolute;
@@ -1429,6 +1532,122 @@
             backdrop-filter: blur(14px);
         }
         .dark .hero-cinema .hero-badge { background: rgba(23,26,29,0.82); }
+        .hero-cinema-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+        .hero-vial-carousel {
+            position: relative;
+            border-radius: 30px;
+            padding: 1rem 1rem 1.05rem;
+            border: 1px solid rgba(93,124,145,0.16);
+            background:
+                linear-gradient(180deg, rgba(254,252,248,0.92), rgba(246,241,233,0.86)),
+                var(--surface);
+            box-shadow: var(--shadow-card);
+            overflow: hidden;
+        }
+        .hero-vial-carousel::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(90deg, rgba(247,245,240,0.98), transparent 12%, transparent 88%, rgba(247,245,240,0.98)),
+                linear-gradient(180deg, rgba(255,255,255,0.26), transparent 40%);
+            pointer-events: none;
+            z-index: 2;
+        }
+        .dark .hero-vial-carousel {
+            background:
+                linear-gradient(180deg, rgba(23,26,29,0.98), rgba(30,34,38,0.92)),
+                var(--surface);
+        }
+        .dark .hero-vial-carousel::before {
+            background:
+                linear-gradient(90deg, rgba(17,19,21,0.98), transparent 12%, transparent 88%, rgba(17,19,21,0.98)),
+                linear-gradient(180deg, rgba(255,255,255,0.04), transparent 42%);
+        }
+        .hero-vial-carousel-window {
+            position: relative;
+            overflow-x: auto;
+            overflow-y: hidden;
+            width: 100%;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            cursor: grab;
+            touch-action: pan-x;
+            overscroll-behavior-x: contain;
+            -webkit-overflow-scrolling: touch;
+        }
+        .hero-vial-carousel-window::-webkit-scrollbar { display: none; }
+        .hero-vial-carousel-window.is-dragging { cursor: grabbing; }
+        .hero-vial-carousel-track {
+            display: inline-flex;
+            gap: 0.35rem;
+            padding: 0 0.25rem;
+        }
+        .hero-vial-carousel-item {
+            flex: 0 0 190px;
+            width: 190px;
+            border-radius: 24px;
+            border: none;
+            background: transparent;
+            padding: 0.35rem 0.35rem 0.75rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.7rem;
+            min-height: 214px;
+            transform: scale(var(--hero-focus, 0.88));
+            transform-origin: center center;
+            opacity: calc(0.58 + (var(--hero-focus, 0.88) - 0.88) * 2.8);
+            transition: transform 0.22s ease, opacity 0.22s ease;
+        }
+        .hero-vial-carousel-item-name {
+            text-align: center;
+            font-size: 0.78rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 700;
+            line-height: 1.35;
+            min-height: 2.15em;
+        }
+        .hero-vial-carousel-graphic {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            min-height: 156px;
+        }
+        .hero-vial-carousel-graphic > div {
+            transform: scale(calc(0.82 + ((var(--hero-focus, 0.88) - 0.88) * 1.35)));
+            transform-origin: center bottom;
+            transition: transform 0.28s ease;
+        }
+        .hero-vial-carousel-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 0.85rem;
+        }
+        .hero-vial-carousel-title {
+            font-size: 0.76rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 700;
+        }
+        .hero-vial-carousel-status {
+            font-size: 0.72rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--accent);
+            font-weight: 700;
+        }
         .hero-copy-block {
             position: relative;
             z-index: 2;
@@ -1573,6 +1792,16 @@
             color: #dce4eb !important;
         }
 
+        @media (max-width: 1024px) {
+            .hero-vial-carousel {
+                padding: 0.95rem;
+            }
+            .hero-vial-carousel-item {
+                flex-basis: 176px;
+                width: 176px;
+            }
+        }
+
         @media (max-width: 767px) {
             .dark .hero-copy-block {
                 padding: 1rem 0.9rem 1.1rem;
@@ -1587,19 +1816,22 @@
             .hero-cinema {
                 min-height: 360px;
             }
-            .hero-vial-card.center {
-                width: 126px;
-                height: 290px;
-            }
-            .hero-vial-card.left,
-            .hero-vial-card.right {
-                width: 102px;
-                height: 250px;
-            }
             .hero-cinema-orbit {
                 width: 224px;
                 height: 224px;
                 top: 66px;
+            }
+            .hero-cinema-stack {
+                gap: 0.95rem;
+            }
+            .hero-vial-carousel {
+                padding: 0.85rem;
+                border-radius: 24px;
+            }
+            .hero-vial-carousel-item {
+                flex-basis: 160px;
+                width: 160px;
+                min-height: 198px;
             }
             .hero-chip {
                 padding: 0.65rem 0.86rem;
@@ -1944,50 +2176,65 @@
                     </div>
 
                     <!-- Cinematic research collage -->
-                    <div class="hero-cinema signature-frame reveal">
-                        <div class="hero-cinema-orbit" aria-hidden="true"></div>
-                        <div class="hero-vial-scene" aria-hidden="true">
-                            <div class="hero-vial-card left">
-                                <div class="hero-vial-shell">
-                                    <div class="hero-vial-cap"></div>
-                                    <div class="hero-vial-neck"></div>
-                                    <div class="hero-vial-body">
-                                        <div class="hero-vial-core">
-                                            <div class="hero-vial-core-mark">
-                                                <span></span><span></span><span></span>
+                    <div class="hero-cinema-stack reveal">
+                        <div class="hero-cinema signature-frame">
+                            <div class="hero-cinema-orbit" aria-hidden="true"></div>
+                            <div class="hero-cinema-pulse" aria-hidden="true"></div>
+                            <div class="hero-vial-scene" aria-hidden="true">
+                                <div class="hero-vial-card left">
+                                    <div class="hero-vial-shell">
+                                        <div class="hero-vial-cap"></div>
+                                        <div class="hero-vial-neck"></div>
+                                        <div class="hero-vial-body">
+                                            <div class="hero-vial-core">
+                                                <div class="hero-vial-core-shadow"></div>
+                                                <div class="hero-vial-core-mark">
+                                                    <span></span><span></span><span></span>
+                                                </div>
                                             </div>
+                                            <div class="hero-vial-liquid" style="--liquid-height: 31%; --liquid-top:#8eb8d0; --liquid-bottom:#5d7c91;"></div>
                                         </div>
-                                        <div class="hero-vial-liquid" style="--liquid-height: 31%; --liquid-top:#8eb8d0; --liquid-bottom:#5d7c91;"></div>
+                                    </div>
+                                </div>
+                                <div class="hero-vial-card center">
+                                    <div class="hero-vial-shell">
+                                        <div class="hero-vial-cap"></div>
+                                        <div class="hero-vial-neck"></div>
+                                        <div class="hero-vial-body">
+                                            <div class="hero-vial-core">
+                                                <div class="hero-vial-core-shadow"></div>
+                                                <div class="hero-vial-core-mark">
+                                                    <span></span><span></span><span></span>
+                                                </div>
+                                            </div>
+                                            <div class="hero-vial-liquid" style="--liquid-height: 38%; --liquid-top:#9ad6c1; --liquid-bottom:#4d8d73;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="hero-vial-card right">
+                                    <div class="hero-vial-shell">
+                                        <div class="hero-vial-cap"></div>
+                                        <div class="hero-vial-neck"></div>
+                                        <div class="hero-vial-body">
+                                            <div class="hero-vial-core">
+                                                <div class="hero-vial-core-shadow"></div>
+                                                <div class="hero-vial-core-mark">
+                                                    <span></span><span></span><span></span>
+                                                </div>
+                                            </div>
+                                            <div class="hero-vial-liquid" style="--liquid-height: 28%; --liquid-top:#d8a6a1; --liquid-bottom:#b86f68;"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="hero-vial-card center">
-                                <div class="hero-vial-shell">
-                                    <div class="hero-vial-cap"></div>
-                                    <div class="hero-vial-neck"></div>
-                                    <div class="hero-vial-body">
-                                        <div class="hero-vial-core">
-                                            <div class="hero-vial-core-mark">
-                                                <span></span><span></span><span></span>
-                                            </div>
-                                        </div>
-                                        <div class="hero-vial-liquid" style="--liquid-height: 38%; --liquid-top:#9ad6c1; --liquid-bottom:#4d8d73;"></div>
-                                    </div>
-                                </div>
+                        </div>
+                        <div class="hero-vial-carousel signature-frame" aria-label="Featured vial carousel">
+                            <div class="hero-vial-carousel-meta">
+                                <span class="hero-vial-carousel-title">Featured catalog window</span>
+                                <span class="hero-vial-carousel-status">Swipe to browse</span>
                             </div>
-                            <div class="hero-vial-card right">
-                                <div class="hero-vial-shell">
-                                    <div class="hero-vial-cap"></div>
-                                    <div class="hero-vial-neck"></div>
-                                    <div class="hero-vial-body">
-                                        <div class="hero-vial-core">
-                                            <div class="hero-vial-core-mark">
-                                                <span></span><span></span><span></span>
-                                            </div>
-                                        </div>
-                                        <div class="hero-vial-liquid" style="--liquid-height: 28%; --liquid-top:#d8a6a1; --liquid-bottom:#b86f68;"></div>
-                                    </div>
-                                </div>
+                            <div class="hero-vial-carousel-window">
+                                <div class="hero-vial-carousel-track" id="hero-vial-carousel-track"></div>
                             </div>
                         </div>
                     </div>
@@ -4624,6 +4871,12 @@
         ];
 
         var products = [];
+        var heroCarouselTimer = null;
+        var heroCarouselLastTick = 0;
+        var heroCarouselUserControlled = false;
+        var heroCarouselPointer = null;
+        var heroCarouselResumeTimer = null;
+        var heroCarouselScrollRaf = null;
 
         // Convert Supabase row -> JS product object
         function dbRowToProduct(row) {
@@ -4701,7 +4954,167 @@
                 products = FALLBACK_PRODUCTS;
             }
             renderProductGrid(products);
+            renderHeroCarousel();
             updateCartUI();
+        }
+
+        function getHeroCarouselProducts() {
+            var featured = products.filter(function(product) {
+                return product.graphic === 'vial';
+            });
+            if (!featured.length) featured = FALLBACK_PRODUCTS.filter(function(product) { return product.graphic === 'vial'; });
+            return featured.slice(0, 8);
+        }
+
+        function buildHeroCarouselItemMarkup(product) {
+            return '<article class="hero-vial-carousel-item">'
+                + '<div class="hero-vial-carousel-graphic">' + getProductSVG(product, 'sm') + '</div>'
+                + '<div class="hero-vial-carousel-item-name">' + product.name + '</div>'
+                + '</article>';
+        }
+
+        function normalizeHeroCarouselScroll() {
+            var windowEl = document.querySelector('.hero-vial-carousel-window');
+            if (!windowEl) return;
+            var track = document.getElementById('hero-vial-carousel-track');
+            if (!track) return;
+            var setWidth = track.scrollWidth / 3;
+            if (!setWidth) return;
+            if (windowEl.scrollLeft < setWidth * 0.25) {
+                windowEl.scrollLeft += setWidth;
+            } else if (windowEl.scrollLeft > setWidth * 1.75) {
+                windowEl.scrollLeft -= setWidth;
+            }
+        }
+
+        function updateHeroCarouselFocus() {
+            var windowEl = document.querySelector('.hero-vial-carousel-window');
+            var track = document.getElementById('hero-vial-carousel-track');
+            if (!windowEl || !track) return;
+            var centerX = windowEl.scrollLeft + (windowEl.clientWidth / 2);
+            var items = track.querySelectorAll('.hero-vial-carousel-item');
+            var maxDistance = Math.max(windowEl.clientWidth * 0.55, 1);
+            items.forEach(function(item) {
+                var itemCenter = item.offsetLeft + (item.offsetWidth / 2);
+                var distance = Math.abs(centerX - itemCenter);
+                var closeness = Math.max(0, 1 - (distance / maxDistance));
+                var focus = 0.88 + (closeness * 0.22);
+                item.style.setProperty('--hero-focus', focus.toFixed(3));
+            });
+        }
+
+        function stopHeroCarouselAutoplay() {
+            if (!heroCarouselTimer) return;
+            cancelAnimationFrame(heroCarouselTimer);
+            heroCarouselTimer = null;
+        }
+
+        function clearHeroCarouselResumeTimer() {
+            if (!heroCarouselResumeTimer) return;
+            clearTimeout(heroCarouselResumeTimer);
+            heroCarouselResumeTimer = null;
+        }
+
+        function startHeroCarouselAutoplay() {
+            stopHeroCarouselAutoplay();
+            clearHeroCarouselResumeTimer();
+            if (heroCarouselUserControlled) return;
+            var windowEl = document.querySelector('.hero-vial-carousel-window');
+            var track = document.getElementById('hero-vial-carousel-track');
+            if (!windowEl || !track) return;
+            if (track.scrollWidth <= windowEl.clientWidth + 8) return;
+            heroCarouselLastTick = performance.now();
+            var tick = function(now) {
+                if (heroCarouselUserControlled) {
+                    heroCarouselTimer = null;
+                    return;
+                }
+                var delta = Math.min(now - heroCarouselLastTick, 32);
+                heroCarouselLastTick = now;
+                windowEl.scrollLeft += delta * 0.022;
+                normalizeHeroCarouselScroll();
+                updateHeroCarouselFocus();
+                heroCarouselTimer = requestAnimationFrame(tick);
+            };
+            heroCarouselTimer = requestAnimationFrame(tick);
+        }
+
+        function makeHeroCarouselUserControlled() {
+            heroCarouselUserControlled = true;
+            stopHeroCarouselAutoplay();
+            clearHeroCarouselResumeTimer();
+        }
+
+        function scheduleHeroCarouselAutoplayResume() {
+            clearHeroCarouselResumeTimer();
+            heroCarouselResumeTimer = setTimeout(function() {
+                heroCarouselUserControlled = false;
+                startHeroCarouselAutoplay();
+            }, 1000);
+        }
+
+        function requestHeroCarouselScrollSync() {
+            if (heroCarouselScrollRaf) return;
+            heroCarouselScrollRaf = requestAnimationFrame(function() {
+                heroCarouselScrollRaf = null;
+                normalizeHeroCarouselScroll();
+                updateHeroCarouselFocus();
+            });
+        }
+
+        function renderHeroCarousel() {
+            var track = document.getElementById('hero-vial-carousel-track');
+            if (!track) return;
+            var featured = getHeroCarouselProducts();
+            if (!featured.length) {
+                track.innerHTML = '';
+                return;
+            }
+            var repeated = featured.concat(featured, featured);
+            track.innerHTML = repeated.map(buildHeroCarouselItemMarkup).join('');
+            var windowEl = track.closest('.hero-vial-carousel-window');
+            if (windowEl) {
+                requestAnimationFrame(function() {
+                    windowEl.scrollLeft = track.scrollWidth / 3;
+                    requestHeroCarouselScrollSync();
+                });
+            }
+            heroCarouselUserControlled = false;
+            startHeroCarouselAutoplay();
+            if (windowEl && !windowEl.dataset.bound) {
+                windowEl.addEventListener('wheel', function(event) {
+                    var horizontalIntent = Math.abs(event.deltaX) > 0 || event.shiftKey;
+                    if (!horizontalIntent) return;
+                    makeHeroCarouselUserControlled();
+                    requestHeroCarouselScrollSync();
+                    scheduleHeroCarouselAutoplayResume();
+                }, { passive: true });
+                windowEl.addEventListener('scroll', function() {
+                    requestHeroCarouselScrollSync();
+                    if (heroCarouselUserControlled) scheduleHeroCarouselAutoplayResume();
+                }, { passive: true });
+                windowEl.addEventListener('pointerdown', function(event) {
+                    makeHeroCarouselUserControlled();
+                    heroCarouselPointer = {
+                        id: event.pointerId
+                    };
+                    windowEl.classList.add('is-dragging');
+                });
+                windowEl.addEventListener('touchstart', function() {
+                    makeHeroCarouselUserControlled();
+                }, { passive: true });
+                var clearPointerState = function(event) {
+                    if (!heroCarouselPointer) return;
+                    if (event && heroCarouselPointer.id !== event.pointerId) return;
+                    heroCarouselPointer = null;
+                    windowEl.classList.remove('is-dragging');
+                    scheduleHeroCarouselAutoplayResume();
+                };
+                windowEl.addEventListener('pointerup', clearPointerState);
+                windowEl.addEventListener('pointercancel', clearPointerState);
+                windowEl.addEventListener('pointerleave', clearPointerState);
+                windowEl.dataset.bound = 'true';
+            }
         }
 
         // Seed Supabase with the fallback products (runs once on first load if table is empty)
@@ -5203,6 +5616,13 @@ if (!localCounts[id]) localCounts[id] = 0;
         }
 
         // --- Product Graphic SVG Helpers ---
+        var productSvgUidCounter = 0;
+
+        function nextProductSvgUid(prefix) {
+            productSvgUidCounter += 1;
+            return prefix + '-' + productSvgUidCounter;
+        }
+
         function getVialSVG(color, abbrev, size) {
             var cls = size === 'lg' ? 'w-64 h-64' : size === 'xs' ? 'w-10 h-10' : 'w-32 h-32';
             var label = String(abbrev || '');
@@ -5210,30 +5630,31 @@ if (!localCounts[id]) localCounts[id] = 0;
             var labelSize = compactLabel.length >= 8 ? '1.38' : compactLabel.length >= 6 ? '1.68' : '2.05';
             var labelY = compactLabel.length >= 8 ? '10.45' : '10.7';
             var labelSpacing = compactLabel.length >= 8 ? '0.01' : compactLabel.length >= 6 ? '0.03' : '0.06';
+            var uid = nextProductSvgUid('vial');
             return '<svg viewBox="0 0 16 20" class="' + cls + '" xmlns="http://www.w3.org/2000/svg">'
                 + '<defs>'
-                + '<linearGradient id="glass-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="42%" stop-color="#faf7f1"/><stop offset="100%" stop-color="#ddd6ca"/></linearGradient>'
-                + '<linearGradient id="glassSide-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/><stop offset="35%" stop-color="#ffffff" stop-opacity="0.18"/><stop offset="100%" stop-color="#c8c1b6" stop-opacity="0.5"/></linearGradient>'
-                + '<linearGradient id="cap-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#53626e"/><stop offset="55%" stop-color="#2a333a"/><stop offset="100%" stop-color="#13181c"/></linearGradient>'
-                + '<linearGradient id="metal-' + abbrev + size + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#eff4f7"/><stop offset="50%" stop-color="#c7d0d6"/><stop offset="100%" stop-color="#9da8b0"/></linearGradient>'
-                + '<linearGradient id="label-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f3efe7"/><stop offset="100%" stop-color="#e3ddd2"/></linearGradient>'
-                + '<linearGradient id="liquid-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="' + color + '" stop-opacity="0.98"/><stop offset="70%" stop-color="' + color + '" stop-opacity="0.8"/><stop offset="100%" stop-color="#ffffff" stop-opacity="0.18"/></linearGradient>'
-                + '<radialGradient id="shine-' + abbrev + size + '" cx="0.2" cy="0.15" r="0.95"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/><stop offset="30%" stop-color="#ffffff" stop-opacity="0.36"/><stop offset="100%" stop-color="#ffffff" stop-opacity="0"/></radialGradient>'
+                + '<linearGradient id="glass-' + uid + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="42%" stop-color="#faf7f1"/><stop offset="100%" stop-color="#ddd6ca"/></linearGradient>'
+                + '<linearGradient id="glassSide-' + uid + '" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/><stop offset="35%" stop-color="#ffffff" stop-opacity="0.18"/><stop offset="100%" stop-color="#c8c1b6" stop-opacity="0.5"/></linearGradient>'
+                + '<linearGradient id="cap-' + uid + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#53626e"/><stop offset="55%" stop-color="#2a333a"/><stop offset="100%" stop-color="#13181c"/></linearGradient>'
+                + '<linearGradient id="metal-' + uid + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#eff4f7"/><stop offset="50%" stop-color="#c7d0d6"/><stop offset="100%" stop-color="#9da8b0"/></linearGradient>'
+                + '<linearGradient id="label-' + uid + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f3efe7"/><stop offset="100%" stop-color="#e3ddd2"/></linearGradient>'
+                + '<linearGradient id="liquid-' + uid + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="' + color + '" stop-opacity="0.98"/><stop offset="70%" stop-color="' + color + '" stop-opacity="0.8"/><stop offset="100%" stop-color="#ffffff" stop-opacity="0.18"/></linearGradient>'
+                + '<radialGradient id="shine-' + uid + '" cx="0.2" cy="0.15" r="0.95"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/><stop offset="30%" stop-color="#ffffff" stop-opacity="0.36"/><stop offset="100%" stop-color="#ffffff" stop-opacity="0"/></radialGradient>'
                 + '</defs>'
                 + '<ellipse cx="8" cy="18.45" rx="4.95" ry="0.88" fill="#000" opacity="0.12"/>'
-                + '<rect x="5.1" y="1.1" width="5.8" height="3.15" rx="0.7" fill="url(#cap-' + abbrev + size + ')" stroke="#161616" stroke-width="0.3"/>'
+                + '<rect x="5.1" y="1.1" width="5.8" height="3.15" rx="0.7" fill="url(#cap-' + uid + ')" stroke="#161616" stroke-width="0.3"/>'
                 + '<path d="M5.55 2.05h4.9" stroke="#92a2ae" stroke-width="0.24" opacity="0.55"/>'
                 + '<path d="M5.55 2.8h4.9" stroke="#0d1114" stroke-width="0.18" opacity="0.38"/>'
-                + '<rect x="6.02" y="4.08" width="3.96" height="2.14" rx="0.52" fill="url(#metal-' + abbrev + size + ')" stroke="#4b555d" stroke-width="0.24"/>'
-                + '<rect x="4.02" y="6.1" width="7.96" height="10.82" rx="1.18" fill="url(#glass-' + abbrev + size + ')" stroke="#1a1a1a" stroke-width="0.3"/>'
-                + '<rect x="4.18" y="6.22" width="7.64" height="10.58" rx="1.05" fill="url(#glassSide-' + abbrev + size + ')" opacity="0.72"/>'
+                + '<rect x="6.02" y="4.08" width="3.96" height="2.14" rx="0.52" fill="url(#metal-' + uid + ')" stroke="#4b555d" stroke-width="0.24"/>'
+                + '<rect x="4.02" y="6.1" width="7.96" height="10.82" rx="1.18" fill="url(#glass-' + uid + ')" stroke="#1a1a1a" stroke-width="0.3"/>'
+                + '<rect x="4.18" y="6.22" width="7.64" height="10.58" rx="1.05" fill="url(#glassSide-' + uid + ')" opacity="0.72"/>'
                 + '<rect x="4.75" y="6.82" width="0.88" height="8.95" rx="0.4" fill="#ffffff" opacity="0.78"/>'
-                + '<rect x="6.04" y="12.45" width="3.92" height="3.72" rx="0.55" fill="url(#liquid-' + abbrev + size + ')"/>'
+                + '<rect x="6.04" y="12.45" width="3.92" height="3.72" rx="0.55" fill="url(#liquid-' + uid + ')"/>'
                 + '<ellipse cx="8" cy="12.48" rx="1.96" ry="0.44" fill="#ffffff" opacity="0.22"/>'
-                + '<rect x="5.18" y="8.02" width="5.64" height="4.25" rx="0.48" fill="url(#label-' + abbrev + size + ')" stroke="#c4bdae" stroke-width="0.12"/>'
+                + '<rect x="5.18" y="8.02" width="5.64" height="4.25" rx="0.48" fill="url(#label-' + uid + ')" stroke="#c4bdae" stroke-width="0.12"/>'
                 + '<path d="M5.55 8.85h4.9" stroke="#d3cbc0" stroke-width="0.14"/>'
                 + '<path d="M5.55 11.46h4.9" stroke="#d3cbc0" stroke-width="0.14"/>'
-                + '<ellipse cx="7.7" cy="7.28" rx="2.95" ry="1.8" fill="url(#shine-' + abbrev + size + ')" opacity="0.78"/>'
+                + '<ellipse cx="7.7" cy="7.28" rx="2.95" ry="1.8" fill="url(#shine-' + uid + ')" opacity="0.78"/>'
                 + '<path d="M11.15 7.1c-0.45 3.4-0.5 5.9-0.08 8.3" stroke="#fff" stroke-width="0.22" opacity="0.34" stroke-linecap="round"/>'
                 + (size !== 'xs' ? '<text x="8" y="' + labelY + '" font-family="IBM Plex Mono, monospace" font-size="' + labelSize + '" font-weight="600" fill="#1a1a1a" text-anchor="middle" lengthAdjust="spacingAndGlyphs" textLength="4.7" letter-spacing="' + labelSpacing + '">' + label + '</text><text x="8" y="9.05" font-family="IBM Plex Mono, monospace" font-size="0.66" fill="#6f7c86" text-anchor="middle" letter-spacing="0.22">FP</text>' : '')
                 + '</svg>';
@@ -5241,22 +5662,23 @@ if (!localCounts[id]) localCounts[id] = 0;
 
         function getPillBottleSVG(color, abbrev, size) {
             var cls = size === 'lg' ? 'w-64 h-64' : size === 'xs' ? 'w-10 h-10' : 'w-32 h-32';
+            var uid = nextProductSvgUid('pill');
             return '<svg viewBox="0 0 20 24" class="' + cls + '" xmlns="http://www.w3.org/2000/svg">'
                 + '<defs>'
-                + '<linearGradient id="bottle-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="70%" stop-color="#efe8db"/><stop offset="100%" stop-color="#ddd4c6"/></linearGradient>'
-                + '<linearGradient id="bottleSide-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.86"/><stop offset="36%" stop-color="#ffffff" stop-opacity="0.18"/><stop offset="100%" stop-color="#cfc6b9" stop-opacity="0.46"/></linearGradient>'
-                + '<linearGradient id="pillcap-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4f606d"/><stop offset="55%" stop-color="#2a333a"/><stop offset="100%" stop-color="#14181c"/></linearGradient>'
-                + '<linearGradient id="band-' + abbrev + size + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#edf3f6"/><stop offset="100%" stop-color="#a8b5bd"/></linearGradient>'
-                + '<linearGradient id="labelBand-' + abbrev + size + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f5f0e8"/><stop offset="100%" stop-color="#e1dacc"/></linearGradient>'
+                + '<linearGradient id="bottle-' + uid + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="70%" stop-color="#efe8db"/><stop offset="100%" stop-color="#ddd4c6"/></linearGradient>'
+                + '<linearGradient id="bottleSide-' + uid + '" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.86"/><stop offset="36%" stop-color="#ffffff" stop-opacity="0.18"/><stop offset="100%" stop-color="#cfc6b9" stop-opacity="0.46"/></linearGradient>'
+                + '<linearGradient id="pillcap-' + uid + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4f606d"/><stop offset="55%" stop-color="#2a333a"/><stop offset="100%" stop-color="#14181c"/></linearGradient>'
+                + '<linearGradient id="band-' + uid + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#edf3f6"/><stop offset="100%" stop-color="#a8b5bd"/></linearGradient>'
+                + '<linearGradient id="labelBand-' + uid + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f5f0e8"/><stop offset="100%" stop-color="#e1dacc"/></linearGradient>'
                 + '</defs>'
                 + '<ellipse cx="10" cy="22.45" rx="6.5" ry="1.02" fill="#000" opacity="0.12"/>'
-                + '<rect x="4.05" y="1.05" width="11.9" height="4.1" rx="0.95" fill="url(#pillcap-' + abbrev + size + ')" stroke="#1a1a1a" stroke-width="0.3"/>'
+                + '<rect x="4.05" y="1.05" width="11.9" height="4.1" rx="0.95" fill="url(#pillcap-' + uid + ')" stroke="#1a1a1a" stroke-width="0.3"/>'
                 + '<path d="M4.9 2.2h10.2" stroke="#8e9fab" stroke-width="0.2" opacity="0.62"/>'
                 + '<path d="M5.1 3.15h9.8" stroke="#0f1316" stroke-width="0.16" opacity="0.4"/>'
-                + '<rect x="5.95" y="5.02" width="8.1" height="2.08" rx="0.5" fill="url(#band-' + abbrev + size + ')" stroke="#4a555d" stroke-width="0.24"/>'
-                + '<rect x="3.02" y="7.02" width="13.96" height="14.1" rx="1.45" fill="url(#bottle-' + abbrev + size + ')" stroke="#1a1a1a" stroke-width="0.3"/>'
-                + '<rect x="3.2" y="7.18" width="13.6" height="13.74" rx="1.3" fill="url(#bottleSide-' + abbrev + size + ')" opacity="0.72"/>'
-                + '<rect x="4" y="8.95" width="12" height="8.65" rx="0.75" fill="url(#labelBand-' + abbrev + size + ')" stroke="#c8c0b2" stroke-width="0.12"/>'
+                + '<rect x="5.95" y="5.02" width="8.1" height="2.08" rx="0.5" fill="url(#band-' + uid + ')" stroke="#4a555d" stroke-width="0.24"/>'
+                + '<rect x="3.02" y="7.02" width="13.96" height="14.1" rx="1.45" fill="url(#bottle-' + uid + ')" stroke="#1a1a1a" stroke-width="0.3"/>'
+                + '<rect x="3.2" y="7.18" width="13.6" height="13.74" rx="1.3" fill="url(#bottleSide-' + uid + ')" opacity="0.72"/>'
+                + '<rect x="4" y="8.95" width="12" height="8.65" rx="0.75" fill="url(#labelBand-' + uid + ')" stroke="#c8c0b2" stroke-width="0.12"/>'
                 + '<rect x="3.8" y="19.02" width="12.4" height="2.18" rx="0.7" fill="' + color + '" opacity="0.9"/>'
                 + '<rect x="4.05" y="7.7" width="0.95" height="12.8" rx="0.48" fill="#fff" opacity="0.78"/>'
                 + '<path d="M15.2 8.4c-0.52 4.3-0.4 7.4-0.02 10.6" stroke="#fff" stroke-width="0.22" opacity="0.28" stroke-linecap="round"/>'
@@ -6868,6 +7290,9 @@ if (!localCounts[id]) localCounts[id] = 0;
         }
 
         updateMobileNav('home');
+        window.addEventListener('resize', function() {
+            requestHeroCarouselScrollSync();
+        });
 // Auto-fill tracking from URL param
 (function() {
     var params = new URLSearchParams(window.location.search);
